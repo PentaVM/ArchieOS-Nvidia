@@ -85,7 +85,8 @@ Sin modelo local, el pase termina en `refused:NoLocalModel`. Es lo esperado.
 1. **Bloquear un dispositivo** (§3 punto 11, la otra mitad). Propuesta: un
    `Command::DeviceBlock { mac, blocked }` por el router, con postcondición medida
    leyendo la regla de vuelta. Toca contratos y policy, y depende de qué exponga el
-   MitraStar, que no lo sabemos. No se implementó.
+   MitraStar, que no lo sabemos. **Decidido e implementado (2026-10-15)**: ver
+   `SENTRY-RESPUESTA.md` § Bloquear. Queda probarlo en el router real.
 2. **Umbrales**: `traffic-surge` (50 MB, 4× lo habitual, 6σ) y `unusual-destination`
    (25 MB) son criterio. Hay que medir la tasa de falsos positivos con un día de captura
    real.

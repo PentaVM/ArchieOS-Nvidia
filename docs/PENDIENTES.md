@@ -145,8 +145,11 @@ fixture se reporta como fixture, no como dispositivo real. Un PR por avance, con
   (listar y acusar) y `GET /api/notices` de displayd. Cada aviso trae una frase hablable
   que no nombra nada de la red. Umbral en `[sentry.response] min_severity`. Faltan el
   panel QML (GUI de Claude/Xavi) y que la voz los diga: el contrato está en
-  [`SENTRY-RESPUESTA.md`](SENTRY-RESPUESTA.md). El bloqueo como `Intent` sigue sin
-  existir.
+  [`SENTRY-RESPUESTA.md`](SENTRY-RESPUESTA.md). **Bloqueo (Claude, 2026-10-15):**
+  `Command::DeviceBlock` por el router como `Intent` aprobado (`archie sentry-node
+  block|unblock`), regla `FORWARD` por MAC en iptables/ip6tables con postcondición
+  `-C`, `protected_macs` rechazadas. *Hecho cuando:* bloquear y desbloquear un equipo
+  real en el MitraStar con recibo `verified`. Cuarentena (VLAN/aislamiento) no existe.
 - [~] **12. Control más allá de Home Assistant.** **Parcial (Kimi, 2026-10-11):** Roku
   ECP actúa (teclas con postcondición medible y lanzamiento de apps, verificado contra el
   propio dispositivo); MQTT actúa switches/luces/clima con estado medido; ONVIF observa

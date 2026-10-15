@@ -386,3 +386,28 @@ está en `docs/SENTRY-RESPUESTA.md`.
 
 Humo con binarios reales: pcap → netwatch → follower → tablón → displayd
 `/api/notices`; `vault-docs` → `focus trabajo`; `--claim` tres veces y luego `null`.
+
+## 2026-10-15 — Bloqueo de dispositivos como Intent (Claude)
+
+Pedido de Nelson: implementar el bloqueo como `Intent` y revisar los otros PR sin
+mergear los de XaviCottier.
+
+- **Contrato:** `Command::DeviceBlock { mac, blocked }`, `CommandKind::DeviceBlock`,
+  `ResourceState::Router.device_blocked` (`serde(default)`: recibos viejos siguen
+  leyéndose), `validate_mac` (una sola dirección de equipo, minúsculas).
+- **Router (SSH):** `block_rule` arma el argv exacto (`-C`/`-I`/`-D`, herramienta
+  conocida, MAC válida; nada más llega al router). Cortafuegos detectados con `-S
+  FORWARD` en el probe o a la primera, de solo lectura. Inserta solo si falta; borra
+  hasta que `-C` diga que no queda. `protected_macs` en `[sentry.router]`.
+- **CLI:** `archie sentry-node block|unblock <router> <mac>` → `SentryPrepare`, misma
+  revisión y aprobación por digest que el resto.
+- **Pruebas:** cortafuegos simulado con estado (inserción en ambos, idempotencia,
+  duplicados, MAC ajena intacta, protegidas y malformadas sin procesos, sin
+  cortafuegos = `Unsupported`, ssh 255 = `Unavailable`, desacuerdo = no verifica),
+  configuración (`protected_macs`, router solo IGD sin la capacidad), parseo CLI.
+- **No verificado en hardware:** el firmware del MitraStar puede no traer el módulo
+  `mac` de iptables; entonces responde `Unavailable`.
+- **Otros PR (solo revisión, nada mergeado):** #35, #38, #39 limpios contra `main` y
+  contra este cambio, CI verde. #40 (Xavi) CI rojo por `rustfmt` en
+  `archie-cli/src/visual.rs`. #41 (Xavi) en conflicto con `main` (displayd, orb lumen,
+  voice, `build.sh`) y sin CI. #35 y #39 solo chocan entre sí en `Cargo.lock`.

@@ -85,3 +85,36 @@ curl 127.0.0.1:7666/api/notices             # lo que lee el Observatory
   responde `unavailable` con el error de permisos, nunca un vacío.
 - Las pruebas son con alertas sintéticas y archivos temporales. Nada se probó contra
   tráfico real.
+
+## Bloquear un dispositivo: `Intent` aprobado
+
+La segunda respuesta corta el tráfico de un equipo en el router. Va siempre como
+`Command::DeviceBlock { mac, blocked }`, por el mismo camino que cualquier acto de
+Sentry: `prepare` → revisión humana del digest → `approve` → adaptador → postcondición
+medida. No existe atajo desde el tablón, el follower ni Cerebra.
+
+```
+archie sentry-node block   <router> aa:bb:cc:dd:ee:ff   # prepara el Intent; pide aprobación
+archie sentry-node unblock <router> aa:bb:cc:dd:ee:ff
+```
+
+- **Qué hace en el router** (canal SSH, argv exacto, sin shell): en cada cortafuegos
+  que responde a `-S FORWARD` (`iptables`, `ip6tables`) pone
+  `-I FORWARD -m mac --mac-source <mac> -m comment --comment archie-sentry-block -j DROP`
+  solo si `-C` dice que falta. Desbloquear borra con `-D` hasta que `-C` dice que no
+  queda, y solo reglas con ese comentario y esa MAC: nunca toca las del router.
+- **Postcondición:** `-C` en todos los cortafuegos. Todos con la regla = bloqueado;
+  ninguno = desbloqueado; desacuerdo o error = no verifica nada (el recibo falla).
+- **Rechazos antes de tocar nada:** MAC que no sea una sola dirección de equipo en
+  minúsculas (multicast, broadcast y ceros incluidos), recurso sin la capacidad, y
+  cualquier MAC de `[sentry.router] protected_macs` (este nodo, el propio router).
+  Desbloquear una protegida sí se permite: solo puede devolver acceso.
+- **Honesto si no puede:** router sin SSH o sin cortafuegos que responda →
+  `Unsupported`; ssh caído (255) o `-C` con otro código (falta el módulo `mac`) →
+  `Unavailable`.
+- **Sin verificar en hardware.** Probado con un cortafuegos simulado con estado. No
+  sabemos si el firmware del MitraStar trae `iptables` con los módulos `mac` y
+  `comment`; si no, la respuesta será `Unavailable`, no un bloqueo fingido.
+- La regla no sobrevive a un reinicio del router (no se escribe en su configuración
+  persistente). Es deliberado: un bloqueo equivocado se arregla reiniciando.
+

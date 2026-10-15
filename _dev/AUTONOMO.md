@@ -37,9 +37,9 @@ deja commiteada y empujada en `claude/sentry-ola3-cast-focos-servidores` (PR #36
   volumen a un destino que nunca usó (no cada destino nuevo: eso sería ruido).
 - [x] **Sección 4 — productores de contexto.** Averiguar qué exponen Vault, IRIS y Forge
   hacia `PillarContext` y hacer el primero que no requiera la GUI ni IRIS runtime.
-- [ ] **Sólo propuesta, no implementar sin Nelson:** bloqueo de un dispositivo como
-  `Intent` (`Command::DeviceBlock` por el router). Toca contratos y policy, y el
-  firmware del MitraStar es desconocido.
+- [x] **Bloqueo de un dispositivo como `Intent`** (pedido por Nelson el 2026-10-15):
+  `Command::DeviceBlock` por el router, `archie sentry-node block|unblock`. Falta
+  probarlo en el MitraStar real.
 
 - [ ] **Vigilancia permanente hasta 2026-10-13T10:00Z.** En cada despertar: CI del último
   head del PR #36 (rojo = arreglarlo con causa raíz), revisiones y comentarios
