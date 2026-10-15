@@ -5,11 +5,12 @@ use archie_sentry::{
     adapters::{
         process::{CommandOutput, CommandRunner},
         router::{
+            block_rule,
             clients::{parse_dnsmasq_leases, parse_ip_neigh, router_clients},
             igd::{IgdClient, SpecificEntry},
             probe::{probe_router, RouterCapabilities},
             ssh::{SshChannel, SshConfig},
-            RouterAdapter, RouterConfig,
+            RouterAdapter, RouterConfig, BLOCK_COMMENT,
         },
     },
     contracts::*,
@@ -981,4 +982,360 @@ async fn a_non_ascii_error_from_the_router_is_unavailable_not_a_crash() {
         channel.run_named("ip_neigh"),
         Err(AdapterError::Unavailable)
     );
+}
+
+// ---------- DeviceBlock over the SSH channel ----------
+
+const MAC: &str = "de:ad:be:ef:00:02";
+
+/// A stateful router firewall: answers `-S FORWARD` for the tools it ships and
+/// keeps a multiset of this system's drop rules per tool, so `-C`, `-I` and
+/// `-D` behave like iptables does. `ssh_down` makes every call exit 255.
+struct FirewallRunner {
+    tools: Vec<&'static str>,
+    rules: Mutex<Vec<(String, String)>>,
+    calls: Mutex<Vec<Vec<String>>>,
+    ssh_down: bool,
+}
+impl FirewallRunner {
+    fn new(tools: &[&'static str], rules: &[(&str, &str)]) -> Arc<Self> {
+        Arc::new(Self {
+            tools: tools.to_vec(),
+            rules: Mutex::new(
+                rules
+                    .iter()
+                    .map(|(t, m)| (t.to_string(), m.to_string()))
+                    .collect(),
+            ),
+            calls: Mutex::new(vec![]),
+            ssh_down: false,
+        })
+    }
+    fn down() -> Arc<Self> {
+        Arc::new(Self {
+            tools: vec!["iptables"],
+            rules: Mutex::new(vec![]),
+            calls: Mutex::new(vec![]),
+            ssh_down: true,
+        })
+    }
+    fn calls(&self) -> Vec<Vec<String>> {
+        self.calls.lock().unwrap().clone()
+    }
+    /// The remote part of each call: everything after `user@host`.
+    fn remote_calls(&self) -> Vec<Vec<String>> {
+        self.calls()
+            .into_iter()
+            .map(|argv| {
+                let at = argv.iter().position(|a| a == "admin@192.168.1.1").unwrap();
+                argv[at + 1..].to_vec()
+            })
+            .collect()
+    }
+    fn count(&self, tool: &str, mac: &str) -> usize {
+        self.rules
+            .lock()
+            .unwrap()
+            .iter()
+            .filter(|(t, m)| t == tool && m == mac)
+            .count()
+    }
+}
+impl CommandRunner for FirewallRunner {
+    fn run(&self, argv: &[String], _timeout: Duration) -> Result<CommandOutput, AdapterError> {
+        self.calls.lock().unwrap().push(argv.to_vec());
+        let out = |status: i32| {
+            Ok(CommandOutput {
+                status,
+                stdout: vec![],
+                stderr: vec![],
+            })
+        };
+        if self.ssh_down {
+            return out(255);
+        }
+        let at = argv.iter().position(|a| a == "admin@192.168.1.1").unwrap();
+        let remote: Vec<&str> = argv[at + 1..].iter().map(String::as_str).collect();
+        if remote.first() == Some(&"ip") {
+            return out(0); // the probe's `ip link`: the shell answers
+        }
+        let Some(tool) = remote.first().copied().filter(|t| self.tools.contains(t)) else {
+            return out(127);
+        };
+        if remote[1..] == ["-S", "FORWARD"] {
+            return out(0);
+        }
+        // Anything but this system's exact rule shape is a test failure.
+        let op = remote[1];
+        assert_eq!(
+            block_rule(tool, op, remote[6]).unwrap(),
+            remote.iter().map(|s| s.to_string()).collect::<Vec<_>>()
+        );
+        let mac = remote[6].to_string();
+        let mut rules = self.rules.lock().unwrap();
+        let position = rules.iter().position(|(t, m)| t == tool && *m == mac);
+        match (op, position) {
+            ("-C", Some(_)) => out(0),
+            ("-C", None) => out(1),
+            ("-I", _) => {
+                rules.insert(0, (tool.to_string(), mac));
+                out(0)
+            }
+            ("-D", Some(i)) => {
+                rules.remove(i);
+                out(0)
+            }
+            ("-D", None) => out(1),
+            _ => out(2),
+        }
+    }
+}
+
+fn block_adapter(runner: Arc<FirewallRunner>, protected: &[&str]) -> RouterAdapter {
+    RouterAdapter::new(
+        "edge",
+        "router",
+        "router",
+        RouterConfig {
+            control_url: None,
+            lan_client: LAN_CLIENT,
+            ssh: Some(ssh_config()),
+            protected_macs: protected.iter().map(|m| m.to_string()).collect(),
+        },
+        caps(false, true, &[]),
+        runner,
+    )
+    .unwrap()
+}
+
+fn block(mac: &str, blocked: bool) -> Command {
+    Command::DeviceBlock {
+        mac: mac.into(),
+        blocked,
+    }
+}
+
+fn rule(tool: &str, op: &str) -> Vec<String> {
+    block_rule(tool, op, MAC).unwrap()
+}
+
+#[tokio::test]
+async fn block_inserts_into_every_answering_firewall_and_readback_verifies() {
+    let runner = FirewallRunner::new(&["iptables", "ip6tables"], &[]);
+    let mut adapter = block_adapter(runner.clone(), &[]);
+    let resource = resource(&[CommandKind::DeviceBlock]);
+    let command = block(MAC, true);
+    assert!(adapter.apply(&resource, &command).await.unwrap().accepted);
+    assert_eq!(runner.count("iptables", MAC), 1);
+    assert_eq!(runner.count("ip6tables", MAC), 1);
+    let observation = adapter.observe(&resource).await.unwrap();
+    assert_eq!(
+        observation.state,
+        ResourceState::Router {
+            mapping_present: None,
+            wifi_enabled: None,
+            device_blocked: Some(true),
+        }
+    );
+    assert!(command.matches(&observation.state));
+    assert_eq!(
+        runner.remote_calls(),
+        vec![
+            vec!["iptables".to_string(), "-S".into(), "FORWARD".into()],
+            vec!["ip6tables".to_string(), "-S".into(), "FORWARD".into()],
+            rule("iptables", "-C"),
+            rule("iptables", "-I"),
+            rule("ip6tables", "-C"),
+            rule("ip6tables", "-I"),
+            // observe: the detected firewalls are reused, only `-C` runs.
+            rule("iptables", "-C"),
+            rule("ip6tables", "-C"),
+        ]
+    );
+    // The full argv: ssh options, then the rule; never a shell.
+    let insert = &runner.calls()[3];
+    assert_eq!(insert[0], ssh_path());
+    assert!(insert
+        .iter()
+        .all(|a| a != "sh" && a != "-c" && !a.contains(';')));
+    assert_eq!(
+        insert[insert.len() - 13..].join(" "),
+        "iptables -I FORWARD -m mac --mac-source de:ad:be:ef:00:02 \
+         -m comment --comment archie-sentry-block -j DROP"
+    );
+}
+
+#[tokio::test]
+async fn block_is_idempotent_when_the_rule_is_already_there() {
+    let runner = FirewallRunner::new(&["iptables"], &[("iptables", MAC)]);
+    let mut adapter = block_adapter(runner.clone(), &[]);
+    let resource = resource(&[CommandKind::DeviceBlock]);
+    adapter.apply(&resource, &block(MAC, true)).await.unwrap();
+    assert_eq!(runner.count("iptables", MAC), 1, "no second copy");
+    assert!(!runner.remote_calls().contains(&rule("iptables", "-I")));
+}
+
+#[tokio::test]
+async fn unblock_removes_every_copy_and_readback_reports_unblocked() {
+    let runner = FirewallRunner::new(
+        &["iptables"],
+        &[
+            ("iptables", MAC),
+            ("iptables", MAC),
+            ("iptables", "aa:bb:cc:00:00:01"),
+        ],
+    );
+    let mut adapter = block_adapter(runner.clone(), &[]);
+    let resource = resource(&[CommandKind::DeviceBlock]);
+    let command = block(MAC, false);
+    adapter.apply(&resource, &command).await.unwrap();
+    assert_eq!(runner.count("iptables", MAC), 0);
+    assert_eq!(
+        runner.count("iptables", "aa:bb:cc:00:00:01"),
+        1,
+        "another device's rule is untouched"
+    );
+    let observation = adapter.observe(&resource).await.unwrap();
+    assert!(command.matches(&observation.state));
+    assert!(!block(MAC, true).matches(&observation.state));
+}
+
+#[tokio::test]
+async fn a_protected_mac_is_refused_before_anything_spawns() {
+    let runner = FirewallRunner::new(&["iptables"], &[]);
+    let mut adapter = block_adapter(runner.clone(), &[MAC]);
+    let resource = resource(&[CommandKind::DeviceBlock]);
+    assert_eq!(
+        adapter.apply(&resource, &block(MAC, true)).await,
+        Err(AdapterError::Protocol)
+    );
+    assert!(runner.calls().is_empty());
+    // Unblocking a protected device is always allowed: it can only restore access.
+    adapter.apply(&resource, &block(MAC, false)).await.unwrap();
+}
+
+#[tokio::test]
+async fn invalid_mac_or_missing_capability_spawns_nothing() {
+    let runner = FirewallRunner::new(&["iptables"], &[]);
+    let mut adapter = block_adapter(runner.clone(), &[]);
+    let granted = resource(&[CommandKind::DeviceBlock]);
+    for mac in [
+        "DE:AD:BE:EF:00:02",
+        "ff:ff:ff:ff:ff:ff",
+        "01:00:5e:00:00:01",
+        "00:00:00:00:00:00",
+        "de:ad:be:ef:00:02; reboot",
+        "",
+    ] {
+        assert_eq!(
+            adapter.apply(&granted, &block(mac, true)).await,
+            Err(AdapterError::Protocol),
+            "{mac:?}"
+        );
+    }
+    assert_eq!(
+        adapter
+            .apply(&resource(&[CommandKind::WifiSet]), &block(MAC, true))
+            .await,
+        Err(AdapterError::Unsupported)
+    );
+    assert!(runner.calls().is_empty());
+}
+
+#[tokio::test]
+async fn no_answering_firewall_is_unsupported_not_a_pretend_block() {
+    let runner = FirewallRunner::new(&[], &[]);
+    let mut adapter = block_adapter(runner.clone(), &[]);
+    let resource = resource(&[CommandKind::DeviceBlock]);
+    assert_eq!(
+        adapter.apply(&resource, &block(MAC, true)).await,
+        Err(AdapterError::Unsupported)
+    );
+    // Only the two read-only listings ran.
+    assert_eq!(runner.calls().len(), 2);
+    let observation = adapter.observe(&resource).await.unwrap();
+    assert!(!block(MAC, true).matches(&observation.state));
+}
+
+#[tokio::test]
+async fn an_unreachable_router_is_unavailable() {
+    let runner = FirewallRunner::down();
+    let mut adapter = RouterAdapter::new(
+        "edge",
+        "router",
+        "router",
+        RouterConfig {
+            control_url: None,
+            lan_client: LAN_CLIENT,
+            ssh: Some(ssh_config()),
+            protected_macs: vec![],
+        },
+        RouterCapabilities {
+            firewall_tools: vec!["iptables".into()],
+            ..caps(false, true, &[])
+        },
+        runner,
+    )
+    .unwrap();
+    assert_eq!(
+        adapter
+            .apply(&resource(&[CommandKind::DeviceBlock]), &block(MAC, true))
+            .await,
+        Err(AdapterError::Unavailable)
+    );
+}
+
+#[tokio::test]
+async fn firewalls_that_disagree_verify_nothing() {
+    let runner = FirewallRunner::new(&["iptables", "ip6tables"], &[]);
+    let mut adapter = block_adapter(runner.clone(), &[]);
+    let resource = resource(&[CommandKind::DeviceBlock]);
+    adapter.apply(&resource, &block(MAC, true)).await.unwrap();
+    // Someone removes the IPv6 rule by hand: the device is only half blocked.
+    runner
+        .rules
+        .lock()
+        .unwrap()
+        .retain(|(tool, _)| tool != "ip6tables");
+    let observation = adapter.observe(&resource).await.unwrap();
+    assert!(!block(MAC, true).matches(&observation.state));
+    assert!(!block(MAC, false).matches(&observation.state));
+}
+
+#[tokio::test]
+async fn probe_records_the_firewalls_that_answer() {
+    let runner = FirewallRunner::new(&["iptables"], &[]);
+    let channel = SshChannel::new(ssh_config(), runner);
+    let capabilities = probe_router(None, Some(&channel)).await;
+    assert_eq!(capabilities.firewall_tools, vec!["iptables".to_string()]);
+}
+
+#[test]
+fn block_rule_admits_only_known_tools_ops_and_valid_macs() {
+    assert!(block_rule("iptables", "-C", MAC).is_some());
+    assert!(block_rule("ip6tables", "-D", MAC).is_some());
+    assert!(block_rule("nft", "-I", MAC).is_none());
+    assert!(block_rule("iptables", "-F", MAC).is_none());
+    assert!(block_rule("iptables", "-A", MAC).is_none());
+    assert!(block_rule("iptables", "-I", "de:ad:be:ef:00:02 -j ACCEPT").is_none());
+    let rule = block_rule("iptables", "-I", MAC).unwrap();
+    assert!(rule.contains(&BLOCK_COMMENT.to_string()));
+}
+
+#[test]
+fn an_invalid_protected_mac_rejects_the_configuration() {
+    let result = RouterAdapter::new(
+        "edge",
+        "router",
+        "router",
+        RouterConfig {
+            control_url: None,
+            lan_client: LAN_CLIENT,
+            ssh: Some(ssh_config()),
+            protected_macs: vec!["not-a-mac".into()],
+        },
+        caps(false, true, &[]),
+        FakeRunner::new(vec![]),
+    );
+    assert!(matches!(result, Err(AdapterError::Protocol)));
 }

@@ -471,6 +471,23 @@ enum SentryNodeAction {
         /// Application package name, e.g. `com.example.app`.
         app: String,
     },
+    /// Cut a device off at the router: a FORWARD drop rule matched by its
+    /// hardware address in every firewall the router answers with (verified by
+    /// `iptables -C` afterwards). Addresses in `protected_macs` are refused.
+    Block {
+        /// Resource ID of `[sentry.router]` (needs its SSH channel).
+        router: String,
+        /// The device's hardware address, lowercase `aa:bb:cc:dd:ee:ff`.
+        mac: String,
+    },
+    /// Restore a blocked device: removes this system's drop rule for it, and
+    /// only that (verified by `iptables -C` afterwards).
+    Unblock {
+        /// Resource ID of `[sentry.router]`.
+        router: String,
+        /// The device's hardware address, lowercase `aa:bb:cc:dd:ee:ff`.
+        mac: String,
+    },
 }
 impl SentryNodeAction {
     fn command(&self) -> archie_core::control::SentryCommand {
@@ -483,6 +500,14 @@ impl SentryNodeAction {
             Self::Launch { app, .. } => SentryCommand::AppLaunch {
                 app_id: app.clone(),
             },
+            Self::Block { mac, .. } => SentryCommand::DeviceBlock {
+                mac: mac.clone(),
+                blocked: true,
+            },
+            Self::Unblock { mac, .. } => SentryCommand::DeviceBlock {
+                mac: mac.clone(),
+                blocked: false,
+            },
         }
     }
     fn host(&self) -> &str {
@@ -491,7 +516,9 @@ impl SentryNodeAction {
             | Self::Lock { host }
             | Self::Unlock { host }
             | Self::Volume { host, .. }
-            | Self::Launch { host, .. } => host,
+            | Self::Launch { host, .. }
+            | Self::Block { router: host, .. }
+            | Self::Unblock { router: host, .. } => host,
         }
     }
 }
@@ -3107,6 +3134,32 @@ mod tests {
             panic!("volume prepares an intent");
         };
         assert_eq!(command, SentryCommand::VolumeSet { percent: 40 });
+
+        for (verb, blocked) in [("block", true), ("unblock", false)] {
+            let cli = Cli::try_parse_from([
+                "archie",
+                "sentry-node",
+                verb,
+                "home-router",
+                "de:ad:be:ef:00:02",
+            ])
+            .unwrap();
+            let Some(ControlRequest::SentryPrepare {
+                resource_id,
+                command,
+            }) = cli.command.to_request()
+            else {
+                panic!("{verb} prepares an intent");
+            };
+            assert_eq!(resource_id, "home-router");
+            assert_eq!(
+                command,
+                SentryCommand::DeviceBlock {
+                    mac: "de:ad:be:ef:00:02".into(),
+                    blocked,
+                }
+            );
+        }
 
         let cli = Cli::try_parse_from([
             "archie",

@@ -24,6 +24,7 @@ fn config_text() -> String {
          host='192.168.1.1'\n\
          lan_client='192.168.1.2'\n\
          control_url='http://192.168.1.1/igd/control'\n\
+         protected_macs=['7c:10:c9:55:aa:02']\n\
          [sentry.router.ssh]\n\
          user='admin'\n\
          identity_file='{key}'\n\
@@ -83,6 +84,7 @@ fn the_node_router_and_live_wiring_sections_are_accepted() {
     assert_eq!(route.0, "router");
     assert!(route.1.contains(&CommandKind::PortMapping));
     assert!(route.1.contains(&CommandKind::WifiSet));
+    assert!(route.1.contains(&CommandKind::DeviceBlock));
 
     assert_eq!(sentry.netwatch.as_ref().unwrap().state_dir, abs("netwatch"));
     assert_eq!(sentry.response.as_ref().unwrap().min_severity, "high");
@@ -97,6 +99,9 @@ fn the_node_router_and_live_wiring_sections_are_accepted() {
     assert!(capabilities.ssh);
     assert!(router_config.control_url.is_some());
     assert!(router_config.ssh.is_some());
+    assert_eq!(router_config.protected_macs, vec!["7c:10:c9:55:aa:02"]);
+    // Firewalls are asked on the router at the first block, never assumed.
+    assert!(capabilities.firewall_tools.is_empty());
 }
 
 #[test]
@@ -112,6 +117,24 @@ fn malformed_node_sections_are_refused() {
     // A router with neither an IGD control URL nor SSH administers nothing.
     let minimal = "[sentry]\n[sentry.router]\nresource_id='r'\nhost='192.168.1.1'\nlan_client='192.168.1.2'\n";
     assert!(ArchieConfig::from_toml(minimal).is_err());
+
+    // A protected address that is not a single lowercase device address.
+    for bad in ["7C:10:C9:55:AA:02", "ff:ff:ff:ff:ff:ff", "router"] {
+        let text = config_text().replace("7c:10:c9:55:aa:02", bad);
+        assert!(ArchieConfig::from_toml(&text).is_err(), "{bad}");
+    }
+
+    // An IGD-only router cannot block: DeviceBlock needs the SSH channel.
+    let igd_only = config_text().replace(
+        &format!(
+            "[sentry.router.ssh]\nuser='admin'\nidentity_file='{}'\n",
+            abs("router.key")
+        ),
+        "",
+    );
+    let igd_only = ArchieConfig::from_toml(&igd_only).unwrap();
+    let route = igd_only.sentry.actuable_route("home-router").unwrap();
+    assert!(!route.1.contains(&CommandKind::DeviceBlock));
 
     // A notice floor that is not one of the audit's severities is refused.
     let floor = config_text().replace("min_severity='high'", "min_severity='critical'");
@@ -140,4 +163,16 @@ fn the_cli_commands_match_the_contract_bounds() {
     }
     .validate()
     .is_ok());
+    assert!(SentryCommand::DeviceBlock {
+        mac: "7c:10:c9:55:aa:03".into(),
+        blocked: true
+    }
+    .validate()
+    .is_ok());
+    assert!(SentryCommand::DeviceBlock {
+        mac: "7C:10:C9:55:AA:03".into(),
+        blocked: true
+    }
+    .validate()
+    .is_err());
 }
