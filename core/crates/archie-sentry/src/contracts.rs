@@ -6,6 +6,31 @@ use sha2::{Digest, Sha256};
 #[error("{0}")]
 pub struct ContractError(pub &'static str);
 
+/// A hardware address one device sends from: six lowercase hex octets with colons,
+/// not a group (multicast or broadcast) address and not all zeros.
+pub fn validate_mac(mac: &str) -> Result<(), ContractError> {
+    let octets: Vec<&str> = mac.split(':').collect();
+    let well_formed = mac.len() == 17
+        && octets.len() == 6
+        && octets.iter().all(|o| {
+            o.len() == 2
+                && o.bytes()
+                    .all(|b| b.is_ascii_digit() || (b'a'..=b'f').contains(&b))
+        });
+    if !well_formed {
+        return Err(ContractError(
+            "a hardware address is six lowercase hex octets with colons",
+        ));
+    }
+    let first = u8::from_str_radix(octets[0], 16).unwrap_or(1);
+    if first & 1 == 1 || octets.iter().all(|o| *o == "00") {
+        return Err(ContractError(
+            "a hardware address must name one device, not a group or zero",
+        ));
+    }
+    Ok(())
+}
+
 pub fn validate_id(id: &str) -> Result<(), ContractError> {
     if id.is_empty()
         || id.len() > 128
@@ -36,6 +61,7 @@ pub enum CommandKind {
     VolumeSet,
     AppStop,
     MuteSet,
+    DeviceBlock,
 }
 
 /// Remote keys with a measurable postcondition. Navigation keys (directions,
@@ -132,6 +158,15 @@ pub enum Command {
     MuteSet {
         muted: bool,
     },
+    /// Cut one device off at the router, or let it back. The postcondition is
+    /// the router's own firewall answering that the drop rule for that hardware
+    /// address is present (or gone) when asked afterwards. Reversible by the
+    /// same command with `blocked: false`; never taken without approval.
+    DeviceBlock {
+        /// Lowercase `aa:bb:cc:dd:ee:ff`, a single device (not multicast, not zero).
+        mac: String,
+        blocked: bool,
+    },
 }
 
 /// Transport protocol of a router port mapping.
@@ -167,6 +202,7 @@ impl Command {
             Self::VolumeSet { .. } => CommandKind::VolumeSet,
             Self::AppStop => CommandKind::AppStop,
             Self::MuteSet { .. } => CommandKind::MuteSet,
+            Self::DeviceBlock { .. } => CommandKind::DeviceBlock,
         }
     }
     /// The job name a printer must report for this submission. Stable and
@@ -203,6 +239,7 @@ impl Command {
                 protocol: _,
                 ..
             } if *external_port == 0 => Err(ContractError("port outside 1..=65535")),
+            Self::DeviceBlock { mac, .. } => validate_mac(mac),
             Self::VolumeSet { percent } if *percent > 100 => {
                 Err(ContractError("volume outside 0..=100 percent"))
             }
@@ -301,6 +338,9 @@ impl Command {
             (Self::MuteSet { muted }, ResourceState::Cast { muted: actual, .. }) => {
                 *actual == Some(*muted)
             }
+            (Self::DeviceBlock { blocked, .. }, ResourceState::Router { device_blocked, .. }) => {
+                *device_blocked == Some(*blocked)
+            }
             _ => false,
         }
     }
@@ -338,6 +378,10 @@ pub enum ResourceState {
     Router {
         mapping_present: Option<bool>,
         wifi_enabled: Option<bool>,
+        /// Whether the device the last `DeviceBlock` named is blocked, as the
+        /// router's firewall answers; absent in states recorded before it existed.
+        #[serde(default)]
+        device_blocked: Option<bool>,
     },
     /// A computer or phone's own answers.
     Host {

@@ -44,8 +44,8 @@ pub use clients::{parse_dnsmasq_leases, parse_ip_neigh, router_clients, RouterCl
 pub use igd::{IgdClient, MappingEntry, SpecificEntry, StatusInfo};
 pub use probe::{probe_router, RouterCapabilities};
 pub use ssh::{
-    radio_strategy, HostKeyChecking, RadioStrategy, SshChannel, SshConfig, RADIO_STRATEGIES,
-    READ_COMMANDS,
+    block_rule, radio_strategy, HostKeyChecking, RadioStrategy, SshChannel, SshConfig,
+    BLOCK_COMMENT, FIREWALL_TOOLS, RADIO_STRATEGIES, READ_COMMANDS,
 };
 
 use crate::{
@@ -75,6 +75,10 @@ pub struct RouterConfig {
     pub control_url: Option<String>,
     pub lan_client: Ipv4Addr,
     pub ssh: Option<SshConfig>,
+    /// Hardware addresses no `DeviceBlock` may ever name: this node, the router
+    /// itself, whatever the owner cannot afford to lose. Refused before anything
+    /// reaches the router.
+    pub protected_macs: Vec<String>,
 }
 
 /// One paired router, administered through the channels the probe found.
@@ -92,6 +96,10 @@ pub struct RouterAdapter {
     /// The (external port, protocol) the last PortMapping apply acted on;
     /// observe reports on exactly this mapping, or nothing.
     watch: Option<(u16, PortProtocol)>,
+    /// The device the last DeviceBlock apply acted on; observe reports whether
+    /// it is blocked, or nothing.
+    block_watch: Option<String>,
+    protected_macs: Vec<String>,
     observations: u64,
 }
 impl std::fmt::Debug for RouterAdapter {
@@ -120,6 +128,13 @@ impl RouterAdapter {
         if !(config.lan_client.is_private() || config.lan_client.is_loopback()) {
             return Err(AdapterError::Protocol);
         }
+        if config
+            .protected_macs
+            .iter()
+            .any(|mac| crate::contracts::validate_mac(mac).is_err())
+        {
+            return Err(AdapterError::Protocol);
+        }
         let igd = match &config.control_url {
             Some(url) => Some(IgdClient::new(url)?),
             None => None,
@@ -134,12 +149,55 @@ impl RouterAdapter {
             ssh,
             capabilities,
             watch: None,
+            block_watch: None,
+            protected_macs: config.protected_macs,
             observations: 0,
         })
     }
     /// What the probe found; for inspection and honest CLI reporting.
     pub fn capabilities(&self) -> &RouterCapabilities {
         &self.capabilities
+    }
+    /// The firewalls to block through. A probe that already answered is trusted;
+    /// otherwise each is asked now with a read-only listing, because no probe
+    /// runs at startup and configuration alone cannot say what the router ships.
+    async fn firewalls(&mut self) -> Vec<String> {
+        if !self.capabilities.firewall_tools.is_empty() {
+            return self.capabilities.firewall_tools.clone();
+        }
+        let Some(ssh) = self.ssh.as_ref() else {
+            return Vec::new();
+        };
+        let mut found = Vec::new();
+        for (tool, _) in ssh::FIREWALL_TOOLS {
+            if ssh.firewall_answers(tool).await {
+                found.push((*tool).to_string());
+            }
+        }
+        self.capabilities.firewall_tools = found.clone();
+        found
+    }
+    /// Whether the watched device is blocked in every firewall: `Some(true)` when
+    /// all hold the rule, `Some(false)` when none does, `None` when they disagree or
+    /// cannot say, which verifies nothing either way.
+    async fn blocked_state(&mut self) -> Option<bool> {
+        let mac = self.block_watch.clone()?;
+        let tools = self.firewalls().await;
+        let ssh = self.ssh.as_ref()?;
+        if tools.is_empty() {
+            return None;
+        }
+        let mut answers = Vec::new();
+        for tool in &tools {
+            answers.push(ssh.block_present(tool, &mac).await.ok()?);
+        }
+        if answers.iter().all(|present| *present) {
+            Some(true)
+        } else if answers.iter().all(|present| !*present) {
+            Some(false)
+        } else {
+            None
+        }
     }
     /// A radio tool the probe found that has a known strategy, if any.
     fn radio_tool(&self) -> Option<&str> {
@@ -194,9 +252,11 @@ impl EdgeAdapter for RouterAdapter {
             }
             _ => None,
         };
+        let device_blocked = self.blocked_state().await;
         let state = ResourceState::Router {
             mapping_present,
             wifi_enabled,
+            device_blocked,
         };
         let now = Timestamp::now();
         self.observations = self.observations.saturating_add(1);
@@ -259,6 +319,29 @@ impl EdgeAdapter for RouterAdapter {
                     _ => return Err(AdapterError::Unsupported),
                 };
                 ssh.set_radio(tool, *on).await?;
+                Ok(AdapterAck { accepted: true })
+            }
+            Command::DeviceBlock { mac, blocked } => {
+                if !resource.capabilities.contains(&CommandKind::DeviceBlock) {
+                    return Err(AdapterError::Unsupported);
+                }
+                // Validated again here: the adapter never trusts that the engine did.
+                crate::contracts::validate_mac(mac).map_err(|_| AdapterError::Protocol)?;
+                if *blocked && self.protected_macs.iter().any(|p| p == mac) {
+                    return Err(AdapterError::Protocol);
+                }
+                let tools = self.firewalls().await;
+                let Some(ssh) = self.ssh.as_ref() else {
+                    return Err(AdapterError::Unsupported);
+                };
+                if tools.is_empty() {
+                    // No firewall answered: say so instead of pretending to block.
+                    return Err(AdapterError::Unsupported);
+                }
+                for tool in &tools {
+                    ssh.set_blocked(tool, mac, *blocked).await?;
+                }
+                self.block_watch = Some(mac.clone());
                 Ok(AdapterAck { accepted: true })
             }
             _ => Err(AdapterError::Unsupported),

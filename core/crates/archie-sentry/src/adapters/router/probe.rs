@@ -7,7 +7,10 @@
 
 use super::{
     igd::IgdClient,
-    ssh::{lease_path_of, parse_radio_state, SshChannel, RADIO_STRATEGIES, READ_COMMANDS},
+    ssh::{
+        lease_path_of, parse_radio_state, SshChannel, FIREWALL_TOOLS, RADIO_STRATEGIES,
+        READ_COMMANDS,
+    },
 };
 use serde::{Deserialize, Serialize};
 
@@ -27,6 +30,10 @@ pub struct RouterCapabilities {
     pub dhcp_leases_path: Option<String>,
     /// `nvram get productid` when available; bounded, printable.
     pub firmware_hint: Option<String>,
+    /// Firewalls whose FORWARD chain answered a read-only listing; entries are
+    /// [`super::ssh::FIREWALL_TOOLS`] names. Absent in probes recorded before it.
+    #[serde(default)]
+    pub firewall_tools: Vec<String>,
 }
 
 /// Probe both channels. Either side may be absent from configuration
@@ -56,6 +63,11 @@ pub async fn probe_router(igd: Option<&IgdClient>, ssh: Option<&SshChannel>) -> 
                     if parse_radio_state(strategy.tool, &output).is_some() {
                         capabilities.radio_tools.push(strategy.tool.into());
                     }
+                }
+            }
+            for (tool, _) in FIREWALL_TOOLS {
+                if ssh.firewall_answers(tool).await {
+                    capabilities.firewall_tools.push((*tool).into());
                 }
             }
             if let Ok(output) = ssh.run_named_async("nvram_productid").await {

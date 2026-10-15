@@ -324,15 +324,18 @@ fn host_and_router_commands_match_only_their_measurable_postcondition() {
     assert!(add.matches(&ResourceState::Router {
         mapping_present: Some(true),
         wifi_enabled: None,
+        device_blocked: None,
     }));
     assert!(!add.matches(&ResourceState::Router {
         mapping_present: Some(false),
         wifi_enabled: None,
+        device_blocked: None,
     }));
     // A router that cannot say never verifies.
     assert!(!add.matches(&ResourceState::Router {
         mapping_present: None,
         wifi_enabled: None,
+        device_blocked: None,
     }));
     let mut bad = intent();
     bad.command = Command::PortMapping {
@@ -342,16 +345,58 @@ fn host_and_router_commands_match_only_their_measurable_postcondition() {
     };
     assert!(bad.validate().is_err());
 
+    // Blocking one device: the address must name a single device, and only the
+    // router's own firewall answer verifies it.
+    let block = Command::DeviceBlock {
+        mac: "de:ad:be:ef:00:02".into(),
+        blocked: true,
+    };
+    assert!(block.validate().is_ok());
+    assert_eq!(block.capability(), CommandKind::DeviceBlock);
+    let router = |device_blocked| ResourceState::Router {
+        mapping_present: None,
+        wifi_enabled: None,
+        device_blocked,
+    };
+    assert!(block.matches(&router(Some(true))));
+    assert!(!block.matches(&router(Some(false))));
+    assert!(
+        !block.matches(&router(None)),
+        "a router that cannot say never verifies"
+    );
+    for mac in [
+        "DE:AD:BE:EF:00:02",
+        "de:ad:be:ef:00",
+        "de-ad-be-ef-00-02",
+        "ff:ff:ff:ff:ff:ff",
+        "01:00:5e:00:00:01",
+        "00:00:00:00:00:00",
+        "de:ad:be:ef:00:02; reboot",
+    ] {
+        let bad = Command::DeviceBlock {
+            mac: mac.into(),
+            blocked: true,
+        };
+        assert!(bad.validate().is_err(), "{mac} must be refused");
+    }
+    // A state recorded before the field existed still reads, as unknown.
+    let old: ResourceState =
+        serde_json::from_str(r#"{"kind":"router","mapping_present":true,"wifi_enabled":null}"#)
+            .unwrap();
+    assert_eq!(old, router_with_mapping());
+
     assert!(
         Command::WifiSet { on: false }.matches(&ResourceState::Router {
             mapping_present: None,
             wifi_enabled: Some(false),
+            device_blocked: None,
         })
     );
     assert!(
         !Command::WifiSet { on: true }.matches(&ResourceState::Router {
             mapping_present: None,
             wifi_enabled: Some(false),
+            device_blocked: None,
         })
     );
 
@@ -416,4 +461,12 @@ fn measured_host_observations_are_bounded() {
     assert!(bad_app
         .validate_after(&request, "ha-home", Timestamp(1100), Timestamp(1250))
         .is_err());
+}
+
+fn router_with_mapping() -> ResourceState {
+    ResourceState::Router {
+        mapping_present: Some(true),
+        wifi_enabled: None,
+        device_blocked: None,
+    }
 }

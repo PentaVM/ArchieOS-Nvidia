@@ -73,6 +73,7 @@ fn caps(igd: bool, ssh: bool, radio_tools: &[&str]) -> RouterCapabilities {
         radio_tools: radio_tools.iter().map(|t| t.to_string()).collect(),
         dhcp_leases_path: None,
         firmware_hint: None,
+        firewall_tools: vec![],
     }
 }
 
@@ -85,6 +86,7 @@ fn igd_adapter(url: &str, igd_ok: bool) -> RouterAdapter {
             control_url: Some(format!("{url}/upnp/control/WANIPConnection1")),
             lan_client: LAN_CLIENT,
             ssh: None,
+            protected_macs: vec![],
         },
         caps(igd_ok, false, &[]),
         FakeRunner::new(vec![]),
@@ -354,6 +356,7 @@ async fn add_port_mapping_request_body_is_correct_and_mapping_readback_verifies(
         ResourceState::Router {
             mapping_present: Some(true),
             wifi_enabled: None,
+            device_blocked: None,
         }
     );
     assert_eq!(observation.origin, ObservationOrigin::Measurement);
@@ -402,6 +405,7 @@ async fn delete_port_mapping_readback_reports_absent() {
         ResourceState::Router {
             mapping_present: Some(false),
             wifi_enabled: None,
+            device_blocked: None,
         }
     );
     assert!(command.matches(&observation.state));
@@ -425,6 +429,7 @@ async fn fresh_observe_reports_unknown_and_sends_nothing() {
         ResourceState::Router {
             mapping_present: None,
             wifi_enabled: None,
+            device_blocked: None,
         }
     );
     assert!(
@@ -654,6 +659,7 @@ fn ssh_adapter(runner: Arc<FakeRunner>, capabilities: RouterCapabilities) -> Rou
             control_url: None,
             lan_client: LAN_CLIENT,
             ssh: Some(ssh_config()),
+            protected_macs: vec![],
         },
         capabilities,
         runner,
@@ -677,6 +683,7 @@ async fn wifi_on_runs_exact_wl_argv_and_radio_state_verifies() {
         ResourceState::Router {
             mapping_present: None,
             wifi_enabled: Some(true),
+            device_blocked: None,
         }
     );
     assert!(command.matches(&observation.state));
@@ -723,6 +730,7 @@ async fn wifi_off_runs_exact_wl_argv_and_reports_disabled() {
         ResourceState::Router {
             mapping_present: None,
             wifi_enabled: Some(false),
+            device_blocked: None,
         }
     );
     assert!(command.matches(&observation.state));
@@ -753,6 +761,7 @@ async fn wifi_without_probed_radio_tool_is_unsupported_and_spawns_nothing() {
         ResourceState::Router {
             mapping_present: None,
             wifi_enabled: None,
+            device_blocked: None,
         }
     );
     assert!(runner.calls().is_empty(), "no radio tool, no process");
@@ -874,6 +883,7 @@ async fn probe_igd_only() {
             radio_tools: vec![],
             dhcp_leases_path: None,
             firmware_hint: None,
+            firewall_tools: vec![],
         }
     );
     assert_eq!(task.await.unwrap().len(), 1);
@@ -906,6 +916,7 @@ async fn probe_ssh_only() {
             radio_tools: vec!["wl".to_string()],
             dhcp_leases_path: Some("/tmp/dhcp.leases".into()),
             firmware_hint: Some("GPT-2741GNAC".into()),
+            firewall_tools: vec![],
         }
     );
     // Probing is read-only: no write argv ever ran.

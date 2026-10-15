@@ -297,6 +297,11 @@ pub struct RouterBinding {
     /// The SSH admin channel, when the firmware exposes one.
     #[serde(default)]
     pub ssh: Option<RouterSshBinding>,
+    /// Hardware addresses a `DeviceBlock` may never cut off: this node, the
+    /// router itself, anything the owner cannot afford to lose. Lowercase
+    /// `aa:bb:cc:dd:ee:ff`.
+    #[serde(default)]
+    pub protected_macs: Vec<String>,
 }
 
 /// SSH access to the router: key-based only, matching `SshConfig` — no password
@@ -373,12 +378,23 @@ impl RouterBinding {
             radio_tools: Vec::new(),
             dhcp_leases_path: None,
             firmware_hint: None,
+            // Asked on the router at the first block, read-only: configuration
+            // cannot say which firewall the firmware ships.
+            firewall_tools: Vec::new(),
         };
+        if self
+            .protected_macs
+            .iter()
+            .any(|mac| archie_sentry::contracts::validate_mac(mac).is_err())
+        {
+            return Err(AdapterError::Protocol);
+        }
         Ok((
             RouterConfig {
                 control_url: self.control_url.clone(),
                 lan_client,
                 ssh,
+                protected_macs: self.protected_macs.clone(),
             },
             capabilities,
         ))
@@ -811,6 +827,9 @@ impl SentrySection {
                     // The adapter declares Unsupported for the radio until an
                     // on-site probe names a tool; configuration alone does not.
                     capabilities.push(CommandKind::WifiSet);
+                    // Blocking asks the router's firewall itself, read-only,
+                    // before writing; a router without one says Unsupported.
+                    capabilities.push(CommandKind::DeviceBlock);
                 }
                 if !capabilities.is_empty() {
                     return Some(("router", capabilities));
