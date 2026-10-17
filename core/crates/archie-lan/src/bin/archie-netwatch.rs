@@ -25,7 +25,7 @@
 use archie_lan::audit::{Alert, Audit, Settings, State, Told};
 use archie_lan::capture::{field_arguments, parse, SNAPLEN};
 use archie_lan::router;
-use std::io::{BufRead, BufReader, Write};
+use std::io::{BufRead, BufReader, Read, Write};
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
 use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode, Stdio};
@@ -367,11 +367,11 @@ fn router_command(
             arguments[1..].join(" ")
         ));
     }
-    let address = gateway
-        .or_else(|| default_gateway().map(IpAddr::V4))
-        .ok_or("no default gateway; name the router with --gateway")?;
     match (action.as_deref(), directory) {
         (Some("detect"), _) => {
+            let address = gateway
+                .or_else(|| default_gateway().map(IpAddr::V4))
+                .ok_or("no default gateway; name the router with --gateway")?;
             let detected = router::detect(address);
             println!(
                 "{}",
@@ -380,23 +380,32 @@ fn router_command(
             Ok(())
         }
         (Some("enroll"), Some(directory)) => {
+            let previous = enrolled(&directory);
+            // A retry keeps its target even when the host's default route changes.
+            let address = gateway
+                .or_else(|| previous.as_ref().map(|config| config.address))
+                .or_else(|| default_gateway().map(IpAddr::V4))
+                .ok_or("no default gateway; name the router with --gateway")?;
             let kind = match kind {
                 Some(kind) => router::Kind::parse(&kind)
                     .ok_or("--kind is one of openwrt, asuswrt, bsd-firewall, linux")?,
-                None => router::detect(address).kind.ok_or(
+                None => previous.as_ref().map(|config| config.kind)
+                    .or_else(|| router::detect(address).kind).ok_or(
                     "the router did not say what it runs; name it with --kind openwrt|asuswrt|bsd-firewall|linux",
                 )?,
             };
-            let user = user.unwrap_or_else(|| {
-                match kind {
-                    router::Kind::Asuswrt | router::Kind::BsdFirewall => "admin",
-                    _ => "root",
-                }
-                .to_string()
-            });
+            let user = user
+                .or_else(|| previous.as_ref().map(|config| config.user.clone()))
+                .unwrap_or_else(|| {
+                    match kind {
+                        router::Kind::Asuswrt | router::Kind::BsdFirewall => "admin",
+                        _ => "root",
+                    }
+                    .to_string()
+                });
             let port = match port {
                 Some(port) => port.parse().map_err(|_| "--port is a port number")?,
-                None => 22,
+                None => previous.as_ref().map_or(22, |config| config.port),
             };
             std::fs::create_dir_all(&directory)
                 .map_err(|e| format!("{}: {e}", directory.display()))?;
@@ -407,7 +416,6 @@ fn router_command(
                 user,
                 kind,
             };
-            save(&directory, router::CONFIG, &config).map_err(|e| e.to_string())?;
             let line = router::authorized_line(kind, &public);
             println!("{line}");
             if install {
@@ -423,6 +431,7 @@ fn router_command(
                 );
                 router::install(&config, &directory, &line)?;
                 let tables = router::pull(&config, &directory, now_ms() / 1000)?;
+                save(&directory, router::CONFIG, &config).map_err(|e| e.to_string())?;
                 eprintln!(
                     "archie-netwatch: router enrolled: {} leases and {} neighbours read; `live` reads it every {} minutes",
                     tables.leases.len(),
@@ -430,8 +439,9 @@ fn router_command(
                     ROUTER_EVERY.as_secs() / 60
                 );
             } else {
+                save(&directory, router::CONFIG, &config).map_err(|e| e.to_string())?;
                 eprintln!(
-                    "archie-netwatch: add the line above on the router. {}. It lets Sentry read the lease and neighbour tables and nothing else. Then `archie-netwatch router pull --state-dir {}` checks it.",
+                    "archie-netwatch: enrollment saved; SSH access is unverified. Add the line above on the router. {}. It lets Sentry read the lease and neighbour tables and nothing else. Then `archie-netwatch router pull --state-dir {}` checks it.",
                     kind.where_the_key_goes(),
                     directory.display()
                 );
@@ -497,6 +507,59 @@ fn report(directory: &Path, last: usize) -> Result<(), String> {
     Ok(())
 }
 
+/// Finite, trusted-local metadata windows from a host bridge. No payload field is
+/// accepted outside the catalogue returned by `capture-fields`.
+fn ingest_fields(directory: &Path, settings: Settings) -> Result<(), String> {
+    const MAX_ROW: usize = 64 * 1024;
+    std::fs::create_dir_all(directory).map_err(|e| e.to_string())?;
+    let mut audit = Audit::new(load(directory)?, settings);
+    audit.told = load_told(directory);
+    let stdin = std::io::stdin();
+    let mut input = stdin.lock();
+    let (mut frames, mut alerts_count) = (0u64, 0u64);
+    let mut last_save = Instant::now();
+    loop {
+        let mut bytes = Vec::new();
+        let size = (&mut input)
+            .take((MAX_ROW + 1) as u64)
+            .read_until(b'\n', &mut bytes)
+            .map_err(|e| e.to_string())?;
+        if size == 0 {
+            break;
+        }
+        if size > MAX_ROW {
+            return Err("metadata row exceeds bounded size".into());
+        }
+        let line = std::str::from_utf8(&bytes)
+            .map_err(|_| "metadata row is not UTF-8")?
+            .trim_end_matches(['\r', '\n']);
+        if line.is_empty() {
+            continue;
+        }
+        if line.split('\t').count() != archie_lan::capture::FIELDS.len() {
+            return Err("metadata row does not match capture-fields catalogue".into());
+        }
+        let packet = parse(line).ok_or("metadata row is not a valid packet")?;
+        frames += 1;
+        let alerts = audit.see(&packet);
+        alerts_count += alerts.len() as u64;
+        record(directory, &audit, &alerts)?;
+        if last_save.elapsed() >= SAVE_EVERY {
+            save(directory, "state.json", &audit.state).map_err(|e| e.to_string())?;
+            save(directory, "told.json", &audit.told).map_err(|e| e.to_string())?;
+            last_save = Instant::now();
+        }
+    }
+    save(directory, "state.json", &audit.state).map_err(|e| e.to_string())?;
+    save(directory, "told.json", &audit.told).map_err(|e| e.to_string())?;
+    println!(
+        "{}",
+        serde_json::json!({"format":"archie-sentry-ingest-v1",
+        "frames":frames,"alerts":alerts_count})
+    );
+    Ok(())
+}
+
 fn main() -> ExitCode {
     let mut arguments: Vec<String> = std::env::args().skip(1).collect();
     let directory = take(&mut arguments, "--state-dir").map(PathBuf::from);
@@ -512,6 +575,23 @@ fn main() -> ExitCode {
     });
     let learn = take(&mut arguments, "--learn").and_then(|s| s.parse::<u64>().ok());
     let outcome = match (arguments.first().map(String::as_str), directory) {
+        (Some("capture-fields"), None) if arguments.len() == 1 => {
+            println!(
+                "{}",
+                serde_json::json!({"format":"archie-sentry-fields-v1",
+                "fields":archie_lan::capture::FIELDS.as_slice(),
+                "snaplen":archie_lan::capture::SNAPLEN.parse::<u32>().expect("fixed snaplen")})
+            );
+            Ok(())
+        }
+        (Some("ingest-fields"), Some(directory)) if arguments.len() == 1 => ingest_fields(
+            &directory,
+            Settings {
+                learn_ms: learn.unwrap_or(600) * 1000,
+                gateway,
+                gateway_v6,
+            },
+        ),
         (Some("interfaces"), _) => Command::new("tshark")
             .arg("-D")
             .status()
@@ -585,6 +665,62 @@ mod tests {
     use archie_lan::capture::Packet;
 
     const TV: &str = "54:4e:f0:07:3d:e8";
+
+    fn saved_router(directory: &Path) -> router::Config {
+        let config = router::Config {
+            address: "192.0.2.1".parse().unwrap(),
+            port: 2222,
+            user: "owner".into(),
+            kind: router::Kind::Linux,
+        };
+        save(directory, router::CONFIG, &config).unwrap();
+        // Existing key fixture: enrollment must reuse it, never invoke ssh-keygen.
+        std::fs::write(directory.join(router::KEY), "test-only-private-key").unwrap();
+        std::fs::write(
+            directory.join(format!("{}.pub", router::KEY)),
+            "ssh-ed25519 AAAAC3Nza fixture",
+        )
+        .unwrap();
+        config
+    }
+
+    #[test]
+    fn enrollment_retry_preserves_the_saved_connection() {
+        let directory = dir("router-retry");
+        let original = saved_router(&directory);
+        let mut arguments = vec![
+            "router".into(),
+            "enroll".into(),
+            "--kind".into(),
+            "linux".into(),
+        ];
+        router_command(&mut arguments, Some(directory.clone()), None, None).unwrap();
+        assert_eq!(enrolled(&directory), Some(original));
+        std::fs::remove_dir_all(directory).unwrap();
+    }
+
+    #[test]
+    fn unsupported_install_does_not_replace_the_saved_connection() {
+        let directory = dir("router-failed-install");
+        let original = saved_router(&directory);
+        let mut arguments = vec![
+            "router".into(),
+            "enroll".into(),
+            "--kind".into(),
+            "asuswrt".into(),
+            "--install".into(),
+        ];
+        let error = router_command(
+            &mut arguments,
+            Some(directory.clone()),
+            Some("192.0.2.2".parse().unwrap()),
+            None,
+        )
+        .unwrap_err();
+        assert!(error.contains("keeps its keys"), "{error}");
+        assert_eq!(enrolled(&directory), Some(original));
+        std::fs::remove_dir_all(directory).unwrap();
+    }
 
     #[test]
     fn the_ipv6_default_route_names_the_router_by_its_next_hop() {

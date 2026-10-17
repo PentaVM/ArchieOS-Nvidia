@@ -93,7 +93,9 @@ impl Kind {
         let flows = match self {
             // pf's state table needs root (`pfctl -ss`); the read stays without it.
             Self::BsdFirewall => String::new(),
-            _ => format!("; echo {FLOWS}; head -n {MAX_FLOWS} /proc/net/nf_conntrack 2>/dev/null"),
+            _ => format!(
+                "; echo {FLOWS}; head -n {MAX_FLOWS} /proc/net/nf_conntrack 2>/dev/null || :"
+            ),
         };
         format!("{leases}; echo {SEPARATOR}; {neighbours}{flows}")
     }
@@ -114,7 +116,9 @@ impl Kind {
                  Authorized keys, then enable SSH under System → Settings → Administration \
                  (the firewall rewrites ~/.ssh from its configuration)"
             }
-            Self::Linux => "Linux: append it to ~/.ssh/authorized_keys of the router's admin user, or run `enroll --install`",
+            Self::Linux => {
+                "Linux: append it to ~/.ssh/authorized_keys of the router's admin user, or run `enroll --install`"
+            }
         }
     }
 
@@ -157,12 +161,9 @@ pub fn classify(ssh_banner: Option<&str>, web: Option<&str>) -> (Option<String>,
         }
     }
     let banner = ssh_banner.unwrap_or("").to_ascii_lowercase();
+    // SSH implementation names identify a server, not its firmware or lease paths.
     let kind = if banner.contains("freebsd") {
         Some(Kind::BsdFirewall)
-    } else if banner.contains("dropbear") {
-        Some(Kind::Openwrt)
-    } else if banner.starts_with("ssh-") {
-        Some(Kind::Linux)
     } else {
         None
     };
@@ -491,6 +492,50 @@ pub fn install(config: &Config, directory: &Path, line: &str) -> Result<(), Stri
 mod tests {
     use super::*;
 
+    #[cfg(unix)]
+    #[test]
+    fn missing_optional_conntrack_keeps_valid_lease_and_neighbour_tables() {
+        let directory =
+            std::env::temp_dir().join(format!("archie-router-tables-{}", std::process::id()));
+        std::fs::create_dir_all(&directory).unwrap();
+        std::fs::write(
+            directory.join("leases"),
+            "0 54:4e:f0:07:3d:e8 192.168.1.84 fixture *\n",
+        )
+        .unwrap();
+        std::fs::write(
+            directory.join("arp"),
+            "192.168.1.84 0x1 0x2 54:4e:f0:07:3d:e8 * br-lan\n",
+        )
+        .unwrap();
+        let command = Kind::Openwrt
+            .read_command()
+            .replace(
+                "/tmp/dhcp.leases",
+                &format!("'{}'", directory.join("leases").display()),
+            )
+            .replace(
+                "/proc/net/arp",
+                &format!("'{}'", directory.join("arp").display()),
+            )
+            .replace(
+                "/proc/net/nf_conntrack",
+                &format!("'{}'", directory.join("missing-conntrack").display()),
+            );
+        let output = Command::new("/bin/sh")
+            .args(["-c", &command])
+            .output()
+            .unwrap();
+        assert!(
+            output.status.success(),
+            "optional conntrack must not fail the whole read"
+        );
+        let tables = parse(&String::from_utf8_lossy(&output.stdout), 0);
+        assert_eq!((tables.leases.len(), tables.neighbours.len()), (1, 1));
+        assert!(tables.flows.is_empty());
+        std::fs::remove_dir_all(directory).unwrap();
+    }
+
     #[test]
     fn the_router_is_told_by_its_page_then_its_banner() {
         let (marker, kind) = classify(
@@ -509,9 +554,10 @@ mod tests {
         let opn = classify(None, Some("<title>Login | OPNsense</title>"));
         assert_eq!(opn.1, Some(Kind::BsdFirewall));
         assert_eq!(classify(None, Some("ASUSWRT")).1, Some(Kind::Asuswrt));
+        assert_eq!(classify(Some("SSH-2.0-OpenSSH_9.6"), None).1, None);
         assert_eq!(
-            classify(Some("SSH-2.0-OpenSSH_9.6"), None).1,
-            Some(Kind::Linux)
+            classify(Some("SSH-2.0-dropbear_2019.78"), None),
+            (None, None)
         );
         assert_eq!(classify(None, None), (None, None));
     }
@@ -521,7 +567,7 @@ mod tests {
         let line = authorized_line(Kind::Openwrt, "ssh-ed25519 AAAAC3Nza archie-sentry\n");
         assert!(line.starts_with(
             "command=\"cat /tmp/dhcp.leases; echo @@ARCHIE-NEIGHBOURS@@; cat /proc/net/arp; \
-             echo @@ARCHIE-FLOWS@@; head -n 2048 /proc/net/nf_conntrack 2>/dev/null\","
+             echo @@ARCHIE-FLOWS@@; head -n 2048 /proc/net/nf_conntrack 2>/dev/null || :\","
         ));
         assert!(line.contains("no-port-forwarding,no-agent-forwarding,no-X11-forwarding,no-pty "));
         assert!(line.ends_with("ssh-ed25519 AAAAC3Nza archie-sentry"));
@@ -621,7 +667,7 @@ garbage
         assert_eq!(parse(&whole, 0).flows, flows);
         assert!(Kind::Openwrt
             .read_command()
-            .ends_with("head -n 2048 /proc/net/nf_conntrack 2>/dev/null"));
+            .ends_with("head -n 2048 /proc/net/nf_conntrack 2>/dev/null || :"));
         assert!(!Kind::BsdFirewall.read_command().contains(FLOWS));
     }
 }
