@@ -35,6 +35,7 @@
 //! radio) depend entirely on what that probe finds; if it finds no radio
 //! tool, `WifiSet` is `Unsupported` and says so.
 
+pub mod admin;
 pub mod clients;
 pub mod igd;
 pub mod probe;

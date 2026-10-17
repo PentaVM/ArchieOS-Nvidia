@@ -121,6 +121,10 @@ pub struct CommandSpec {
 /// answers. `wl0_radio` / `nvram_wl0_radio` are also the radio state reads.
 pub const READ_COMMANDS: &[CommandSpec] = &[
     CommandSpec {
+        name: "ubus_wireless_status",
+        argv: &["ubus", "call", "network.wireless", "status"],
+    },
+    CommandSpec {
         name: "ip_neigh",
         argv: &["ip", "neigh"],
     },
@@ -171,6 +175,12 @@ pub struct RadioStrategy {
 }
 pub const RADIO_STRATEGIES: &[RadioStrategy] = &[
     RadioStrategy {
+        tool: "openwrt-ubus",
+        state_read: "ubus_wireless_status",
+        on: &[&["ubus", "call", "network.wireless", "up"]],
+        off: &[&["ubus", "call", "network.wireless", "down"]],
+    },
+    RadioStrategy {
         tool: "wl",
         state_read: "wl0_radio",
         on: &[&["wl", "-i", "wl0", "radio", "on"]],
@@ -215,6 +225,31 @@ pub fn lease_path_of(spec: &CommandSpec) -> Option<&'static str> {
 /// never a guess. `wl` prints a number (often hex like `0x0001`); nvram
 /// prints `1`/`0`.
 pub fn parse_radio_state(tool: &str, output: &str) -> Option<bool> {
+    if tool == "openwrt-ubus" {
+        if output.len() > 65_536 {
+            return None;
+        }
+        let value: serde_json::Value = serde_json::from_str(output).ok()?;
+        let radios = value.as_object()?;
+        if radios.is_empty() || radios.len() > 32 {
+            return None;
+        }
+        let mut state = None;
+        for radio in radios.values() {
+            if radio
+                .get("pending")
+                .is_some_and(|p| p.as_bool() != Some(false))
+            {
+                return None;
+            }
+            let up = radio.get("up")?.as_bool()?;
+            if state.is_some_and(|s| s != up) {
+                return None;
+            }
+            state = Some(up);
+        }
+        return state;
+    }
     let token = output.split_whitespace().next()?;
     let value: u64 = if let Some(hex) = token.strip_prefix("0x") {
         u64::from_str_radix(hex, 16).ok()?

@@ -27,6 +27,69 @@ use tokio::{
     net::{TcpListener, TcpStream},
 };
 
+#[test]
+fn openwrt_status_requires_all_radios_settled_and_consistent() {
+    use archie_sentry::adapters::router::ssh::parse_radio_state;
+    assert_eq!(
+        parse_radio_state(
+            "openwrt-ubus",
+            r#"{"radio0":{"up":true},"radio1":{"up":true}}"#
+        ),
+        Some(true)
+    );
+    assert_eq!(
+        parse_radio_state("openwrt-ubus", r#"{"radio0":{"up":false}}"#),
+        Some(false)
+    );
+    for text in [
+        "{}",
+        r#"{"radio0":{"up":true},"radio1":{"up":false}}"#,
+        r#"{"radio0":{"up":true,"pending":true}}"#,
+        r#"{"radio0":{"up":"true"}}"#,
+    ] {
+        assert_eq!(parse_radio_state("openwrt-ubus", text), None, "{text}");
+    }
+}
+
+#[tokio::test]
+async fn openwrt_uses_existing_typed_wifi_command_and_readback() {
+    let runner = FakeRunner::new(vec![
+        (&["ip", "link"], 0, "1: lo"),
+        (
+            &["ubus", "call", "network.wireless", "status"],
+            0,
+            r#"{"radio0":{"up":true}}"#,
+        ),
+        (&["ubus", "call", "network.wireless", "up"], 0, "{}"),
+    ]);
+    let ssh = SshChannel::new(ssh_config(), runner.clone());
+    let capabilities = probe_router(None, Some(&ssh)).await;
+    assert_eq!(capabilities.radio_tools, vec!["openwrt-ubus"]);
+    let mut adapter = RouterAdapter::new(
+        "edge",
+        "router",
+        "router",
+        RouterConfig {
+            control_url: None,
+            lan_client: LAN_CLIENT,
+            ssh: Some(ssh_config()),
+        },
+        capabilities,
+        runner.clone(),
+    )
+    .unwrap();
+    let target = resource(&[CommandKind::WifiSet]);
+    let command = Command::WifiSet { on: true };
+    assert!(adapter.apply(&target, &command).await.unwrap().accepted);
+    assert!(command.matches(&adapter.observe(&target).await.unwrap().state));
+    assert!(runner.calls().iter().any(|a| a.ends_with(&[
+        "ubus".into(),
+        "call".into(),
+        "network.wireless".into(),
+        "up".into()
+    ])));
+}
+
 // ---------- shared fixtures ----------
 
 fn resource(caps: &[CommandKind]) -> ResourceDescriptor {
