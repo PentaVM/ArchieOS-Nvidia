@@ -109,3 +109,22 @@ failed first; the fix resolves a local short name to its qualified Windows SID
 and still requires the exact installation marker and owner SID. The expanded
 Windows suite passes **16/16**. The replacement task remains scoped to the same
 installation/account; no unrelated task is adopted by a matching short name.
+
+## Current live notice requiring DNS-policy context
+
+After the current 47-field build resumed, an actual autonomous window reported
+1,067 public-peer observations on physical Ethernet and **one `dns-bypass`
+notice**, for plain DNS to `200.28.4.129`. `Get-DnsClientServerAddress` on that
+physical interface reports **200.28.4.129 and 200.28.4.130 as its configured DNS
+servers**. This demonstrates public DNS use, not intentional filter bypass or a
+compromise. The newly added rule treats public resolvers as outside the network's
+DNS without consulting the configured resolver policy; a network that legitimately
+hands out public ISP resolvers needs that context before concluding bypass.
+
+Recommendation for Claude: extend the responsible rule/settings path with
+explicit, provenance-bearing network DNS policy or resolver context, retaining
+the raw observation and avoiding silent allowlisting based only on the current
+OS setting (which DHCP itself could have changed). Do not rewrite labels or
+suppress other rules in the bridge. No device block or administrative action was
+taken in response to this notice. The task is running with source-matching
+deployed scripts; the repository worktree is clean after publication.
