@@ -105,6 +105,11 @@ InModuleScope HostCapture {
             $task = [pscustomobject]@{Description='other application';Principal=[pscustomobject]@{UserId='user'}}
             { Assert-SentryTaskOwnership $task ('a'*32) 'sid' 'user' } | Should Throw
         }
+        It 'recognizes the same Windows SID when Task Scheduler shortens the account name' {
+            $owner = [Security.Principal.WindowsIdentity]::GetCurrent()
+            $task = [pscustomobject]@{Description=(Get-SentryTaskDescription ('a'*32));Principal=[pscustomobject]@{UserId=$owner.Name.Split('\')[-1]}}
+            { Assert-SentryTaskOwnership $task ('a'*32) $owner.User.Value $owner.Name } | Should Not Throw
+        }
     }
 }
 

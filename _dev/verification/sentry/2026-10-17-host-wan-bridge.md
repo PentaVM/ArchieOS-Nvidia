@@ -101,3 +101,11 @@ left no raw captures or ownership journal. Only after that did preparation
 replace its separate pinned binary with the current PR39 build and the same
 owned task was restarted. This verifies graceful owned stop/update, not arbitrary
 crash recovery. Routine raw/journal recovery failure paths remain mocked tests.
+
+Live re-registration exposed a Windows normalization detail: Task Scheduler
+returns the local account as a short name rather than `MACHINE\user`. The
+ownership guard initially refused its own existing task. A regression test
+failed first; the fix resolves a local short name to its qualified Windows SID
+and still requires the exact installation marker and owner SID. The expanded
+Windows suite passes **16/16**. The replacement task remains scoped to the same
+installation/account; no unrelated task is adopted by a matching short name.

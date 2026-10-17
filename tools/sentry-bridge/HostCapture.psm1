@@ -188,8 +188,17 @@ function Get-SentryTaskDescription {
 
 function Assert-SentryTaskOwnership {
     param([object]$Task, [string]$InstallId, [string]$OwnerSid, [string]$OwnerName)
-    if ($null -ne $Task -and ($Task.Description -ne (Get-SentryTaskDescription $InstallId) -or
-        $Task.Principal.UserId -notin @($OwnerSid,$OwnerName))) {
+    if ($null -eq $Task) { return }
+    $sameOwner = $Task.Principal.UserId -in @($OwnerSid,$OwnerName)
+    if (-not $sameOwner) {
+        try {
+            $principalName = [string]$Task.Principal.UserId
+            if ($principalName -notmatch '[\\@]') { $principalName = [Environment]::MachineName + '\' + $principalName }
+            $account = New-Object Security.Principal.NTAccount($principalName)
+            $sameOwner = $account.Translate([Security.Principal.SecurityIdentifier]).Value -eq $OwnerSid
+        } catch { $sameOwner = $false }
+    }
+    if ($Task.Description -ne (Get-SentryTaskDescription $InstallId) -or -not $sameOwner) {
         throw 'Scheduled task belongs to another installation or account; refusing to overwrite it'
     }
 }
