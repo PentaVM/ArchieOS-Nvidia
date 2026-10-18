@@ -15,6 +15,7 @@ archie-core.workspace = true
 archie-fabric.workspace = true
 archie-iris.workspace = true
 archie-model-runtime.workspace = true
+archie-orb.workspace = true
 archie-state.workspace = true
 archie-types.workspace = true
 archie-workstation.workspace = true

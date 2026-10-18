@@ -153,6 +153,7 @@ dependencies = [
  "archie-fabric",
  "archie-iris",
  "archie-model-runtime",
+ "archie-orb",
  "archie-state",
  "archie-types",
  "archie-workstation",

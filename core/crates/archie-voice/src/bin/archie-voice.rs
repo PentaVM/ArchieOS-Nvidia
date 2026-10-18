@@ -886,7 +886,10 @@ fn live(asking: Asking, speech: SpeechFlags, flags: LiveFlags) -> Result<ExitCod
         ..
     } = asking;
     cognitive.set_persona(live::PERSONA);
-    cognitive.add_tools(live::tools());
+    // The Observatory lists its own scenes and presets; without it the names stay open and
+    // the display refuses any it does not have.
+    let catalog = runtime.block_on(archie_orb::control::catalog()).ok();
+    cognitive.add_tools(live::tools(catalog.as_ref()));
     cognitive.put_context_beside_utterance();
     let mut session =
         SpeechSession::new(plan, FloorPolicy::default(), cognitive).map_err(|e| e.to_string())?;

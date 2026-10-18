@@ -1,0 +1,9 @@
+{
+  "name": "orb",
+  "label": "Orbe",
+  "settings": {
+    "categoryPull": 0.6, "hierarchyPull": 0.35, "radialLayers": 0.3, "scale": 0.9,
+    "shellOpacity": 0.05, "ambientCount": 420, "nodeSize": 1.5, "linkBudget": 700,
+    "linkOpacity": 0.08, "bloomStrength": 0.3
+  }
+}

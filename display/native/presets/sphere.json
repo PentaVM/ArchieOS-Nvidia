@@ -1,0 +1,9 @@
+{
+  "name": "sphere",
+  "label": "Esfera",
+  "settings": {
+    "categoryPull": 0.44, "hierarchyPull": 0.62, "radialLayers": 0.82, "scale": 1.0,
+    "shellOpacity": 0.1, "ambientCount": 300, "nodeSize": 1.9, "linkBudget": 320,
+    "linkOpacity": 0.07, "bloomStrength": 0.3
+  }
+}

@@ -23,17 +23,17 @@ int main(int argc, char *argv[])
     QQuickStyle::setStyle(QStringLiteral("Basic"));
 
     QGuiApplication app(argc, argv);
+    ArchieBridge bridge;
+    LumenField lumen;
+    AppCatalog appCatalog;
+    DisplayControl displayControl(&lumen);
     QCommandLineParser arguments;
     arguments.addHelpOption();
     arguments.addOption(QCommandLineOption(QStringLiteral("render-check"),QStringLiteral("Write one real Qt frame to a new PNG and exit."),QStringLiteral("path")));
     arguments.addOption(QCommandLineOption(QStringLiteral("screen"), QStringLiteral("Full-screen display number (one-based)."), QStringLiteral("number"), QStringLiteral("1")));
-    arguments.addOption(QCommandLineOption(QStringLiteral("scene"), QStringLiteral("Initial observatory scene: orb, forge, or world."), QStringLiteral("name"), QStringLiteral("orb")));
+    arguments.addOption(QCommandLineOption(QStringLiteral("scene"), QStringLiteral("Initial observatory scene: ") + displayControl.scenes().join(QStringLiteral(", ")) + QLatin1Char('.'), QStringLiteral("name"), displayControl.scenes().front()));
     arguments.addOption(QCommandLineOption(QStringLiteral("lens"), QStringLiteral("Initial orb lens: architecture, folders, or entities."), QStringLiteral("name"), QStringLiteral("architecture")));
     arguments.process(app);
-    ArchieBridge bridge;
-    LumenField lumen;
-    AppCatalog appCatalog;
-    DisplayControl displayControl;
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty(QStringLiteral("archieBridge"), &bridge);
     engine.rootContext()->setContextProperty(QStringLiteral("lumen"), &lumen);
@@ -44,20 +44,14 @@ int main(int argc, char *argv[])
     if (engine.rootObjects().isEmpty())
         return EXIT_FAILURE;
     auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().front());
-    const QString scene = arguments.value(QStringLiteral("scene")).toLower();
-    if (scene == QStringLiteral("orb")) {
-        engine.rootObjects().front()->setProperty("scene", QStringLiteral("orb"));
-        bridge.requestMode(QStringLiteral("cerebra"));
-    } else if (scene == QStringLiteral("forge") || scene == QStringLiteral("core")) {
-        // CORE became FORGE; the old name still opens it.
-        engine.rootObjects().front()->setProperty("scene", QStringLiteral("forge"));
-        bridge.requestMode(QStringLiteral("cerebra"));
-    } else if (scene == QStringLiteral("world")) {
-        engine.rootObjects().front()->setProperty("scene", QStringLiteral("world"));
-        bridge.requestMode(QStringLiteral("watcher"));
-    } else {
-        qWarning("archie-display: unknown initial scene %s; using ORB", qPrintable(scene));
+    QString scene = displayControl.sceneNamed(arguments.value(QStringLiteral("scene")));
+    if (scene.isEmpty()) {
+        qWarning("archie-display: unknown initial scene %s; using %s",
+                 qPrintable(arguments.value(QStringLiteral("scene"))), qPrintable(displayControl.scenes().front()));
+        scene = displayControl.scenes().front();
     }
+    engine.rootObjects().front()->setProperty("scene", scene);
+    bridge.requestMode(displayControl.modeOf(scene));
     bool screenNumberOk = false;
     const int screenNumber = arguments.value(QStringLiteral("screen")).toInt(&screenNumberOk);
     const auto screens = QGuiApplication::screens();

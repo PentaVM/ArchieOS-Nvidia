@@ -44,6 +44,11 @@ qt_add_qml_module(archie-display
         qml/ForgeView.qml
 )
 
+# Every file in presets/ is a look preset; the display lists them from its resources, so
+# adding one is adding the file.
+file(GLOB archie_presets RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/presets/*.json")
+
 qt_add_resources(archie-display "archie-native-assets"
     PREFIX "/archie"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}"
@@ -64,6 +69,7 @@ qt_add_resources(archie-display "archie-native-assets"
         shaders/lumen_line.frag
         shaders/lumen_ring.vert
         shaders/lumen_ring.frag
+        ${archie_presets}
         apps/archie-stage.desktop
         apps/archie-voice.desktop
         apps/archie-editor.desktop

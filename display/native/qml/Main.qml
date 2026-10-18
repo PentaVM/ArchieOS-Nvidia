@@ -25,27 +25,22 @@ ApplicationWindow {
     readonly property color amber: "#f0b429"
     readonly property color red: "#f2626b"
     property string scene: "orb"
-    property bool orbHudVisible: true
     property var selection: null
 
+    // The scenes and the mode each runs in are DisplayControl's; the CLI and the voice ask
+    // it for the same list.
     function changeScene(next) {
-        if (next !== "orb" && next !== "forge" && next !== "world") return
+        if (displayControl.scenes.indexOf(next) < 0) return
         root.scene = next
         root.selection = null
-        archieBridge.requestMode(next === "world" ? "watcher" : "cerebra")
+        archieBridge.requestMode(displayControl.modeOf(next))
     }
 
     Connections {
         target: displayControl
-        function onCommandReceived(action, value, enabled) {
-            if (action === "scene") root.changeScene(value)
-            else if (action === "cinematic") {
-                root.changeScene("orb")
-                lumen.applyProfile(value)
-            } else if (action === "overlay") {
-                if (value === "hud") root.orbHudVisible = enabled
-                else lumen.setSetting(value, enabled)
-            }
+        // Both arrive checked; a preset is already applied by the time it is announced.
+        function onCommandReceived(action, value) {
+            root.changeScene(action === "preset" ? "orb" : value)
         }
     }
 
@@ -90,7 +85,7 @@ ApplicationWindow {
     // them; over a poll interval the sun moves a quarter of a degree, so tying it to the
     // real pulse loses nothing and keeps the one rule the whole display is built on.
     Component.onCompleted: {
-        archieBridge.requestMode(root.scene === "world" ? "watcher" : "cerebra")
+        archieBridge.requestMode(displayControl.modeOf(root.scene))
         root.computeSun()
     }
 
@@ -791,7 +786,7 @@ ApplicationWindow {
                 OrbHud {
                     anchors.fill: parent
                     visible: root.scene === "orb"
-                    labelsVisible: root.orbHudVisible
+                    labelsVisible: lumen.settings.labels
                     view: view
                     orbScene: lumenScene
                 }

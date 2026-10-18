@@ -6,6 +6,7 @@
 
 #![forbid(unsafe_code)]
 
+pub mod control;
 pub mod lumen;
 mod model;
 mod signal;
