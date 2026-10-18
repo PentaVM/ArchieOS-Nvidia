@@ -433,3 +433,203 @@ fn a_short_correction_recognized_after_voicing_stops_still_interrupts() {
         2
     );
 }
+
+struct SilentModel;
+impl TurnSource for SilentModel {
+    fn start(&mut self, _: ToolChatRequest) -> TurnStream {
+        panic!("a notice is spoken verbatim and never sent to the cognitive model");
+    }
+}
+
+fn replay_notices(
+    board_path: std::path::PathBuf,
+    voice: Box<dyn Speaks>,
+) -> (Vec<Moment>, Result<(), String>) {
+    let plan = SessionPlan {
+        language: "es".into(),
+        listener: SpeechCapabilities {
+            partial_transcript: true,
+            languages: vec!["es".into()],
+            ..Default::default()
+        },
+        voice: SpeechCapabilities {
+            accepts_external_response_text: true,
+            renders_external_response_verbatim: true,
+            languages: vec!["es".into()],
+            ..Default::default()
+        },
+    };
+    let mut session = SpeechSession::new(
+        plan,
+        FloorPolicy::default(),
+        NemotronCognitive::new(SilentModel, "replay", vec!["es".into()], vec![]),
+    )
+    .unwrap();
+    static NEXT_NOTICE: AtomicU64 = AtomicU64::new(0);
+    let wav_path = std::env::temp_dir().join(format!(
+        "archie-floor-notice-{}-{}.wav",
+        std::process::id(),
+        NEXT_NOTICE.fetch_add(1, Ordering::Relaxed)
+    ));
+    let mut moments = Vec::new();
+    let result = converse(
+        &Setup {
+            notices: Some(board_path),
+            ..Setup::default()
+        },
+        &Recognizer(vec![]),
+        None,
+        voice,
+        Hearing::Recording {
+            samples: vec![0.0; 16_000],
+            rate: 16_000,
+            at: 0,
+            silence_left: 16_000,
+        },
+        Saying::Recording {
+            path: wav_path.clone(),
+            samples: vec![],
+            rate: 16_000,
+        },
+        &mut session,
+        &mut |_| panic!("no tool was proposed"),
+        &mut String::new,
+        Arc::new(AtomicBool::new(false)),
+        &mut |moment| moments.push(moment),
+    );
+    let _ = std::fs::remove_file(wav_path);
+    (moments, result)
+}
+
+#[test]
+fn unspoken_notices_are_said_in_severity_order_during_silence_and_never_leak_detail() {
+    use archie_notices::{Board, Policy, Raised, Severity};
+
+    let dir = std::env::temp_dir().join(format!("archie-voice-notices-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("notices.json");
+    let policy = Policy {
+        min_severity: Severity::Notice,
+    };
+    Board::update(&path, |board| {
+        board.post(
+            &Raised {
+                at_ms: 1,
+                severity: Severity::Warning,
+                rule: "dns-tunnel-suspect",
+                device: "de:ad:be:ef:00:01",
+                detail: "secret-clinic.example queried by laptop-personal",
+            },
+            policy,
+        );
+        board.post(
+            &Raised {
+                at_ms: 2,
+                severity: Severity::High,
+                rule: "address-moved",
+                device: "de:ad:be:ef:00:02",
+                detail: "192.168.1.1 claimed by rogue-laptop",
+            },
+            policy,
+        );
+        board.post(
+            &Raised {
+                at_ms: 3,
+                severity: Severity::High,
+                rule: "port-scan",
+                device: "de:ad:be:ef:00:03",
+                detail: "already acknowledged scan",
+            },
+            policy,
+        );
+        let ack_id = board.notices.last().unwrap().id.clone();
+        board.acknowledge(&ack_id, 10);
+        true
+    })
+    .unwrap();
+
+    let (moments, result) = replay_notices(path.clone(), Box::new(Voice));
+    result.unwrap();
+    let said: Vec<String> = moments
+        .iter()
+        .filter_map(|moment| match moment {
+            Moment::Said {
+                text,
+                stopped: false,
+                ..
+            } => Some(text.clone()),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(
+        said,
+        vec![
+            archie_notices::spoken_for("address-moved", Severity::High).to_string(),
+            archie_notices::spoken_for("dns-tunnel-suspect", Severity::Warning).to_string(),
+        ],
+        "the voice speaks unacknowledged notices most serious first, using only fixed spoken text"
+    );
+    for text in &said {
+        assert!(!text.contains("secret-clinic"));
+        assert!(!text.contains("rogue-laptop"));
+        assert!(!text.contains("192.168.1.1"));
+        assert!(!text.contains("de:ad"));
+    }
+
+    let board = Board::load(&path).unwrap();
+    assert!(
+        board.unspoken().is_empty(),
+        "both pending notices are marked spoken on disk"
+    );
+    assert_eq!(
+        board.pending().count(),
+        2,
+        "speaking a notice does not acknowledge it"
+    );
+
+    // A second pass over the same board says nothing twice.
+    let (again, result) = replay_notices(path, Box::new(Voice));
+    result.unwrap();
+    assert!(
+        !again
+            .iter()
+            .any(|moment| matches!(moment, Moment::Said { .. })),
+        "an already spoken notice is never repeated"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn failed_synthesis_leaves_a_notice_unspoken() {
+    use archie_notices::{Board, Policy, Raised, Severity};
+
+    let dir =
+        std::env::temp_dir().join(format!("archie-voice-notices-fail-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).unwrap();
+    let path = dir.join("notices.json");
+    Board::update(&path, |board| {
+        board.post(
+            &Raised {
+                at_ms: 1,
+                severity: Severity::High,
+                rule: "address-moved",
+                device: "de:ad:be:ef:00:02",
+                detail: "192.168.1.1 claimed",
+            },
+            Policy::default(),
+        )
+    })
+    .unwrap();
+
+    let (_moments, result) = replay_notices(path.clone(), Box::new(FailedVoice));
+    assert!(result.is_err());
+    let board = Board::load(&path).unwrap();
+    assert_eq!(
+        board.unspoken().len(),
+        1,
+        "a notice whose synthesis failed must stay unspoken"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}

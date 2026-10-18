@@ -46,20 +46,22 @@ port-scan, un túnel DNS o alguien reclamando la dirección del router, sí.
   equipo está reclamando la dirección del router; el tráfico podría estar pasando por
   él.»*
 
-## Contrato para la voz (pendiente de quien lleva `archie-voice`)
+## Cómo los dice la voz (`archie-voice`)
 
-El modo `live` de `archie-voice` necesita el SDK de NeMo y no compila en el entorno
-donde se hizo esto, así que no se tocó. Lo que la voz tiene que hacer:
+En `archie-voice::conversation::converse` (`Setup::notices`, por defecto
+`<state>/cerebra/notices.json` en `converse` y `live`, o `--notices <ruta>` /
+`ARCHIE_NOTICES`):
 
-Lo más simple es `archie sentry-notices --claim`. Imprime como JSON el siguiente aviso
-que hay que decir (o `null`) y lo marca como dicho bajo el lock: dos voces nunca dicen
-el mismo. La voz dice su campo `spoken` y nada más. Desde Rust es lo mismo:
+1. Cuando no hay turno en curso, nadie está hablando y la sala lleva en silencio al menos
+   `setup.end_after` (800 ms por defecto), lee `Board::load` y toma el primer aviso de
+   `board.unspoken()` (pendientes no dichos, primero los más graves).
+2. Envía `notice.spoken` literal a la voz — nunca `detail`, nunca pasando por el modelo.
+3. Sólo cuando la reproducción termina sin cortarse (`FromVoice::Spoke { stopped: false }`),
+   marca `spoken_ms` en disco bajo el lock exclusivo (`Board::update(path, |b| b.mark_spoken(&id, now_ms))`).
+   Si la síntesis falla, el aviso sigue sin decirse.
 
-1. `Board::load(<state>/cerebra/notices.json)` y `board.unspoken()`: los pendientes no
-   dichos, primero los más graves.
-2. Decir `notice.spoken`, **y nada más**, respetando el turno de palabra y el silencio.
-3. `Board::update(path, |b| b.mark_spoken(&id, now_ms))`.
-
+Desde fuera de Rust sigue existiendo `archie sentry-notices --claim`, que imprime como
+JSON el siguiente aviso que hay que decir (o `null`) y lo marca como dicho bajo el lock.
 Un aviso acusado nunca se dice. El dueño acusa con `archie sentry-notices --ack <id>`
 o `--ack-all`.
 
@@ -78,7 +80,6 @@ curl 127.0.0.1:7666/api/notices             # lo que lee el Observatory
 ## Qué no está verificado
 
 - No hay panel QML que dibuje `/api/notices`: la GUI es de Claude/Xavi.
-- La voz no los dice todavía (ver el contrato).
 - En la ISO, `archie-sentry-follow.service` (instalado, no habilitado) corre el
   follower como `archie` y deja el tablón 0640. Displayd (`archie-display`, grupo
   `archie`) lo lee. Si se despliega de otra forma y no puede leerlo, `/api/notices`

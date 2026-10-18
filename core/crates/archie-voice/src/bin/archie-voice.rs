@@ -583,9 +583,34 @@ struct SpeechFlags {
     name_boost: f32,
     /// The CUDA device the ears run on; -1 is the CPU.
     asr_gpu: i32,
+    /// Where Sentry's owner notice board (`notices.json`) lives.
+    notices: Option<std::path::PathBuf>,
+}
+
+fn default_notices_path() -> std::path::PathBuf {
+    if let Ok(state_dir) = std::env::var("ARCHIE_STATE_DIR") {
+        if !state_dir.is_empty() {
+            return std::path::PathBuf::from(state_dir).join("cerebra/notices.json");
+        }
+    }
+    if let Ok(root) = std::env::var("ARCHIE_ROOT") {
+        if !root.is_empty() {
+            return std::path::PathBuf::from(root).join("var/lib/archie/cerebra/notices.json");
+        }
+    }
+    std::path::PathBuf::from("/var/lib/archie/cerebra/notices.json")
 }
 
 fn speech_flags(args: &mut Vec<String>) -> Result<SpeechFlags, String> {
+    let wav_in = take(args, "--wav-in");
+    let explicit_notices = take(args, "--notices")
+        .or_else(|| {
+            std::env::var("ARCHIE_NOTICES")
+                .ok()
+                .filter(|v| !v.is_empty())
+        })
+        .map(std::path::PathBuf::from);
+    let notices = explicit_notices.or_else(|| wav_in.is_none().then(default_notices_path));
     Ok(SpeechFlags {
         asr_model: take(args, "--asr-model").ok_or("converse needs --asr-model")?,
         // Piper keeps up with speech on a laptop CPU; Magpie needs a GPU to.
@@ -601,7 +626,7 @@ fn speech_flags(args: &mut Vec<String>) -> Result<SpeechFlags, String> {
         listen_language: take(args, "--listen-language").unwrap_or_else(|| "es-US".into()),
         always: flag(args, "--always"),
         headphones: flag(args, "--headphones"),
-        wav_in: take(args, "--wav-in"),
+        wav_in,
         wav_out: take(args, "--wav-out"),
         threads: take(args, "--threads")
             .map(|n| n.parse::<i32>().map_err(|_| "--threads is a number"))
@@ -631,6 +656,7 @@ fn speech_flags(args: &mut Vec<String>) -> Result<SpeechFlags, String> {
             })
             .transpose()?
             .unwrap_or(-1),
+        notices,
     })
 }
 
@@ -931,6 +957,7 @@ fn live(asking: Asking, speech: SpeechFlags, flags: LiveFlags) -> Result<ExitCod
         steps: 4,
         phrases: vec!["Archie".into(), "Archi".into()],
         phrase_boost: speech.name_boost,
+        notices: speech.notices.clone(),
     };
     println!(
         "{}",
@@ -1147,6 +1174,7 @@ fn converse(
         steps,
         phrases: vec!["Archie".into()],
         phrase_boost: speech.name_boost,
+        notices: speech.notices.clone(),
     };
     println!(
         "escuchando ({}{}){}",

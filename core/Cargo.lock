@@ -740,6 +740,7 @@ dependencies = [
  "archie-a11y",
  "archie-iris",
  "archie-model-runtime",
+ "archie-notices",
  "archie-orb",
  "archie-policy",
  "archie-search",

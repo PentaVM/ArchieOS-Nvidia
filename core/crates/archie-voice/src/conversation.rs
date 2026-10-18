@@ -266,6 +266,9 @@ pub struct Setup {
     /// Words the ears should favour, and how strongly: the name first of all.
     pub phrases: Vec<String>,
     pub phrase_boost: f32,
+    /// Where Sentry's owner notice board (`notices.json`) lives, if the voice should
+    /// speak pending unspoken notices when the room is quiet.
+    pub notices: Option<PathBuf>,
 }
 
 impl Default for Setup {
@@ -279,6 +282,7 @@ impl Default for Setup {
             steps: 6,
             phrases: vec!["Archie".into()],
             phrase_boost: 5.0,
+            notices: None,
         }
     }
 }
@@ -418,6 +422,7 @@ pub fn converse<S: TurnSource>(
     // The sound of the utterance under way, for the second hearing: a few seconds of what
     // came before the first word (the streaming ears are late to notice it), then all of it.
     let mut utterance: Vec<f32> = Vec::new();
+    let mut notice_alerted = false;
 
     let result = (|| -> Result<(), String> {
         while !stop.load(Ordering::Relaxed) {
@@ -436,12 +441,33 @@ pub fn converse<S: TurnSource>(
                             report,
                         )?;
                     }
-                    if turn.is_none() {
+                    if turn.is_none()
+                        && partial.is_empty()
+                        && deferred.is_none()
+                        && activity.quiet_ms() as u64 >= setup.end_after.as_millis() as u64
+                    {
+                        speak_next_notice(
+                            setup.notices.as_deref(),
+                            &to_voice,
+                            &generation,
+                            &mut speaking,
+                            &mut notice_alerted,
+                            report,
+                        );
+                    }
+                    if turn.is_none() && speaking == 0 {
                         break;
                     }
                 }
                 std::thread::sleep(Duration::from_millis(20));
-                pump_voice(&from_voice, session, &mut speaking, &mut last_spoke, report)?;
+                pump_voice(
+                    &from_voice,
+                    session,
+                    setup.notices.as_deref(),
+                    &mut speaking,
+                    &mut last_spoke,
+                    report,
+                )?;
                 advance(
                     session,
                     &mut turn,
@@ -464,6 +490,21 @@ pub fn converse<S: TurnSource>(
                         context,
                         report,
                     )?;
+                }
+                if turn.is_none()
+                    && speaking == 0
+                    && partial.is_empty()
+                    && deferred.is_none()
+                    && activity.quiet_ms() as u64 >= setup.end_after.as_millis() as u64
+                {
+                    speak_next_notice(
+                        setup.notices.as_deref(),
+                        &to_voice,
+                        &generation,
+                        &mut speaking,
+                        &mut notice_alerted,
+                        report,
+                    );
                 }
                 continue;
             };
@@ -623,7 +664,14 @@ pub fn converse<S: TurnSource>(
                 forced = true;
             }
 
-            pump_voice(&from_voice, session, &mut speaking, &mut last_spoke, report)?;
+            pump_voice(
+                &from_voice,
+                session,
+                setup.notices.as_deref(),
+                &mut speaking,
+                &mut last_spoke,
+                report,
+            )?;
             if turn.is_none() && speaking == 0 && partial.is_empty() {
                 turn = begin_pending(
                     &mut deferred,
@@ -635,6 +683,21 @@ pub fn converse<S: TurnSource>(
                     context,
                     report,
                 )?;
+            }
+            if turn.is_none()
+                && speaking == 0
+                && partial.is_empty()
+                && deferred.is_none()
+                && activity.quiet_ms() as u64 >= setup.end_after.as_millis() as u64
+            {
+                speak_next_notice(
+                    setup.notices.as_deref(),
+                    &to_voice,
+                    &generation,
+                    &mut speaking,
+                    &mut notice_alerted,
+                    report,
+                );
             }
             advance(
                 session,
@@ -860,9 +923,53 @@ fn advance<S: TurnSource>(
     Ok(())
 }
 
+/// If the room is quiet and nothing is under way, reads the next unspoken Sentry notice
+/// (`notice.spoken` verbatim, never `detail` and never through the model) and hands it to
+/// the voice. `spoken_ms` is recorded only when playback finishes in [`pump_voice`].
+fn speak_next_notice(
+    notices: Option<&std::path::Path>,
+    to_voice: &Sender<ToVoice>,
+    generation: &AtomicU64,
+    speaking: &mut usize,
+    alerted: &mut bool,
+    report: &mut dyn FnMut(Moment),
+) -> bool {
+    let Some(path) = notices else {
+        return false;
+    };
+    let board = match archie_notices::Board::load(path) {
+        Ok(board) => {
+            *alerted = false;
+            board
+        }
+        Err(error) => {
+            if !*alerted {
+                *alerted = true;
+                report(Moment::Alert(format!("notice board: {error}")));
+            }
+            return false;
+        }
+    };
+    let Some(notice) = board.unspoken().into_iter().next() else {
+        return false;
+    };
+    let text = notice.spoken.clone();
+    let features = semantic_features(&text);
+    *speaking += 1;
+    let _ = to_voice.send(ToVoice::Say {
+        generation: generation.load(Ordering::SeqCst),
+        turn_id: format!("notice:{}", notice.id),
+        sequence: 0,
+        text,
+        semantic_features: features,
+    });
+    true
+}
+
 fn pump_voice<C: archie_speech::CognitiveModelAdapter>(
     from_voice: &Receiver<FromVoice>,
     session: &mut SpeechSession<C>,
+    notices: Option<&std::path::Path>,
     speaking: &mut usize,
     last_spoke: &mut Option<Instant>,
     report: &mut dyn FnMut(Moment),
@@ -879,13 +986,26 @@ fn pump_voice<C: archie_speech::CognitiveModelAdapter>(
             }) => {
                 *speaking = speaking.saturating_sub(1);
                 *last_spoke = Some(Instant::now());
-                if !stopped
-                    && session
+                if !stopped {
+                    if let Some(id) = turn_id.strip_prefix("notice:") {
+                        if let Some(path) = notices {
+                            let now_ms = std::time::SystemTime::now()
+                                .duration_since(std::time::UNIX_EPOCH)
+                                .map_or(0, |d| d.as_millis() as u64)
+                                .max(1);
+                            if let Err(error) = archie_notices::Board::update(path, |board| {
+                                board.mark_spoken(id, now_ms)
+                            }) {
+                                report(Moment::Alert(format!("notice board: {error}")));
+                            }
+                        }
+                    } else if session
                         .commit_log()
                         .is_some_and(|log| log.turn_id() == turn_id)
-                {
-                    // Only what was said to the end counts as heard.
-                    let _ = session.spoke(sequence);
+                    {
+                        // Only what was said to the end counts as heard.
+                        let _ = session.spoke(sequence);
+                    }
                 }
                 report(Moment::Said {
                     text,
@@ -1158,7 +1278,7 @@ mod receipt_tests {
             stopped: false,
         })
         .unwrap();
-        pump_voice(&recv, &mut session, &mut 1, &mut None, &mut |_| {}).unwrap();
+        pump_voice(&recv, &mut session, None, &mut 1, &mut None, &mut |_| {}).unwrap();
         assert!(
             session.heard_text().is_empty(),
             "sequence zero belongs to a different turn"

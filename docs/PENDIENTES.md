@@ -140,12 +140,14 @@ fixture se reporta como fixture, no como dispositivo real. Un PR por avance, con
   cuando:* sale una página y el recibo dice `completed`, con el formato que aceptó.
 - [~] **11. Respuesta.** Hoy todo es observación. Primera respuesta reversible: aviso
   por voz y por el Observatory. Bloqueo o cuarentena solo como `Intent` aprobado.
-  **Parcial (Claude, 2026-10-12):** tablón de avisos del dueño (`archie-notices`), que
-  `sentry-follow` alimenta aunque no haya modelo local. Lo leen `archie sentry-notices`
-  (listar y acusar) y `GET /api/notices` de displayd. Cada aviso trae una frase hablable
-  que no nombra nada de la red. Umbral en `[sentry.response] min_severity`. Faltan el
-  panel QML (GUI de Claude/Xavi) y que la voz los diga: el contrato está en
-  [`SENTRY-RESPUESTA.md`](SENTRY-RESPUESTA.md). **Bloqueo (Claude, 2026-10-15):**
+  **Parcial (Claude, 2026-10-12; voz cableada 2026-10-18):** tablón de avisos del dueño
+  (`archie-notices`), que `sentry-follow` alimenta aunque no haya modelo local. Lo leen
+  `archie sentry-notices` (listar y acusar), `GET /api/notices` de displayd y
+  `archie-voice` (`converse`/`live`, que dice `notice.spoken` literal durante el silencio
+  por orden de gravedad y marca `spoken_ms` al terminar de reproducirlo; ver
+  [`SENTRY-RESPUESTA.md`](SENTRY-RESPUESTA.md)). Cada aviso trae una frase hablable que
+  no nombra nada de la red. Umbral en `[sentry.response] min_severity`. Falta el panel
+  QML (GUI de Claude/Xavi). **Bloqueo (Claude, 2026-10-15):**
   `Command::DeviceBlock` por el router como `Intent` aprobado (`archie sentry-node
   block|unblock`), regla `FORWARD` por MAC en iptables/ip6tables con postcondición
   `-C`, `protected_macs` rechazadas. *Hecho cuando:* bloquear y desbloquear un equipo

@@ -33,6 +33,7 @@ archie-stage.workspace = true
 archie-sight.workspace = true
 archie-a11y.workspace = true
 archie-iris.workspace = true
+archie-notices.workspace = true
 archie-policy.workspace = true
 hex.workspace = true
 serde_json.workspace = true
