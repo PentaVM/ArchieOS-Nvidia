@@ -15,6 +15,8 @@
 #   WANDA_WORLDS       synthetic worlds per language (default 3000)
 #   WANDA_MAX_TEMP     pause training at this GPU temperature (default 83)
 #   WANDA_RESUME_TEMP  resume at this temperature (default 72)
+#   WANDA_GEN_BATCH    generator micro-batch (default: the preset's)
+#   WANDA_GEN_ACCUM    generator micro-batches per step (default: the preset's)
 #   STAGES             any of: data distill train (default: all three)
 set -euo pipefail
 
@@ -186,12 +188,16 @@ if want train; then
   [[ -s "$RUN/data/distilled.jsonl" ]] && EXAMPLES+=(--examples "$RUN/data/distilled.jsonl")
   D="$RUN/ckpt-$PRESET"
   THERMAL=(--max-gpu-temp "$MAX_TEMP" --resume-gpu-temp "$RESUME_TEMP")
-  if [[ "$PRESET" == "small" ]]; then TB=16; GB=8; TS=20000; GS=60000; else TB=8; GB=4; TS=30000; GS=100000; fi
+  # The generator attends over prompt and every level at once (768 + 340 positions): at 8 rows
+  # it needs more than 8 GB, at 4 it peaked at 7.5 GB on an RTX 3070 (2026-10-20). So the small
+  # preset keeps its batch of 8 as 4 micro-batches of 2 (4.0 GB peak).
+  if [[ "$PRESET" == "small" ]]; then TB=16; GB=2; GA=4; TS=20000; GS=60000; else TB=8; GB=4; GA=1; TS=30000; GS=100000; fi
+  GB="${WANDA_GEN_BATCH:-$GB}"; GA="${WANDA_GEN_ACCUM:-$GA}"
   [[ -f "$D/config.toml" ]] || "$B" init --dir "$D" --preset "$PRESET" --vocab 8192 "${EXAMPLES[@]}" | tee -a "$RUN/logs/train.log"
   log "tokenizer ($TS steps, $DEVICE)"
   "$B" train tokenizer --dir "$D" "${EXAMPLES[@]}" --device "$DEVICE" --steps "$TS" --batch "$TB" --lr 3e-4 "${THERMAL[@]}" | tee -a "$RUN/logs/train.log"
-  log "generator ($GS steps, $DEVICE)"
-  "$B" train generator --dir "$D" "${EXAMPLES[@]}" --device "$DEVICE" --steps "$GS" --batch "$GB" --lr 3e-4 \
+  log "generator ($GS steps of $GA x $GB rows, $DEVICE)"
+  "$B" train generator --dir "$D" "${EXAMPLES[@]}" --device "$DEVICE" --steps "$GS" --batch "$GB" --accumulate "$GA" --lr 3e-4 \
     --mix gate=0.1,update=0.3,decide=0.3,compose=0.3 "${THERMAL[@]}" | tee -a "$RUN/logs/train.log"
   "$B" calibrate --dir "$D" "${EXAMPLES[@]}" --device "$DEVICE" | tee -a "$RUN/logs/train.log"
   "$B" eval --dir "$D" "${EXAMPLES[@]}" --device "$DEVICE" --limit 500 | tee "$RUN/eval-$PRESET.json"

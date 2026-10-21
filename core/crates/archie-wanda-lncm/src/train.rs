@@ -26,6 +26,7 @@ use crate::model::{
 use crate::nn::{self, Ctx};
 use crate::vq::{codebook_name, VqVae};
 use crate::{LncmError, Result, Task};
+use candle_core::backprop::GradStore;
 use candle_core::{DType, Device, Tensor, Var, D};
 use candle_nn::{AdamW, Optimizer, ParamsAdamW, VarBuilder, VarMap};
 use rand::rngs::StdRng;
@@ -42,6 +43,10 @@ pub const LOG_FILE: &str = "train-log.jsonl";
 pub struct TrainOptions {
     pub steps: u64,
     pub batch: usize,
+    /// Micro-batches of `batch` rows per optimiser step in the generator and adapter stages,
+    /// gradients summed: an effective batch of `batch × accumulate` on a card too small for it.
+    #[serde(default = "one")]
+    pub accumulate: usize,
     pub lr: f64,
     pub warmup: u64,
     pub weight_decay: f64,
@@ -127,6 +132,10 @@ fn pause_or_stop(dir: &Path, opts: &TrainOptions, step_no: u64) -> Result<bool> 
     Ok(false)
 }
 
+fn one() -> usize {
+    1
+}
+
 fn stopped(stage: &str, step_no: u64) -> LncmError {
     LncmError::Data(format!("{stage} stopped at step {step_no} by the {STOP_FILE} file; it was saved, remove the file and run the same command to resume"))
 }
@@ -136,6 +145,7 @@ impl Default for TrainOptions {
         Self {
             steps: 20_000,
             batch: 16,
+            accumulate: 1,
             lr: 3e-4,
             warmup: 500,
             weight_decay: 0.01,
@@ -328,7 +338,27 @@ fn optimiser(vars: Vec<Var>, opts: &TrainOptions) -> Result<AdamW> {
 
 /// Backward, clip to the global norm, step. Returns the norm before clipping.
 fn step(opt: &mut AdamW, vars: &[Var], loss: &Tensor, clip: f64) -> Result<f32> {
-    let mut grads = loss.backward()?;
+    apply_gradients(opt, vars, loss.backward()?, clip)
+}
+
+/// Adds `part` into `sum`, variable by variable.
+fn add_gradients(mut sum: GradStore, part: &GradStore, vars: &[Var]) -> Result<GradStore> {
+    for v in vars {
+        let Some(g) = part.get(v.as_tensor()) else {
+            continue;
+        };
+        let added = match sum.get(v.as_tensor()) {
+            Some(s) => (s + g)?,
+            None => g.clone(),
+        };
+        sum.insert(v.as_tensor(), added);
+    }
+    Ok(sum)
+}
+
+/// Clips `grads` to a global norm of `clip` and takes one optimiser step. Returns the norm
+/// before clipping.
+fn apply_gradients(opt: &mut AdamW, vars: &[Var], mut grads: GradStore, clip: f64) -> Result<f32> {
     let mut total = 0f32;
     for v in vars {
         if let Some(g) = grads.get(v.as_tensor()) {
@@ -831,6 +861,46 @@ fn draw<'a>(pool: &'a [Prepared], n: usize, rng: &mut StdRng) -> Vec<&'a Prepare
         .collect()
 }
 
+/// One optimiser step over `opts.accumulate` micro-batches of `opts.batch` rows of one task.
+/// Each micro-batch's loss is divided by their count and the gradients are summed before
+/// clipping, so the step follows the mean loss of the whole effective batch while only one
+/// micro-batch's activations are in memory. With one micro-batch this is the plain step,
+/// random draws included. Returns the mean loss and the gradient norm before clipping.
+#[allow(clippy::too_many_arguments)]
+fn task_step(
+    models: &Models<'_>,
+    task: Task,
+    pool: &[Prepared],
+    pad: u32,
+    ctx: Ctx,
+    opts: &TrainOptions,
+    opt: &mut AdamW,
+    vars: &[Var],
+    rng: &mut StdRng,
+) -> Result<(f32, f32)> {
+    let parts = opts.accumulate.max(1);
+    if parts == 1 {
+        let rows = draw(pool, opts.batch, rng);
+        let loss = models.loss(task, &rows, pad, ctx, rng)?;
+        let value = nn::scalar(&loss)?;
+        return Ok((value, step(opt, vars, &loss, opts.clip)?));
+    }
+    let mut total: Option<GradStore> = None;
+    let mut value = 0f32;
+    for _ in 0..parts {
+        let rows = draw(pool, opts.batch, rng);
+        let loss = models.loss(task, &rows, pad, ctx, rng)?;
+        value += nn::scalar(&loss)? / parts as f32;
+        let part = (loss / parts as f64)?.backward()?;
+        total = Some(match total {
+            None => part,
+            Some(sum) => add_gradients(sum, &part, vars)?,
+        });
+    }
+    let grads = total.expect("at least one micro-batch");
+    apply_gradients(opt, vars, grads, opts.clip).map(|norm| (value, norm))
+}
+
 /// Trains the generator and heads on every task, with the tokenizer frozen.
 pub fn train_generator(
     dir: &Path,
@@ -883,10 +953,17 @@ pub fn train_generator(
         opt.set_learning_rate(learning_rate(opts, step_no));
         let task = draw_task(&pools, mix, &mut rng)
             .ok_or_else(|| LncmError::Data("no task to draw".into()))?;
-        let rows = draw(&pools[&task], opts.batch, &mut rng);
-        let loss = models.loss(task, &rows, pad, Ctx::train(config.dropout), &mut rng)?;
-        let value = nn::scalar(&loss)?;
-        let norm = step(&mut opt, &vars, &loss, opts.clip)?;
+        let (value, norm) = task_step(
+            &models,
+            task,
+            &pools[&task],
+            pad,
+            Ctx::train(config.dropout),
+            opts,
+            &mut opt,
+            &vars,
+            &mut rng,
+        )?;
         if (step_no + 1) % 50 == 0 || step_no + 1 == opts.steps {
             log(
                 dir,
@@ -997,10 +1074,17 @@ pub fn train_adapter(
                 "adapter {name} has no training examples"
             )));
         };
-        let rows = draw(&pools[&task], opts.batch, &mut rng);
-        let loss = models.loss(task, &rows, pad, Ctx::train(config.dropout), &mut rng)?;
-        let value = nn::scalar(&loss)?;
-        step(&mut opt, &vars, &loss, opts.clip)?;
+        let (value, _) = task_step(
+            &models,
+            task,
+            &pools[&task],
+            pad,
+            Ctx::train(config.dropout),
+            opts,
+            &mut opt,
+            &vars,
+            &mut rng,
+        )?;
         if (step_no + 1) % 50 == 0 || step_no + 1 == opts.steps {
             log(
                 dir,
@@ -1358,6 +1442,44 @@ mod tests {
         assert!(!pause_or_stop(dir.path(), &opts, 0).unwrap());
         std::fs::write(dir.path().join(STOP_FILE), "").unwrap();
         assert!(pause_or_stop(dir.path(), &opts, 0).unwrap());
+    }
+
+    #[test]
+    fn accumulated_halves_give_the_whole_batch_gradient() {
+        let w = Var::new(&[0.5f32, -1.0, 2.0], &Device::Cpu).unwrap();
+        let rows = Tensor::new(
+            &[
+                [1f32, 2.0, 3.0],
+                [0.5, -1.0, 4.0],
+                [2.0, 0.0, -1.0],
+                [1.0, 1.0, 1.0],
+            ],
+            &Device::Cpu,
+        )
+        .unwrap();
+        let loss_of = |x: &Tensor| -> Tensor {
+            x.broadcast_mul(w.as_tensor())
+                .unwrap()
+                .sum(1)
+                .unwrap()
+                .sqr()
+                .unwrap()
+                .mean_all()
+                .unwrap()
+        };
+        let whole = loss_of(&rows).backward().unwrap();
+        let half = |start: usize| {
+            (loss_of(&rows.narrow(0, start, 2).unwrap()) / 2.0)
+                .unwrap()
+                .backward()
+                .unwrap()
+        };
+        let summed = add_gradients(half(0), &half(2), &[w.clone()]).unwrap();
+        let expect = whole.get(w.as_tensor()).unwrap().to_vec1::<f32>().unwrap();
+        let got = summed.get(w.as_tensor()).unwrap().to_vec1::<f32>().unwrap();
+        for (a, b) in expect.iter().zip(&got) {
+            assert!((a - b).abs() < 1e-5, "{expect:?} vs {got:?}");
+        }
     }
 
     #[test]

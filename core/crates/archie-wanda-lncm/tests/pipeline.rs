@@ -94,8 +94,10 @@ fn trains_and_serves_end_to_end_on_cpu() {
     }
     assert!(report.decision_accuracy.is_some() && report.ms_compose.is_some());
 
+    // Two micro-batches per step: the accumulation path runs end to end.
     let adapter_opts = TrainOptions {
         steps: 10,
+        accumulate: 2,
         ..opts.clone()
     };
     train::train_adapter(

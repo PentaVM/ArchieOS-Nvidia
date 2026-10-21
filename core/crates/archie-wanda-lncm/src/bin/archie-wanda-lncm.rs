@@ -187,6 +187,10 @@ struct Common {
     steps: u64,
     #[arg(long, default_value_t = 16)]
     batch: usize,
+    /// Micro-batches of --batch rows per optimiser step, gradients summed (generator and
+    /// adapter stages): an effective batch of batch × accumulate in less memory.
+    #[arg(long, default_value_t = 1)]
+    accumulate: usize,
     #[arg(long, default_value_t = 3e-4)]
     lr: f64,
     #[arg(long, default_value_t = 500)]
@@ -252,6 +256,7 @@ fn options(c: &Common) -> TrainOptions {
     TrainOptions {
         steps: c.steps,
         batch: c.batch,
+        accumulate: c.accumulate.max(1),
         lr: c.lr,
         warmup: c.warmup,
         save_every: c.save_every.max(1),
