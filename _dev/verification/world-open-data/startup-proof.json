@@ -1,0 +1,24 @@
+{
+  "shortcut": "C:/Users/Penta/Desktop/ArchieOS World - datos reales.lnk",
+  "run": "/home/archie/.local/share/archie-world-demo/run-1792916814907",
+  "job_id": "f4ca6f88ece6687492fb8447bd802e19",
+  "native_pid": 31034,
+  "selected_source_argument": "google_satellite",
+  "source_states": [
+    [
+      "sentinel2",
+      "ready"
+    ],
+    [
+      "blue_marble",
+      "ready"
+    ],
+    [
+      "google_satellite",
+      "ready"
+    ]
+  ],
+  "native_control_has_world": true,
+  "proprietary_screenshot_saved": false,
+  "standalone_world_not_full_os": true
+}

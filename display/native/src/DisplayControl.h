@@ -18,11 +18,13 @@ class DisplayControl final : public QObject
 {
     Q_OBJECT
     /// The Observatory's scenes, in the order the dock shows them.
-    Q_PROPERTY(QStringList scenes READ scenes CONSTANT)
+    Q_PROPERTY(QStringList scenes READ scenes NOTIFY scenesChanged)
 
 public:
     explicit DisplayControl(LumenField *lumen = nullptr, QObject *parent = nullptr, bool shellMode = false);
-    void setShellMode(bool enabled) { m_shellMode = enabled; }
+    void setShellMode(bool enabled) { if(m_shellMode==enabled) return; m_shellMode = enabled; emit scenesChanged(); }
+    // The shell advertises World only after its native host was constructed.
+    void setWorldAvailable(bool available) { if(m_worldAvailable==available) return; m_worldAvailable = available; emit scenesChanged(); }
     bool start(quint16 port = 7668);
     quint16 port() const { return m_server.serverPort(); }
 
@@ -33,6 +35,7 @@ public:
     Q_INVOKABLE QString modeOf(const QString &scene) const;
 
 signals:
+    void scenesChanged();
     /// A checked local view command; presets/cinematics are applied before notification.
     void commandReceived(const QString &action, const QString &value, bool enabled);
 
@@ -42,4 +45,5 @@ private:
     LumenField *m_lumen = nullptr;
     QTcpServer m_server;
     bool m_shellMode = false;
+    bool m_worldAvailable = false;
 };

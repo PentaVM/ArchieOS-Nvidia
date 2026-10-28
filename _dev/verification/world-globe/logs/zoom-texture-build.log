@@ -1,0 +1,7 @@
+[ 20%] Built target test_world_texture_qmlimportscan
+[ 20%] Built target test_world_texture_autogen_timestamp_deps
+[ 20%] Automatic MOC and UIC for target test_world_texture
+[ 20%] Built target test_world_texture_autogen
+[ 40%] Building CXX object CMakeFiles/test_world_texture.dir/tests/test_world_texture.cpp.o
+[ 60%] Linking CXX executable test_world_texture
+[100%] Built target test_world_texture

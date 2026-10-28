@@ -1,0 +1,92 @@
+
+running 54 tests
+.................................... 36/54
+world_signals::tests::eonet_stale_or_invalid_dated_points_are_not_undated_observations --- FAILED
+world_signals::tests::duplicate_ids_keep_the_newest_actual_observation --- FAILED
+world_signals::tests::aircraft_epoch_is_milliseconds_and_baro_altitude_has_explicit_units --- FAILED
+world_signals::tests::eonet_chooses_newest_valid_point_and_does_not_invent_polygon_centroids --- FAILED
+world_signals::tests::invalid_outside_future_stale_and_duplicate_quakes_are_omitted --- FAILED
+world_signals::tests::aircraft_stale_future_invalid_and_duplicate_reports_are_not_current_contacts --- FAILED
+exploration_runtime::tests::imagery_and_signals_are_admitted_and_counted_without_licensing_geometry --- FAILED
+world_signals::tests::requests_have_fixed_hosts_bounded_radius_and_documented_bbox_order --- FAILED
+world_signals::tests::quake_depth_is_not_altitude_and_provider_urls_are_not_forwarded --- FAILED
+exploration_runtime::tests::google_preview_is_visible_in_ram_but_never_manifest_pixels --- FAILED
+world_signals::tests::bounded_output_counts_omissions_and_keeps_unknown_time_unknown --- FAILED
+.......
+failures:
+
+---- world_signals::tests::eonet_stale_or_invalid_dated_points_are_not_undated_observations stdout ----
+
+thread 'world_signals::tests::eonet_stale_or_invalid_dated_points_are_not_undated_observations' (10126) panicked at crates/archie-worldd/src/world_signals.rs:96:10:
+called `Result::unwrap()` on an `Err` value: "signal adapter not implemented"
+
+---- world_signals::tests::duplicate_ids_keep_the_newest_actual_observation stdout ----
+
+thread 'world_signals::tests::duplicate_ids_keep_the_newest_actual_observation' (10124) panicked at crates/archie-worldd/src/world_signals.rs:96:10:
+called `Result::unwrap()` on an `Err` value: "signal adapter not implemented"
+
+---- world_signals::tests::aircraft_epoch_is_milliseconds_and_baro_altitude_has_explicit_units stdout ----
+
+thread 'world_signals::tests::aircraft_epoch_is_milliseconds_and_baro_altitude_has_explicit_units' (10120) panicked at crates/archie-worldd/src/world_signals.rs:96:10:
+called `Result::unwrap()` on an `Err` value: "signal adapter not implemented"
+
+---- world_signals::tests::eonet_chooses_newest_valid_point_and_does_not_invent_polygon_centroids stdout ----
+
+thread 'world_signals::tests::eonet_chooses_newest_valid_point_and_does_not_invent_polygon_centroids' (10125) panicked at crates/archie-worldd/src/world_signals.rs:96:10:
+called `Result::unwrap()` on an `Err` value: "signal adapter not implemented"
+
+---- world_signals::tests::invalid_outside_future_stale_and_duplicate_quakes_are_omitted stdout ----
+
+thread 'world_signals::tests::invalid_outside_future_stale_and_duplicate_quakes_are_omitted' (10127) panicked at crates/archie-worldd/src/world_signals.rs:96:10:
+called `Result::unwrap()` on an `Err` value: "signal adapter not implemented"
+
+---- world_signals::tests::aircraft_stale_future_invalid_and_duplicate_reports_are_not_current_contacts stdout ----
+
+thread 'world_signals::tests::aircraft_stale_future_invalid_and_duplicate_reports_are_not_current_contacts' (10121) panicked at crates/archie-worldd/src/world_signals.rs:96:10:
+called `Result::unwrap()` on an `Err` value: "signal adapter not implemented"
+
+---- exploration_runtime::tests::imagery_and_signals_are_admitted_and_counted_without_licensing_geometry stdout ----
+
+thread 'exploration_runtime::tests::imagery_and_signals_are_admitted_and_counted_without_licensing_geometry' (10083) panicked at crates/archie-worldd/src/exploration_runtime.rs:1430:51:
+called `Result::unwrap()` on an `Err` value: "Imagery: source capture/storage not permitted by configured GeoFabric providers; imagery, Street View and Google meshes require a compatible licensed adapter"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- world_signals::tests::requests_have_fixed_hosts_bounded_radius_and_documented_bbox_order stdout ----
+
+thread 'world_signals::tests::requests_have_fixed_hosts_bounded_radius_and_documented_bbox_order' (10129) panicked at crates/archie-worldd/src/world_signals.rs:104:9:
+assertion `left == right` failed
+  left: 0
+ right: 3
+
+---- world_signals::tests::quake_depth_is_not_altitude_and_provider_urls_are_not_forwarded stdout ----
+
+thread 'world_signals::tests::quake_depth_is_not_altitude_and_provider_urls_are_not_forwarded' (10128) panicked at crates/archie-worldd/src/world_signals.rs:96:10:
+called `Result::unwrap()` on an `Err` value: "signal adapter not implemented"
+
+---- exploration_runtime::tests::google_preview_is_visible_in_ram_but_never_manifest_pixels stdout ----
+
+thread 'exploration_runtime::tests::google_preview_is_visible_in_ram_but_never_manifest_pixels' (10079) panicked at crates/archie-worldd/src/exploration_runtime.rs:1449:9:
+assertion failed: !saved.contains("VOLATILE_SECRET")
+
+---- world_signals::tests::bounded_output_counts_omissions_and_keeps_unknown_time_unknown stdout ----
+
+thread 'world_signals::tests::bounded_output_counts_omissions_and_keeps_unknown_time_unknown' (10123) panicked at crates/archie-worldd/src/world_signals.rs:96:10:
+called `Result::unwrap()` on an `Err` value: "signal adapter not implemented"
+
+
+failures:
+    exploration_runtime::tests::google_preview_is_visible_in_ram_but_never_manifest_pixels
+    exploration_runtime::tests::imagery_and_signals_are_admitted_and_counted_without_licensing_geometry
+    world_signals::tests::aircraft_epoch_is_milliseconds_and_baro_altitude_has_explicit_units
+    world_signals::tests::aircraft_stale_future_invalid_and_duplicate_reports_are_not_current_contacts
+    world_signals::tests::bounded_output_counts_omissions_and_keeps_unknown_time_unknown
+    world_signals::tests::duplicate_ids_keep_the_newest_actual_observation
+    world_signals::tests::eonet_chooses_newest_valid_point_and_does_not_invent_polygon_centroids
+    world_signals::tests::eonet_stale_or_invalid_dated_points_are_not_undated_observations
+    world_signals::tests::invalid_outside_future_stale_and_duplicate_quakes_are_omitted
+    world_signals::tests::quake_depth_is_not_altitude_and_provider_urls_are_not_forwarded
+    world_signals::tests::requests_have_fixed_hosts_bounded_radius_and_documented_bbox_order
+
+test result: FAILED. 43 passed; 11 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.10s
+
+error: test failed, to rerun pass `-p archie-worldd --lib`

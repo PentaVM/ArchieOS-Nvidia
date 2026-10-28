@@ -1,0 +1,10 @@
+    Checking archie-geofabric v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-geofabric)
+   Compiling serde_core v1.0.229
+    Checking archie-worldd v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-worldd)
+   Compiling csv v1.4.0
+   Compiling oui-data v0.2.3
+    Checking archie-core v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-core)
+    Checking archie-lan v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-lan)
+    Checking archie-displayd v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-displayd)
+    Checking archie-cli v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-cli)
+    Finished `dev` profile [unoptimized] target(s) in 50.36s

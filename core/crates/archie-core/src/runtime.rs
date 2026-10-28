@@ -715,6 +715,16 @@ impl Runtime {
             .increment(&format!("control.request.{}", request.name()), 1);
 
         match request {
+            ControlRequest::WorldNavigate { .. }
+            | ControlRequest::WorldNavigationStatus { .. }
+            | ControlRequest::WorldNavigationStop { .. }
+            | ControlRequest::WorldPlan { .. }
+            | ControlRequest::WorldJob { .. }
+            | ControlRequest::WorldExplore { .. }
+            | ControlRequest::WorldResolve { .. }
+            | ControlRequest::WorldStatus { .. } => {
+                ControlResponse::error("authenticated local operator session required")
+            }
             ControlRequest::AiInfer { .. }
             | ControlRequest::AiRecall { .. }
             | ControlRequest::AiHarness { .. }

@@ -19,6 +19,7 @@ use std::process::{Command as ProcessCommand, Stdio};
 
 mod ai;
 mod visual;
+mod world;
 
 #[derive(Debug, Parser)]
 #[command(
@@ -41,6 +42,11 @@ struct Cli {
 
 #[derive(Debug, Subcommand)]
 enum Command {
+    /// Explicit geographic exploration through the private world daemon.
+    World {
+        #[command(subcommand)]
+        command: world::WorldCommand,
+    },
     /// Run admitted AI inference, scoped memory and the pinned Harness2 engine.
     Ai {
         #[command(subcommand)]
@@ -602,6 +608,7 @@ impl Command {
     fn to_request(&self) -> Option<ControlRequest> {
         Some(match self {
             Self::Ai { .. }
+            | Self::World { .. }
             | Self::Doctor
             | Self::Setup
             | Self::Start
@@ -1166,6 +1173,10 @@ fn enrol(paths: &StatePaths, owner_key: Option<&str>, json: bool) -> std::proces
 #[tokio::main]
 async fn main() -> std::process::ExitCode {
     let cli = Cli::parse();
+
+    if let Command::World { command } = &cli.command {
+        return world::run(command, cli.json).await;
+    }
 
     if let Command::Visual { command } = &cli.command {
         return visual::run(command, cli.json).await;
@@ -2314,6 +2325,7 @@ fn render(response: &ControlResponse) -> String {
         ControlResponse::Pong { node_id, version } => {
             format!("archied {version} is running (node {})\n", short(node_id))
         }
+        ControlResponse::WorldResult { value } => format!("{value}\n"),
         ControlResponse::AiResult { outcome } => format!("{}\nreceipt={} status={:?}\n", outcome.text.as_deref().unwrap_or(""), outcome.receipt.receipt_id, outcome.receipt.status),
         ControlResponse::AiHarnessResult { outcome } => format!("Harness2 {}: {} stages; promotion={} (improvement_verified={})\n", outcome.result.status, outcome.receipts.len(), outcome.result.promotion.status, outcome.result.promotion.improvement_verified),
         ControlResponse::AiPolicy { paused, recorded } => {

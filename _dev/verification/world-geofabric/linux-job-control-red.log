@@ -1,0 +1,32 @@
+error[E0425]: cannot find function `owned_job_request` in this scope
+   --> crates/archie-core/src/world_control.rs:546:17
+    |
+546 | ...t!(owned...quest(&s...
+    |       ^^^^^...^^^^^ not found in this scope
+
+error[E0425]: cannot find function `owned_job_request` in this scope
+   --> crates/archie-core/src/world_control.rs:548:17
+    |
+548 | ...t!(owned...quest(&s...
+    |       ^^^^^...^^^^^ not found in this scope
+
+error[E0425]: cannot find function `owned_job_request` in this scope
+   --> crates/archie-core/src/world_control.rs:550:20
+    |
+550 | ...q!(owned...quest(&s...
+    |       ^^^^^...^^^^^ not found in this scope
+
+error[E0425]: cannot find function `owned_job_request` in this scope
+   --> crates/archie-core/src/world_control.rs:551:17
+    |
+551 | ...t!(owned...quest(&s...
+    |       ^^^^^...^^^^^ not found in this scope
+
+error[E0425]: cannot find function `owned_job_request` in this scope
+   --> crates/archie-core/src/world_control.rs:552:17
+    |
+552 | ...t!(owned...quest(&s...
+    |       ^^^^^...^^^^^ not found in this scope
+
+For more information about this error, try `rustc --explain E0425`.
+error: could not compile `archie-core` (lib test) due to 5 previous errors

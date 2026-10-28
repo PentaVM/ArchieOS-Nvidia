@@ -1,0 +1,20 @@
+node:assert:408
+    throw err;
+    ^
+
+AssertionError [ERR_ASSERTION]: globe surface at 10m must be beyond the near plane on x; got 1.0000015696101376
+    at Object.<anonymous> (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\display\native\tests\test_exploration.js:47:16)
+    at Module._compile (node:internal/modules/cjs/loader:1469:14)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1548:10)
+    at Module.load (node:internal/modules/cjs/loader:1288:32)
+    at Module._load (node:internal/modules/cjs/loader:1104:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:174:12)
+    at node:internal/main/run_main_module:28:49 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '=='
+}
+
+Node.js v20.17.0

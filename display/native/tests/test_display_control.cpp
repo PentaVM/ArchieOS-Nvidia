@@ -93,6 +93,20 @@ private slots:
         QVERIFY(socket.readAll().startsWith("error:"));
         QCOMPARE(delivered.count(), 0);
     }
+    void shellAcknowledgesWorldOnlyAfterNativeHostIsAvailable() {
+        LumenField field;
+        DisplayControl control(&field,nullptr,true);
+        QVERIFY(!control.scenes().contains(QStringLiteral("world")));
+        control.setWorldAvailable(true);
+        QVERIFY(control.scenes().contains(QStringLiteral("world")));
+        QVERIFY(control.start(0));
+        QSignalSpy delivered(&control,&DisplayControl::commandReceived);
+        QTcpSocket socket;socket.connectToHost(QHostAddress::LocalHost,control.port());
+        QTRY_COMPARE(socket.state(),QAbstractSocket::ConnectedState);
+        socket.write("{\"action\":\"scene\",\"value\":\"world\"}\n");
+        QTRY_VERIFY(socket.bytesAvailable()>0);
+        QCOMPARE(socket.readAll(),QByteArray("ok\n"));QCOMPARE(delivered.count(),1);
+    }
     void overlaysRequireAnActualBoolean() {
         LumenField field;
         DisplayControl control(&field);

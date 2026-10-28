@@ -27,6 +27,7 @@ class MeshGeometry : public QQuick3DGeometry
     // Packing happens on the C++ side that already holds an `archie::visual::Mesh` --
     // ArchieBridge today -- because that is the one place that has both the mesh and a
     // reason to know Quick3D wants its buffers this way.
+    Q_PROPERTY(bool hasUv READ hasUv WRITE setHasUv NOTIFY meshChanged)
     Q_PROPERTY(QByteArray vertices READ vertices WRITE setVertices NOTIFY meshChanged)
     // Raw uint32 triangle indices, three per triangle, matching
     // `archie::visual::TriangleIndices` byte-for-byte.
@@ -38,6 +39,8 @@ public:
     [[nodiscard]] QByteArray vertices() const { return m_vertices; }
     [[nodiscard]] QByteArray triangleIndices() const { return m_triangleIndices; }
 
+    bool hasUv() const {return m_hasUv;}
+    void setHasUv(bool value);
     void setVertices(const QByteArray &data);
     void setTriangleIndices(const QByteArray &data);
 
@@ -50,6 +53,7 @@ private:
     /// with nothing in it.
     void rebuild();
 
+    bool m_hasUv=false;
     QByteArray m_vertices;
     QByteArray m_triangleIndices;
 };

@@ -1,0 +1,4658 @@
+[
+  {
+    "label": "planet",
+    "input": "state",
+    "selected_area": "",
+    "altitude_m": 24272231.9818945,
+    "latitude": 5.739098319164468,
+    "longitude": 0.0,
+    "stream": {
+      "generation": 1792937921473045,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 9724.018526737143,
+        "retrieved_at_ms": 1792937924788,
+        "source_id": "google_satellite",
+        "source_resolution_m": 9724.018526737143,
+        "state": "ready"
+      },
+      "state": "ready",
+      "min_zoom": 2,
+      "max_zoom": 4,
+      "desired_tiles": [
+        {
+          "x": 1,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "zoom": 2
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "zoom": 2
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 5,
+          "zoom": 3
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 3,
+          "y": 5,
+          "zoom": 3
+        },
+        {
+          "x": 4,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 4,
+          "y": 5,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 3,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "zoom": 3
+        },
+        {
+          "x": 6,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 6,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 6,
+          "y": 8,
+          "zoom": 4
+        },
+        {
+          "x": 6,
+          "y": 9,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 8,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 9,
+          "zoom": 4
+        },
+        {
+          "x": 8,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 8,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 8,
+          "y": 8,
+          "zoom": 4
+        },
+        {
+          "x": 8,
+          "y": 9,
+          "zoom": 4
+        },
+        {
+          "x": 9,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 9,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 9,
+          "y": 8,
+          "zoom": 4
+        },
+        {
+          "x": 9,
+          "y": 9,
+          "zoom": 4
+        }
+      ],
+      "desired_count": 32,
+      "loaded_count": 32,
+      "fallback_count": 13,
+      "pending_count": 0,
+      "pending_tiles": 0,
+      "usage": {
+        "bytes_received": 646045,
+        "cache_bytes": 394529,
+        "cache_tiles": 45,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 47
+      },
+      "provider": {
+        "bytes_received": 394529,
+        "id": "google_satellite",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 45,
+        "retry_at_ms": null,
+        "state": "ready"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "drag",
+    "input": "drag",
+    "selected_area": "",
+    "altitude_m": 24272232.116928995,
+    "latitude": 40.71279925400159,
+    "longitude": -74.00599872668244,
+    "stream": {
+      "generation": 1792937921473046,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 7407.826898081017,
+        "retrieved_at_ms": 1792937934815,
+        "source_id": "google_satellite",
+        "source_resolution_m": 7407.826898081017,
+        "state": "loading"
+      },
+      "state": "loading",
+      "min_zoom": 2,
+      "max_zoom": 4,
+      "desired_tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "zoom": 3
+        },
+        {
+          "x": 0,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 1,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 3,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 4,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 4,
+          "y": 3,
+          "zoom": 3
+        },
+        {
+          "x": 4,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 6,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 7,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 7,
+          "y": 3,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 2,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 3,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 3,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 4,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 4,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 5,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 5,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 6,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 6,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 7,
+          "zoom": 4
+        }
+      ],
+      "desired_count": 32,
+      "loaded_count": 20,
+      "fallback_count": 35,
+      "pending_count": 12,
+      "pending_tiles": 12,
+      "usage": {
+        "bytes_received": 738125,
+        "cache_bytes": 465673,
+        "cache_tiles": 55,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 61
+      },
+      "provider": {
+        "bytes_received": 486609,
+        "id": "google_satellite",
+        "in_flight": 3,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 59,
+        "retry_at_ms": null,
+        "state": "fetching"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "new-york-orbit",
+    "input": "state",
+    "selected_area": "",
+    "altitude_m": 24272232.116928995,
+    "latitude": 40.71279925400159,
+    "longitude": -74.00599872668244,
+    "stream": {
+      "generation": 1792937921473046,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 7407.826898081017,
+        "retrieved_at_ms": 1792937934815,
+        "source_id": "google_satellite",
+        "source_resolution_m": 7407.826898081017,
+        "state": "loading"
+      },
+      "state": "loading",
+      "min_zoom": 2,
+      "max_zoom": 4,
+      "desired_tiles": [
+        {
+          "x": 0,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 1,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 3,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 0,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 0,
+          "y": 3,
+          "zoom": 3
+        },
+        {
+          "x": 0,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 1,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 1,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 3,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 4,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 4,
+          "y": 3,
+          "zoom": 3
+        },
+        {
+          "x": 4,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 6,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 7,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 7,
+          "y": 3,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 2,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 3,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 3,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 4,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 4,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 5,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 5,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 6,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 6,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 7,
+          "zoom": 4
+        }
+      ],
+      "desired_count": 32,
+      "loaded_count": 20,
+      "fallback_count": 35,
+      "pending_count": 12,
+      "pending_tiles": 12,
+      "usage": {
+        "bytes_received": 738125,
+        "cache_bytes": 465673,
+        "cache_tiles": 55,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 61
+      },
+      "provider": {
+        "bytes_received": 486609,
+        "id": "google_satellite",
+        "in_flight": 3,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 59,
+        "retry_at_ms": null,
+        "state": "fetching"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "wheel",
+    "input": "wheel",
+    "selected_area": "",
+    "altitude_m": 3284889.3921332853,
+    "latitude": 40.712798392269576,
+    "longitude": -74.00600166114702,
+    "stream": {
+      "generation": 1792937921473047,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 3703.9134568909435,
+        "retrieved_at_ms": 1792937935848,
+        "source_id": "google_satellite",
+        "source_resolution_m": 3703.9134568909435,
+        "state": "loading"
+      },
+      "state": "loading",
+      "min_zoom": 6,
+      "max_zoom": 6,
+      "desired_tiles": [
+        {
+          "x": 14,
+          "y": 21,
+          "zoom": 6
+        },
+        {
+          "x": 14,
+          "y": 22,
+          "zoom": 6
+        },
+        {
+          "x": 14,
+          "y": 23,
+          "zoom": 6
+        },
+        {
+          "x": 15,
+          "y": 21,
+          "zoom": 6
+        },
+        {
+          "x": 15,
+          "y": 22,
+          "zoom": 6
+        },
+        {
+          "x": 15,
+          "y": 23,
+          "zoom": 6
+        },
+        {
+          "x": 15,
+          "y": 24,
+          "zoom": 6
+        },
+        {
+          "x": 15,
+          "y": 25,
+          "zoom": 6
+        },
+        {
+          "x": 15,
+          "y": 26,
+          "zoom": 6
+        },
+        {
+          "x": 16,
+          "y": 21,
+          "zoom": 6
+        },
+        {
+          "x": 16,
+          "y": 22,
+          "zoom": 6
+        },
+        {
+          "x": 16,
+          "y": 23,
+          "zoom": 6
+        },
+        {
+          "x": 16,
+          "y": 24,
+          "zoom": 6
+        },
+        {
+          "x": 16,
+          "y": 25,
+          "zoom": 6
+        },
+        {
+          "x": 16,
+          "y": 26,
+          "zoom": 6
+        },
+        {
+          "x": 17,
+          "y": 21,
+          "zoom": 6
+        },
+        {
+          "x": 17,
+          "y": 22,
+          "zoom": 6
+        },
+        {
+          "x": 17,
+          "y": 23,
+          "zoom": 6
+        },
+        {
+          "x": 17,
+          "y": 24,
+          "zoom": 6
+        },
+        {
+          "x": 17,
+          "y": 25,
+          "zoom": 6
+        },
+        {
+          "x": 17,
+          "y": 26,
+          "zoom": 6
+        },
+        {
+          "x": 18,
+          "y": 21,
+          "zoom": 6
+        },
+        {
+          "x": 18,
+          "y": 22,
+          "zoom": 6
+        },
+        {
+          "x": 18,
+          "y": 23,
+          "zoom": 6
+        },
+        {
+          "x": 18,
+          "y": 24,
+          "zoom": 6
+        },
+        {
+          "x": 18,
+          "y": 25,
+          "zoom": 6
+        },
+        {
+          "x": 18,
+          "y": 26,
+          "zoom": 6
+        },
+        {
+          "x": 19,
+          "y": 21,
+          "zoom": 6
+        },
+        {
+          "x": 19,
+          "y": 22,
+          "zoom": 6
+        },
+        {
+          "x": 19,
+          "y": 23,
+          "zoom": 6
+        },
+        {
+          "x": 19,
+          "y": 24,
+          "zoom": 6
+        },
+        {
+          "x": 19,
+          "y": 25,
+          "zoom": 6
+        },
+        {
+          "x": 19,
+          "y": 26,
+          "zoom": 6
+        },
+        {
+          "x": 20,
+          "y": 21,
+          "zoom": 6
+        },
+        {
+          "x": 20,
+          "y": 22,
+          "zoom": 6
+        },
+        {
+          "x": 20,
+          "y": 23,
+          "zoom": 6
+        },
+        {
+          "x": 20,
+          "y": 24,
+          "zoom": 6
+        },
+        {
+          "x": 20,
+          "y": 25,
+          "zoom": 6
+        },
+        {
+          "x": 20,
+          "y": 26,
+          "zoom": 6
+        },
+        {
+          "x": 21,
+          "y": 21,
+          "zoom": 6
+        },
+        {
+          "x": 21,
+          "y": 22,
+          "zoom": 6
+        },
+        {
+          "x": 21,
+          "y": 23,
+          "zoom": 6
+        },
+        {
+          "x": 21,
+          "y": 24,
+          "zoom": 6
+        },
+        {
+          "x": 21,
+          "y": 25,
+          "zoom": 6
+        },
+        {
+          "x": 21,
+          "y": 26,
+          "zoom": 6
+        },
+        {
+          "x": 22,
+          "y": 21,
+          "zoom": 6
+        },
+        {
+          "x": 22,
+          "y": 22,
+          "zoom": 6
+        },
+        {
+          "x": 22,
+          "y": 23,
+          "zoom": 6
+        },
+        {
+          "x": 22,
+          "y": 24,
+          "zoom": 6
+        },
+        {
+          "x": 22,
+          "y": 25,
+          "zoom": 6
+        },
+        {
+          "x": 22,
+          "y": 26,
+          "zoom": 6
+        },
+        {
+          "x": 22,
+          "y": 27,
+          "zoom": 6
+        },
+        {
+          "x": 23,
+          "y": 21,
+          "zoom": 6
+        },
+        {
+          "x": 23,
+          "y": 22,
+          "zoom": 6
+        }
+      ],
+      "desired_count": 54,
+      "loaded_count": 0,
+      "fallback_count": 70,
+      "pending_count": 66,
+      "pending_tiles": 66,
+      "usage": {
+        "bytes_received": 956056,
+        "cache_bytes": 676071,
+        "cache_tiles": 78,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 84
+      },
+      "provider": {
+        "bytes_received": 704540,
+        "id": "google_satellite",
+        "in_flight": 3,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 82,
+        "retry_at_ms": null,
+        "state": "fetching"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "wheel",
+    "input": "wheel",
+    "selected_area": "",
+    "altitude_m": 1208443.5673261788,
+    "latitude": 40.71279800984272,
+    "longitude": -74.00600094546773,
+    "stream": {
+      "generation": 1792937921473048,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 462.98918211136794,
+        "retrieved_at_ms": 1792937940063,
+        "source_id": "google_satellite",
+        "source_resolution_m": 462.98918211136794,
+        "state": "ready"
+      },
+      "state": "ready",
+      "min_zoom": 7,
+      "max_zoom": 8,
+      "desired_tiles": [
+        {
+          "x": 34,
+          "y": 46,
+          "zoom": 7
+        },
+        {
+          "x": 34,
+          "y": 47,
+          "zoom": 7
+        },
+        {
+          "x": 35,
+          "y": 46,
+          "zoom": 7
+        },
+        {
+          "x": 35,
+          "y": 47,
+          "zoom": 7
+        },
+        {
+          "x": 35,
+          "y": 48,
+          "zoom": 7
+        },
+        {
+          "x": 35,
+          "y": 49,
+          "zoom": 7
+        },
+        {
+          "x": 36,
+          "y": 46,
+          "zoom": 7
+        },
+        {
+          "x": 36,
+          "y": 47,
+          "zoom": 7
+        },
+        {
+          "x": 37,
+          "y": 46,
+          "zoom": 7
+        },
+        {
+          "x": 39,
+          "y": 46,
+          "zoom": 7
+        },
+        {
+          "x": 40,
+          "y": 47,
+          "zoom": 7
+        },
+        {
+          "x": 40,
+          "y": 48,
+          "zoom": 7
+        },
+        {
+          "x": 40,
+          "y": 49,
+          "zoom": 7
+        },
+        {
+          "x": 72,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 72,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 72,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 72,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 73,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 73,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 73,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 73,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 74,
+          "y": 94,
+          "zoom": 8
+        },
+        {
+          "x": 74,
+          "y": 95,
+          "zoom": 8
+        },
+        {
+          "x": 74,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 74,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 74,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 74,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 75,
+          "y": 94,
+          "zoom": 8
+        },
+        {
+          "x": 75,
+          "y": 95,
+          "zoom": 8
+        },
+        {
+          "x": 75,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 75,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 75,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 75,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 92,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 93,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 94,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 95,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 92,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 93,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 94,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 95,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 78,
+          "y": 94,
+          "zoom": 8
+        },
+        {
+          "x": 78,
+          "y": 95,
+          "zoom": 8
+        },
+        {
+          "x": 78,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 78,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 78,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 78,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 79,
+          "y": 94,
+          "zoom": 8
+        },
+        {
+          "x": 79,
+          "y": 95,
+          "zoom": 8
+        },
+        {
+          "x": 79,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 79,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 79,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 79,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 80,
+          "y": 92,
+          "zoom": 8
+        },
+        {
+          "x": 80,
+          "y": 93,
+          "zoom": 8
+        }
+      ],
+      "desired_count": 63,
+      "loaded_count": 63,
+      "fallback_count": 95,
+      "pending_count": 0,
+      "pending_tiles": 0,
+      "usage": {
+        "bytes_received": 1826660,
+        "cache_bytes": 1572016,
+        "cache_tiles": 177,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 180
+      },
+      "provider": {
+        "bytes_received": 1573766,
+        "id": "google_satellite",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 178,
+        "retry_at_ms": null,
+        "state": "ready"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "country",
+    "input": "state",
+    "selected_area": "",
+    "altitude_m": 1208443.5673261788,
+    "latitude": 40.71279800984272,
+    "longitude": -74.00600094546773,
+    "stream": {
+      "generation": 1792937921473048,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 462.98918211136794,
+        "retrieved_at_ms": 1792937940063,
+        "source_id": "google_satellite",
+        "source_resolution_m": 462.98918211136794,
+        "state": "ready"
+      },
+      "state": "ready",
+      "min_zoom": 7,
+      "max_zoom": 8,
+      "desired_tiles": [
+        {
+          "x": 34,
+          "y": 46,
+          "zoom": 7
+        },
+        {
+          "x": 34,
+          "y": 47,
+          "zoom": 7
+        },
+        {
+          "x": 35,
+          "y": 46,
+          "zoom": 7
+        },
+        {
+          "x": 35,
+          "y": 47,
+          "zoom": 7
+        },
+        {
+          "x": 35,
+          "y": 48,
+          "zoom": 7
+        },
+        {
+          "x": 35,
+          "y": 49,
+          "zoom": 7
+        },
+        {
+          "x": 36,
+          "y": 46,
+          "zoom": 7
+        },
+        {
+          "x": 36,
+          "y": 47,
+          "zoom": 7
+        },
+        {
+          "x": 37,
+          "y": 46,
+          "zoom": 7
+        },
+        {
+          "x": 39,
+          "y": 46,
+          "zoom": 7
+        },
+        {
+          "x": 40,
+          "y": 47,
+          "zoom": 7
+        },
+        {
+          "x": 40,
+          "y": 48,
+          "zoom": 7
+        },
+        {
+          "x": 40,
+          "y": 49,
+          "zoom": 7
+        },
+        {
+          "x": 72,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 72,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 72,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 72,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 73,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 73,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 73,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 73,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 74,
+          "y": 94,
+          "zoom": 8
+        },
+        {
+          "x": 74,
+          "y": 95,
+          "zoom": 8
+        },
+        {
+          "x": 74,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 74,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 74,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 74,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 75,
+          "y": 94,
+          "zoom": 8
+        },
+        {
+          "x": 75,
+          "y": 95,
+          "zoom": 8
+        },
+        {
+          "x": 75,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 75,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 75,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 75,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 92,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 93,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 94,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 95,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 76,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 92,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 93,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 94,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 95,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 77,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 78,
+          "y": 94,
+          "zoom": 8
+        },
+        {
+          "x": 78,
+          "y": 95,
+          "zoom": 8
+        },
+        {
+          "x": 78,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 78,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 78,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 78,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 79,
+          "y": 94,
+          "zoom": 8
+        },
+        {
+          "x": 79,
+          "y": 95,
+          "zoom": 8
+        },
+        {
+          "x": 79,
+          "y": 96,
+          "zoom": 8
+        },
+        {
+          "x": 79,
+          "y": 97,
+          "zoom": 8
+        },
+        {
+          "x": 79,
+          "y": 98,
+          "zoom": 8
+        },
+        {
+          "x": 79,
+          "y": 99,
+          "zoom": 8
+        },
+        {
+          "x": 80,
+          "y": 92,
+          "zoom": 8
+        },
+        {
+          "x": 80,
+          "y": 93,
+          "zoom": 8
+        }
+      ],
+      "desired_count": 63,
+      "loaded_count": 63,
+      "fallback_count": 95,
+      "pending_count": 0,
+      "pending_tiles": 0,
+      "usage": {
+        "bytes_received": 1826660,
+        "cache_bytes": 1572016,
+        "cache_tiles": 177,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 180
+      },
+      "provider": {
+        "bytes_received": 1573766,
+        "id": "google_satellite",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 178,
+        "retry_at_ms": null,
+        "state": "ready"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "wheel",
+    "input": "wheel",
+    "selected_area": "",
+    "altitude_m": 163545.24097207218,
+    "latitude": 40.71279817362591,
+    "longitude": -74.00600120849587,
+    "stream": {
+      "generation": 1792937921473049,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 231.49459105568397,
+        "retrieved_at_ms": 1792937946446,
+        "source_id": "google_satellite",
+        "source_resolution_m": 231.49459105568397,
+        "state": "loading"
+      },
+      "state": "rate_limited",
+      "min_zoom": 10,
+      "max_zoom": 11,
+      "desired_tiles": [
+        {
+          "x": 298,
+          "y": 383,
+          "zoom": 10
+        },
+        {
+          "x": 298,
+          "y": 384,
+          "zoom": 10
+        },
+        {
+          "x": 298,
+          "y": 385,
+          "zoom": 10
+        },
+        {
+          "x": 298,
+          "y": 386,
+          "zoom": 10
+        },
+        {
+          "x": 299,
+          "y": 383,
+          "zoom": 10
+        },
+        {
+          "x": 299,
+          "y": 384,
+          "zoom": 10
+        },
+        {
+          "x": 299,
+          "y": 385,
+          "zoom": 10
+        },
+        {
+          "x": 299,
+          "y": 386,
+          "zoom": 10
+        },
+        {
+          "x": 303,
+          "y": 383,
+          "zoom": 10
+        },
+        {
+          "x": 303,
+          "y": 384,
+          "zoom": 10
+        },
+        {
+          "x": 303,
+          "y": 385,
+          "zoom": 10
+        },
+        {
+          "x": 303,
+          "y": 386,
+          "zoom": 10
+        },
+        {
+          "x": 304,
+          "y": 383,
+          "zoom": 10
+        },
+        {
+          "x": 304,
+          "y": 384,
+          "zoom": 10
+        },
+        {
+          "x": 304,
+          "y": 385,
+          "zoom": 10
+        },
+        {
+          "x": 304,
+          "y": 386,
+          "zoom": 10
+        },
+        {
+          "x": 600,
+          "y": 766,
+          "zoom": 11
+        },
+        {
+          "x": 600,
+          "y": 767,
+          "zoom": 11
+        },
+        {
+          "x": 600,
+          "y": 768,
+          "zoom": 11
+        },
+        {
+          "x": 600,
+          "y": 769,
+          "zoom": 11
+        },
+        {
+          "x": 600,
+          "y": 770,
+          "zoom": 11
+        },
+        {
+          "x": 600,
+          "y": 771,
+          "zoom": 11
+        },
+        {
+          "x": 600,
+          "y": 772,
+          "zoom": 11
+        },
+        {
+          "x": 600,
+          "y": 773,
+          "zoom": 11
+        },
+        {
+          "x": 601,
+          "y": 766,
+          "zoom": 11
+        },
+        {
+          "x": 601,
+          "y": 767,
+          "zoom": 11
+        },
+        {
+          "x": 601,
+          "y": 768,
+          "zoom": 11
+        },
+        {
+          "x": 601,
+          "y": 769,
+          "zoom": 11
+        },
+        {
+          "x": 601,
+          "y": 770,
+          "zoom": 11
+        },
+        {
+          "x": 601,
+          "y": 771,
+          "zoom": 11
+        },
+        {
+          "x": 601,
+          "y": 772,
+          "zoom": 11
+        },
+        {
+          "x": 601,
+          "y": 773,
+          "zoom": 11
+        },
+        {
+          "x": 602,
+          "y": 766,
+          "zoom": 11
+        },
+        {
+          "x": 602,
+          "y": 767,
+          "zoom": 11
+        },
+        {
+          "x": 602,
+          "y": 768,
+          "zoom": 11
+        },
+        {
+          "x": 602,
+          "y": 769,
+          "zoom": 11
+        },
+        {
+          "x": 602,
+          "y": 770,
+          "zoom": 11
+        },
+        {
+          "x": 602,
+          "y": 771,
+          "zoom": 11
+        },
+        {
+          "x": 602,
+          "y": 772,
+          "zoom": 11
+        },
+        {
+          "x": 602,
+          "y": 773,
+          "zoom": 11
+        },
+        {
+          "x": 603,
+          "y": 766,
+          "zoom": 11
+        },
+        {
+          "x": 603,
+          "y": 767,
+          "zoom": 11
+        },
+        {
+          "x": 603,
+          "y": 768,
+          "zoom": 11
+        },
+        {
+          "x": 603,
+          "y": 769,
+          "zoom": 11
+        },
+        {
+          "x": 603,
+          "y": 770,
+          "zoom": 11
+        },
+        {
+          "x": 603,
+          "y": 771,
+          "zoom": 11
+        },
+        {
+          "x": 603,
+          "y": 772,
+          "zoom": 11
+        },
+        {
+          "x": 603,
+          "y": 773,
+          "zoom": 11
+        },
+        {
+          "x": 604,
+          "y": 766,
+          "zoom": 11
+        },
+        {
+          "x": 604,
+          "y": 767,
+          "zoom": 11
+        },
+        {
+          "x": 604,
+          "y": 768,
+          "zoom": 11
+        },
+        {
+          "x": 604,
+          "y": 769,
+          "zoom": 11
+        },
+        {
+          "x": 604,
+          "y": 770,
+          "zoom": 11
+        },
+        {
+          "x": 604,
+          "y": 771,
+          "zoom": 11
+        },
+        {
+          "x": 604,
+          "y": 772,
+          "zoom": 11
+        },
+        {
+          "x": 604,
+          "y": 773,
+          "zoom": 11
+        },
+        {
+          "x": 605,
+          "y": 766,
+          "zoom": 11
+        },
+        {
+          "x": 605,
+          "y": 767,
+          "zoom": 11
+        },
+        {
+          "x": 605,
+          "y": 768,
+          "zoom": 11
+        },
+        {
+          "x": 605,
+          "y": 769,
+          "zoom": 11
+        },
+        {
+          "x": 605,
+          "y": 770,
+          "zoom": 11
+        },
+        {
+          "x": 605,
+          "y": 771,
+          "zoom": 11
+        },
+        {
+          "x": 605,
+          "y": 772,
+          "zoom": 11
+        },
+        {
+          "x": 605,
+          "y": 773,
+          "zoom": 11
+        }
+      ],
+      "desired_count": 64,
+      "loaded_count": 0,
+      "fallback_count": 160,
+      "pending_count": 86,
+      "pending_tiles": 86,
+      "usage": {
+        "bytes_received": 1857763,
+        "cache_bytes": 1603119,
+        "cache_tiles": 179,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 182
+      },
+      "provider": {
+        "bytes_received": 1604869,
+        "id": "google_satellite",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 180,
+        "retry_at_ms": 1792937982068,
+        "state": "waiting_rate_limit"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "wheel",
+    "input": "wheel",
+    "selected_area": "",
+    "altitude_m": 60165.094686334065,
+    "latitude": 40.71279861454447,
+    "longitude": -74.00600148376238,
+    "stream": {
+      "generation": 1792937921473050,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 462.98918211136794,
+        "retrieved_at_ms": 1792937946446,
+        "source_id": "google_satellite",
+        "source_resolution_m": 462.98918211136794,
+        "state": "loading"
+      },
+      "state": "rate_limited",
+      "min_zoom": 12,
+      "max_zoom": 12,
+      "desired_tiles": [
+        {
+          "x": 1202,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1202,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1202,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1202,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1202,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1202,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1203,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1203,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1203,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1203,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1203,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1203,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1204,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1204,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1204,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1204,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1204,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1204,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1205,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1205,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1205,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1205,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1205,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1205,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1206,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1206,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1206,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1206,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1206,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1206,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1207,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1207,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1207,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1207,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1207,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1207,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1208,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1208,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1208,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1208,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1208,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1208,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1209,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1209,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1209,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1209,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1209,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1209,
+          "y": 1542,
+          "zoom": 12
+        }
+      ],
+      "desired_count": 48,
+      "loaded_count": 0,
+      "fallback_count": 160,
+      "pending_count": 73,
+      "pending_tiles": 73,
+      "usage": {
+        "bytes_received": 1857763,
+        "cache_bytes": 1603119,
+        "cache_tiles": 179,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 182
+      },
+      "provider": {
+        "bytes_received": 1604869,
+        "id": "google_satellite",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 180,
+        "retry_at_ms": 1792937982068,
+        "state": "waiting_rate_limit"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "city",
+    "input": "state",
+    "selected_area": "",
+    "altitude_m": 60165.094686334065,
+    "latitude": 40.71279861454447,
+    "longitude": -74.00600148376238,
+    "stream": {
+      "generation": 1792937921473050,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 462.98918211136794,
+        "retrieved_at_ms": 1792937946446,
+        "source_id": "google_satellite",
+        "source_resolution_m": 462.98918211136794,
+        "state": "loading"
+      },
+      "state": "rate_limited",
+      "min_zoom": 12,
+      "max_zoom": 12,
+      "desired_tiles": [
+        {
+          "x": 1202,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1202,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1202,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1202,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1202,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1202,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1203,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1203,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1203,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1203,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1203,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1203,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1204,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1204,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1204,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1204,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1204,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1204,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1205,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1205,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1205,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1205,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1205,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1205,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1206,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1206,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1206,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1206,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1206,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1206,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1207,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1207,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1207,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1207,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1207,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1207,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1208,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1208,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1208,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1208,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1208,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1208,
+          "y": 1542,
+          "zoom": 12
+        },
+        {
+          "x": 1209,
+          "y": 1537,
+          "zoom": 12
+        },
+        {
+          "x": 1209,
+          "y": 1538,
+          "zoom": 12
+        },
+        {
+          "x": 1209,
+          "y": 1539,
+          "zoom": 12
+        },
+        {
+          "x": 1209,
+          "y": 1540,
+          "zoom": 12
+        },
+        {
+          "x": 1209,
+          "y": 1541,
+          "zoom": 12
+        },
+        {
+          "x": 1209,
+          "y": 1542,
+          "zoom": 12
+        }
+      ],
+      "desired_count": 48,
+      "loaded_count": 0,
+      "fallback_count": 160,
+      "pending_count": 73,
+      "pending_tiles": 73,
+      "usage": {
+        "bytes_received": 1857763,
+        "cache_bytes": 1603119,
+        "cache_tiles": 179,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 182
+      },
+      "provider": {
+        "bytes_received": 1604869,
+        "id": "google_satellite",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 180,
+        "retry_at_ms": 1792937982068,
+        "state": "waiting_rate_limit"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "wheel",
+    "input": "wheel",
+    "selected_area": "",
+    "altitude_m": 8142.622945964922,
+    "latitude": 40.71279950761052,
+    "longitude": -74.0060004515081,
+    "stream": {
+      "generation": 1792937921473051,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 462.98918211136794,
+        "retrieved_at_ms": 1792937946446,
+        "source_id": "google_satellite",
+        "source_resolution_m": 462.98918211136794,
+        "state": "loading"
+      },
+      "state": "rate_limited",
+      "min_zoom": 14,
+      "max_zoom": 15,
+      "desired_tiles": [
+        {
+          "x": 4821,
+          "y": 6159,
+          "zoom": 14
+        },
+        {
+          "x": 4821,
+          "y": 6160,
+          "zoom": 14
+        },
+        {
+          "x": 4821,
+          "y": 6161,
+          "zoom": 14
+        },
+        {
+          "x": 4826,
+          "y": 6159,
+          "zoom": 14
+        },
+        {
+          "x": 4826,
+          "y": 6160,
+          "zoom": 14
+        },
+        {
+          "x": 4826,
+          "y": 6161,
+          "zoom": 14
+        },
+        {
+          "x": 9643,
+          "y": 12317,
+          "zoom": 15
+        },
+        {
+          "x": 9644,
+          "y": 12317,
+          "zoom": 15
+        },
+        {
+          "x": 9644,
+          "y": 12318,
+          "zoom": 15
+        },
+        {
+          "x": 9644,
+          "y": 12319,
+          "zoom": 15
+        },
+        {
+          "x": 9644,
+          "y": 12320,
+          "zoom": 15
+        },
+        {
+          "x": 9644,
+          "y": 12321,
+          "zoom": 15
+        },
+        {
+          "x": 9644,
+          "y": 12322,
+          "zoom": 15
+        },
+        {
+          "x": 9644,
+          "y": 12323,
+          "zoom": 15
+        },
+        {
+          "x": 9645,
+          "y": 12317,
+          "zoom": 15
+        },
+        {
+          "x": 9645,
+          "y": 12318,
+          "zoom": 15
+        },
+        {
+          "x": 9645,
+          "y": 12319,
+          "zoom": 15
+        },
+        {
+          "x": 9645,
+          "y": 12320,
+          "zoom": 15
+        },
+        {
+          "x": 9645,
+          "y": 12321,
+          "zoom": 15
+        },
+        {
+          "x": 9645,
+          "y": 12322,
+          "zoom": 15
+        },
+        {
+          "x": 9645,
+          "y": 12323,
+          "zoom": 15
+        },
+        {
+          "x": 9646,
+          "y": 12317,
+          "zoom": 15
+        },
+        {
+          "x": 9646,
+          "y": 12318,
+          "zoom": 15
+        },
+        {
+          "x": 9646,
+          "y": 12319,
+          "zoom": 15
+        },
+        {
+          "x": 9646,
+          "y": 12320,
+          "zoom": 15
+        },
+        {
+          "x": 9646,
+          "y": 12321,
+          "zoom": 15
+        },
+        {
+          "x": 9646,
+          "y": 12322,
+          "zoom": 15
+        },
+        {
+          "x": 9646,
+          "y": 12323,
+          "zoom": 15
+        },
+        {
+          "x": 9647,
+          "y": 12317,
+          "zoom": 15
+        },
+        {
+          "x": 9647,
+          "y": 12318,
+          "zoom": 15
+        },
+        {
+          "x": 9647,
+          "y": 12319,
+          "zoom": 15
+        },
+        {
+          "x": 9647,
+          "y": 12320,
+          "zoom": 15
+        },
+        {
+          "x": 9647,
+          "y": 12321,
+          "zoom": 15
+        },
+        {
+          "x": 9647,
+          "y": 12322,
+          "zoom": 15
+        },
+        {
+          "x": 9647,
+          "y": 12323,
+          "zoom": 15
+        },
+        {
+          "x": 9648,
+          "y": 12317,
+          "zoom": 15
+        },
+        {
+          "x": 9648,
+          "y": 12318,
+          "zoom": 15
+        },
+        {
+          "x": 9648,
+          "y": 12319,
+          "zoom": 15
+        },
+        {
+          "x": 9648,
+          "y": 12320,
+          "zoom": 15
+        },
+        {
+          "x": 9648,
+          "y": 12321,
+          "zoom": 15
+        },
+        {
+          "x": 9648,
+          "y": 12322,
+          "zoom": 15
+        },
+        {
+          "x": 9648,
+          "y": 12323,
+          "zoom": 15
+        },
+        {
+          "x": 9649,
+          "y": 12317,
+          "zoom": 15
+        },
+        {
+          "x": 9649,
+          "y": 12318,
+          "zoom": 15
+        },
+        {
+          "x": 9649,
+          "y": 12319,
+          "zoom": 15
+        },
+        {
+          "x": 9649,
+          "y": 12320,
+          "zoom": 15
+        },
+        {
+          "x": 9649,
+          "y": 12321,
+          "zoom": 15
+        },
+        {
+          "x": 9649,
+          "y": 12322,
+          "zoom": 15
+        },
+        {
+          "x": 9649,
+          "y": 12323,
+          "zoom": 15
+        },
+        {
+          "x": 9650,
+          "y": 12317,
+          "zoom": 15
+        },
+        {
+          "x": 9650,
+          "y": 12318,
+          "zoom": 15
+        },
+        {
+          "x": 9650,
+          "y": 12319,
+          "zoom": 15
+        },
+        {
+          "x": 9650,
+          "y": 12320,
+          "zoom": 15
+        },
+        {
+          "x": 9650,
+          "y": 12321,
+          "zoom": 15
+        },
+        {
+          "x": 9650,
+          "y": 12322,
+          "zoom": 15
+        },
+        {
+          "x": 9650,
+          "y": 12323,
+          "zoom": 15
+        },
+        {
+          "x": 9651,
+          "y": 12317,
+          "zoom": 15
+        },
+        {
+          "x": 9651,
+          "y": 12318,
+          "zoom": 15
+        },
+        {
+          "x": 9651,
+          "y": 12319,
+          "zoom": 15
+        },
+        {
+          "x": 9651,
+          "y": 12320,
+          "zoom": 15
+        },
+        {
+          "x": 9651,
+          "y": 12321,
+          "zoom": 15
+        },
+        {
+          "x": 9651,
+          "y": 12322,
+          "zoom": 15
+        },
+        {
+          "x": 9651,
+          "y": 12323,
+          "zoom": 15
+        },
+        {
+          "x": 9652,
+          "y": 12317,
+          "zoom": 15
+        }
+      ],
+      "desired_count": 64,
+      "loaded_count": 0,
+      "fallback_count": 160,
+      "pending_count": 102,
+      "pending_tiles": 102,
+      "usage": {
+        "bytes_received": 1857763,
+        "cache_bytes": 1603119,
+        "cache_tiles": 179,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 182
+      },
+      "provider": {
+        "bytes_received": 1604869,
+        "id": "google_satellite",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 180,
+        "retry_at_ms": 1792937982068,
+        "state": "waiting_rate_limit"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "wheel",
+    "input": "wheel",
+    "selected_area": "",
+    "altitude_m": 1102.1427069289034,
+    "latitude": 40.712797535851465,
+    "longitude": -74.00600194527658,
+    "stream": {
+      "generation": 1792937921473052,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 462.98918040418744,
+        "retrieved_at_ms": 1792937946446,
+        "source_id": "google_satellite",
+        "source_resolution_m": 462.98918040418744,
+        "state": "loading"
+      },
+      "state": "rate_limited",
+      "min_zoom": 17,
+      "max_zoom": 18,
+      "desired_tiles": [
+        {
+          "x": 38588,
+          "y": 49279,
+          "zoom": 17
+        },
+        {
+          "x": 38588,
+          "y": 49281,
+          "zoom": 17
+        },
+        {
+          "x": 38589,
+          "y": 49279,
+          "zoom": 17
+        },
+        {
+          "x": 38593,
+          "y": 49279,
+          "zoom": 17
+        },
+        {
+          "x": 38593,
+          "y": 49280,
+          "zoom": 17
+        },
+        {
+          "x": 38593,
+          "y": 49281,
+          "zoom": 17
+        },
+        {
+          "x": 38593,
+          "y": 49282,
+          "zoom": 17
+        },
+        {
+          "x": 77177,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77177,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77177,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77178,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77178,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77178,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77178,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77178,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77179,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77179,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77179,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77179,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77179,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98564,
+          "zoom": 18
+        }
+      ],
+      "desired_count": 62,
+      "loaded_count": 0,
+      "fallback_count": 160,
+      "pending_count": 115,
+      "pending_tiles": 115,
+      "usage": {
+        "bytes_received": 1857763,
+        "cache_bytes": 1603119,
+        "cache_tiles": 179,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 182
+      },
+      "provider": {
+        "bytes_received": 1604869,
+        "id": "google_satellite",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 180,
+        "retry_at_ms": 1792937982068,
+        "state": "waiting_rate_limit"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "street",
+    "input": "state",
+    "selected_area": "",
+    "altitude_m": 1102.1427069289034,
+    "latitude": 40.712797535851465,
+    "longitude": -74.00600194527658,
+    "stream": {
+      "generation": 1792937921473052,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 462.98918040418744,
+        "retrieved_at_ms": 1792937946446,
+        "source_id": "google_satellite",
+        "source_resolution_m": 462.98918040418744,
+        "state": "loading"
+      },
+      "state": "rate_limited",
+      "min_zoom": 17,
+      "max_zoom": 18,
+      "desired_tiles": [
+        {
+          "x": 38588,
+          "y": 49279,
+          "zoom": 17
+        },
+        {
+          "x": 38588,
+          "y": 49281,
+          "zoom": 17
+        },
+        {
+          "x": 38589,
+          "y": 49279,
+          "zoom": 17
+        },
+        {
+          "x": 38593,
+          "y": 49279,
+          "zoom": 17
+        },
+        {
+          "x": 38593,
+          "y": 49280,
+          "zoom": 17
+        },
+        {
+          "x": 38593,
+          "y": 49281,
+          "zoom": 17
+        },
+        {
+          "x": 38593,
+          "y": 49282,
+          "zoom": 17
+        },
+        {
+          "x": 77177,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77177,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77177,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77178,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77178,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77178,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77178,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77178,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77179,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77179,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77179,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77179,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77179,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77180,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77181,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98564,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98564,
+          "zoom": 18
+        }
+      ],
+      "desired_count": 62,
+      "loaded_count": 0,
+      "fallback_count": 160,
+      "pending_count": 115,
+      "pending_tiles": 115,
+      "usage": {
+        "bytes_received": 1857763,
+        "cache_bytes": 1603119,
+        "cache_tiles": 179,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 182
+      },
+      "provider": {
+        "bytes_received": 1604869,
+        "id": "google_satellite",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 180,
+        "retry_at_ms": 1792937982068,
+        "state": "waiting_rate_limit"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "drag",
+    "input": "drag",
+    "selected_area": "",
+    "altitude_m": 1102.143700559361,
+    "latitude": 40.71348945212976,
+    "longitude": -74.00143563488143,
+    "stream": {
+      "generation": 1792937921473053,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 462.98439452229223,
+        "retrieved_at_ms": 1792937946446,
+        "source_id": "google_satellite",
+        "source_resolution_m": 462.98439452229223,
+        "state": "loading"
+      },
+      "state": "rate_limited",
+      "min_zoom": 17,
+      "max_zoom": 18,
+      "desired_tiles": [
+        {
+          "x": 38590,
+          "y": 49279,
+          "zoom": 17
+        },
+        {
+          "x": 38590,
+          "y": 49280,
+          "zoom": 17
+        },
+        {
+          "x": 38590,
+          "y": 49281,
+          "zoom": 17
+        },
+        {
+          "x": 38595,
+          "y": 49279,
+          "zoom": 17
+        },
+        {
+          "x": 38595,
+          "y": 49280,
+          "zoom": 17
+        },
+        {
+          "x": 38595,
+          "y": 49281,
+          "zoom": 17
+        },
+        {
+          "x": 77181,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77190,
+          "y": 98557,
+          "zoom": 18
+        }
+      ],
+      "desired_count": 64,
+      "loaded_count": 0,
+      "fallback_count": 160,
+      "pending_count": 115,
+      "pending_tiles": 115,
+      "usage": {
+        "bytes_received": 1857763,
+        "cache_bytes": 1603119,
+        "cache_tiles": 179,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 182
+      },
+      "provider": {
+        "bytes_received": 1604869,
+        "id": "google_satellite",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 180,
+        "retry_at_ms": 1792937982068,
+        "state": "waiting_rate_limit"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "panned-street",
+    "input": "state",
+    "selected_area": "",
+    "altitude_m": 1102.143700559361,
+    "latitude": 40.71348945212976,
+    "longitude": -74.00143563488143,
+    "stream": {
+      "generation": 1792937921473053,
+      "source_id": "google_satellite",
+      "source": {
+        "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+        "imagery_date": null,
+        "label": "Google satellite \u00b7 experimental online preview",
+        "mode": "online_preview_only",
+        "native_max_zoom": 19,
+        "preview_resolution_m": 462.98439452229223,
+        "retrieved_at_ms": 1792937946446,
+        "source_id": "google_satellite",
+        "source_resolution_m": 462.98439452229223,
+        "state": "loading"
+      },
+      "state": "rate_limited",
+      "min_zoom": 17,
+      "max_zoom": 18,
+      "desired_tiles": [
+        {
+          "x": 38590,
+          "y": 49279,
+          "zoom": 17
+        },
+        {
+          "x": 38590,
+          "y": 49280,
+          "zoom": 17
+        },
+        {
+          "x": 38590,
+          "y": 49281,
+          "zoom": 17
+        },
+        {
+          "x": 38595,
+          "y": 49279,
+          "zoom": 17
+        },
+        {
+          "x": 38595,
+          "y": 49280,
+          "zoom": 17
+        },
+        {
+          "x": 38595,
+          "y": 49281,
+          "zoom": 17
+        },
+        {
+          "x": 77181,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77182,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77183,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77184,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77185,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77186,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77187,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77188,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98557,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98558,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98559,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98560,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98561,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98562,
+          "zoom": 18
+        },
+        {
+          "x": 77189,
+          "y": 98563,
+          "zoom": 18
+        },
+        {
+          "x": 77190,
+          "y": 98557,
+          "zoom": 18
+        }
+      ],
+      "desired_count": 64,
+      "loaded_count": 0,
+      "fallback_count": 160,
+      "pending_count": 115,
+      "pending_tiles": 115,
+      "usage": {
+        "bytes_received": 1857763,
+        "cache_bytes": 1603119,
+        "cache_tiles": 179,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 182
+      },
+      "provider": {
+        "bytes_received": 1604869,
+        "id": "google_satellite",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 180,
+        "retry_at_ms": 1792937982068,
+        "state": "waiting_rate_limit"
+      },
+      "signals": {
+        "omitted_points": 99,
+        "points_returned": 128,
+        "points_total": 227,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  }
+]

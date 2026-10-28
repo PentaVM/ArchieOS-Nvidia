@@ -3,11 +3,15 @@
 #include "LumenField.h"
 #include "DisplayControl.h"
 #include "ShellRuntime.h"
+#include "WorldImageProvider.h"
+#include "GlobeStreamBridge.h"
 #include "UiWalk.h"
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQmlComponent>
+#include <QPointer>
 #include <QQuickStyle>
 #include <QQuickWindow>
 #include <QTimer>
@@ -26,24 +30,30 @@
 class PresentationTracker final : public QObject {
 public:
     PresentationTracker(QQuickWindow *window, ArchieBridge *bridge)
-        : QObject(window), m_window(window), m_bridge(bridge) {
+        : QObject(window), m_bridge(bridge) { trackWindow(window); }
+    void trackWindow(QQuickWindow *window) {
+        m_windows.push_back(window);
         window->installEventFilter(this);
         connect(window, &QWindow::visibilityChanged, this, [this] { update(); });
+        connect(window, &QObject::destroyed, this, [this] { update(); });
         update();
     }
-    bool eventFilter(QObject *object, QEvent *event) override {
-        if (object == m_window && (event->type() == QEvent::Expose || event->type() == QEvent::Show
-            || event->type() == QEvent::Hide || event->type() == QEvent::WindowStateChange)) {
+    bool eventFilter(QObject *, QEvent *event) override {
+        if (event->type() == QEvent::Expose || event->type() == QEvent::Show
+            || event->type() == QEvent::Hide || event->type() == QEvent::WindowStateChange) {
             QTimer::singleShot(0, this, [this] { update(); });
         }
-        return QObject::eventFilter(object, event);
+        return false;
     }
 private:
     void update() {
-        m_bridge->setPresented(m_window->isVisible() && m_window->isExposed()
-                              && m_window->visibility() != QWindow::Minimized);
+        const bool presented=std::any_of(m_windows.cbegin(),m_windows.cend(),[](const auto &window) {
+            return window && window->isVisible() && window->isExposed()
+                && window->visibility()!=QWindow::Minimized;
+        });
+        m_bridge->setPresented(presented);
     }
-    QQuickWindow *m_window;
+    QList<QPointer<QQuickWindow>> m_windows;
     ArchieBridge *m_bridge;
 };
 
@@ -60,6 +70,9 @@ int main(int argc, char *argv[])
     DisplayControl displayControl(&lumen);
     QCommandLineParser arguments;
     arguments.addHelpOption();
+    arguments.addOption(QCommandLineOption(QStringLiteral("imagery-source"),QStringLiteral("Initial loaded imagery source preference; viewer-only."),QStringLiteral("source")));
+    arguments.addOption(QCommandLineOption(QStringLiteral("displayd-port"),QStringLiteral("Trusted loopback read-only projection port."),QStringLiteral("port"),QStringLiteral("7666")));
+    arguments.addOption(QCommandLineOption(QStringLiteral("control-port"),QStringLiteral("Loopback visual controls port."),QStringLiteral("port"),QStringLiteral("7668")));
     arguments.addOption(QCommandLineOption(QStringLiteral("shell"), QStringLiteral("Open the native Archie desktop shell.")));
     arguments.addOption(QCommandLineOption(QStringLiteral("theme"), QStringLiteral("Shell theme: dark or light (beta)."), QStringLiteral("mode"), QStringLiteral("dark")));
     arguments.addOption(QCommandLineOption(QStringLiteral("shell-bridge"), QStringLiteral("Trusted read-only shell bridge executable."),
@@ -74,7 +87,7 @@ int main(int argc, char *argv[])
     arguments.addOption(QCommandLineOption(QStringLiteral("lens"), QStringLiteral("Initial orb lens: architecture, folders, or entities."), QStringLiteral("name"), QStringLiteral("architecture")));
     arguments.addOption(QCommandLineOption(QStringLiteral("preset"), QStringLiteral("Initial look preset, e.g. holograma (Xavi's desktop sphere)."), QStringLiteral("name")));
     arguments.addOption(QCommandLineOption(QStringLiteral("content-root"), QStringLiteral("Folder the content sphere lists (read-only)."), QStringLiteral("path")));
-    arguments.addOption(QCommandLineOption(QStringLiteral("ui-walk"), QStringLiteral("Shell only: click through the steps in this JSON file and record each click (verification)."), QStringLiteral("steps")));
+    arguments.addOption(QCommandLineOption(QStringLiteral("ui-walk"), QStringLiteral("Shell or World: click through the steps in this JSON file and record each click (verification)."), QStringLiteral("steps")));
     arguments.addOption(QCommandLineOption(QStringLiteral("ui-walk-out"), QStringLiteral("Where --ui-walk writes its screenshots and report.jsonl."), QStringLiteral("dir"), QStringLiteral("ui-walk")));
     arguments.process(app);
     const bool shellMode = arguments.isSet(QStringLiteral("shell"));
@@ -83,12 +96,30 @@ int main(int argc, char *argv[])
         qCritical("archie-display: theme must be dark or light");
         return EXIT_FAILURE;
     }
-    ArchieBridge bridge(nullptr, shellMode);
+    bool portValid=false,controlValid=false;
+    const auto projectionPort=arguments.value(QStringLiteral("displayd-port")).toUInt(&portValid);
+    const auto controlPort=arguments.value(QStringLiteral("control-port")).toUInt(&controlValid);
+    if(!portValid||projectionPort==0||projectionPort>65535||!controlValid||controlPort>65535){qCritical("archie-display: invalid loopback port");return EXIT_FAILURE;}
+    ArchieBridge bridge(nullptr, shellMode,static_cast<quint16>(projectionPort));
+    GlobeStreamBridge globeStream;
+    const auto captureAllowed=[&bridge,&globeStream] {
+        if(globeStream.sourceId()==QStringLiteral("google_satellite")||globeStream.proprietaryActive())return false;
+        for(const auto &entry:bridge.imagerySources()) {
+            const auto source=entry.toMap();
+            if(source.value(QStringLiteral("source_id")).toString()==bridge.selectedImagery() &&
+               source.value(QStringLiteral("mode")).toString()==QStringLiteral("online_preview_only")) return false;
+        }
+        return true;
+    };
     bridge.setPresented(false);
+    if(arguments.isSet(QStringLiteral("imagery-source"))){bridge.setSelectedImagery(arguments.value(QStringLiteral("imagery-source")));globeStream.setSourceId(arguments.value(QStringLiteral("imagery-source")));}
     displayControl.setShellMode(shellMode);
     ShellRuntime shellRuntime(arguments.value(QStringLiteral("shell-bridge")),
         arguments.value(QStringLiteral("lan-file")), arguments.value(QStringLiteral("workspaces-root")));
     QQmlApplicationEngine engine;
+    auto *worldImages=new WorldImageProvider;engine.addImageProvider(QStringLiteral("world"),worldImages);bridge.setWorldImageProvider(worldImages);
+    auto *globeImages=new WorldImageProvider;engine.addImageProvider(QStringLiteral("globe"),globeImages);globeStream.setImageProvider(globeImages);
+    engine.rootContext()->setContextProperty(QStringLiteral("globeStream"), &globeStream);
     engine.rootContext()->setContextProperty(QStringLiteral("archieBridge"), &bridge);
     engine.rootContext()->setContextProperty(QStringLiteral("lumen"), &lumen);
     engine.rootContext()->setContextProperty(QStringLiteral("appCatalog"), &appCatalog);
@@ -105,7 +136,7 @@ int main(int argc, char *argv[])
     if (engine.rootObjects().isEmpty())
         return EXIT_FAILURE;
     auto *window = qobject_cast<QQuickWindow *>(engine.rootObjects().front());
-    if (window) new PresentationTracker(window, &bridge);
+    auto *presentation=window ? new PresentationTracker(window, &bridge) : nullptr;
     if (!shellMode) {
         QString scene = displayControl.sceneNamed(arguments.value(QStringLiteral("scene")));
         if (scene.isEmpty()) {
@@ -126,15 +157,43 @@ int main(int argc, char *argv[])
         qWarning("archie-display: requested screen %d is unavailable; this WSL session exposes %lld screen(s)",
                  screenNumber, static_cast<long long>(screens.size()));
     }
-    if (!displayControl.start())
+    // One listener, two host surfaces: the shell's World command opens the actual native
+    // renderer in this same engine, preserving the shell Theme singleton and all authority.
+    if (shellMode) {
+        QQmlComponent worldComponent(&engine);
+        worldComponent.loadFromModule(QStringLiteral("Archie.Observatory"),QStringLiteral("Main"));
+        auto *object=worldComponent.createWithInitialProperties({
+            {QStringLiteral("scene"),QStringLiteral("world")},
+            {QStringLiteral("worldHost"),true},{QStringLiteral("visible"),false}});
+        auto *worldWindow=qobject_cast<QQuickWindow*>(object);
+        if(worldWindow) {
+            object->setParent(&engine);
+            if(presentation) presentation->trackWindow(worldWindow);
+            displayControl.setWorldAvailable(true);
+            QObject::connect(&displayControl,&DisplayControl::commandReceived,&engine,
+                [worldWindow,&bridge](const QString &action,const QString &value,bool) {
+                    if(action==QStringLiteral("scene") && value==QStringLiteral("world")) {
+                        bridge.enableWorld();bridge.requestMode(QStringLiteral("watcher"));
+                        worldWindow->showFullScreen();worldWindow->raise();worldWindow->requestActivate();
+                    }
+                });
+            if(arguments.value(QStringLiteral("scene"))==QStringLiteral("world")) {
+                bridge.enableWorld();bridge.requestMode(QStringLiteral("watcher"));worldWindow->showFullScreen();
+            }
+        } else {
+            delete object;
+            qWarning("archie-display: native World host unavailable: %s",qPrintable(worldComponent.errorString()));
+        }
+    }
+    if (!displayControl.start(static_cast<quint16>(controlPort)))
         qWarning("archie-display: local visual controls unavailable");
     if (shellMode) {
         shellRuntime.setRunning(true);
         QObject::connect(&app, &QCoreApplication::aboutToQuit, &shellRuntime, [&shellRuntime] { shellRuntime.setRunning(false); });
     }
     if (arguments.isSet(QStringLiteral("ui-walk"))) {
-        if (!window || !shellMode) {
-            qCritical("archie-display: --ui-walk needs --shell");
+        if (!window || (!shellMode && arguments.value(QStringLiteral("scene"))!=QStringLiteral("world"))) {
+            qCritical("archie-display: --ui-walk needs --shell or --scene world");
             return EXIT_FAILURE;
         }
         window->setVisibility(QWindow::Windowed);
@@ -145,6 +204,7 @@ int main(int argc, char *argv[])
             return EXIT_FAILURE;
         }
         // The bridge's first frames and the orb's first field arrive in the first seconds.
+        walk->setCaptureAllowed(captureAllowed);
         walk->start(8000);
     }
     if (arguments.isSet(QStringLiteral("render-check"))) {
@@ -155,7 +215,12 @@ int main(int argc, char *argv[])
         // A software renderer may need longer than 10 s for a field to settle.
         bool delayValid=false;
         const int delay=qEnvironmentVariableIntValue("ARCHIE_RENDER_CHECK_MS",&delayValid);
-        QTimer::singleShot(delayValid ? std::clamp(delay,1000,120000) : 10000,&app,[window,path,shellMode,&shellRuntime,&bridge,&app,&lumen] {
+        QTimer::singleShot(delayValid ? std::clamp(delay,1000,120000) : 10000,&app,[window,path,shellMode,&shellRuntime,&bridge,&app,&lumen,captureAllowed] {
+            if(!captureAllowed()) {
+                qCritical("archie-display: online-preview imagery cannot be captured or exported");
+                app.exit(EXIT_FAILURE);
+                return;
+            }
             qInfo("archie-display render-check: orb fps=%d", lumen.fps());
             const QImage frame=window->grabWindow();
             QFile file(path);

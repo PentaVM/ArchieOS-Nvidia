@@ -1,0 +1,9 @@
+   Compiling archie-worldd v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-worldd)
+error[E0433]: cannot find type `Packet` in this scope
+   --> crates/archie-worldd/src/earth_runtime.rs:694:20
+    |
+694 | ...et=Packet::n...
+    |       ^^^^^^ use of undeclared type `Packet`
+
+For more information about this error, try `rustc --explain E0433`.
+error: could not compile `archie-worldd` (lib test) due to 1 previous error

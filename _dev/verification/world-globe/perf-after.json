@@ -1,0 +1,28 @@
+[
+  {
+    "kind": "cold",
+    "first_mesh_s": 3.731841368000005,
+    "completed_s": 9.119784377000087,
+    "state": "ready",
+    "error": "",
+    "active_meshes": 60,
+    "level": 20,
+    "requests": 140,
+    "bytes": 8615991,
+    "response_ms_max": 80.42421999994076,
+    "response_ms_median": 18.00702800005638
+  },
+  {
+    "kind": "warm_pan",
+    "first_mesh_s": 0.032793844000025274,
+    "completed_s": 1.2585853380001026,
+    "state": "ready",
+    "error": "",
+    "active_meshes": 62,
+    "level": 20,
+    "requests": 169,
+    "bytes": 9888419,
+    "response_ms_max": 67.81575600007272,
+    "response_ms_median": 42.586940000092
+  }
+]

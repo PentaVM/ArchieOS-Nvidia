@@ -1,0 +1,2070 @@
+[
+  {
+    "label": "001-planet.png",
+    "input": "shot",
+    "selected_area": "",
+    "altitude_m": 24272231.9818945,
+    "latitude": 5.739098319164468,
+    "longitude": 0.0,
+    "stream": {
+      "generation": 1792938243548043,
+      "source_id": "blue_marble",
+      "source": {
+        "attribution": "NASA EOSDIS GIBS \u00b7 NASA/USGS/ESA source imagery; dates and gaps vary",
+        "imagery_date": "static",
+        "label": "NASA Blue Marble shaded relief",
+        "mode": "open_data",
+        "native_max_zoom": 8,
+        "preview_resolution_m": 9724.018526737143,
+        "retrieved_at_ms": 1792938248032,
+        "source_id": "blue_marble",
+        "source_resolution_m": 9724.018526737143,
+        "state": "ready"
+      },
+      "state": "ready",
+      "min_zoom": 2,
+      "max_zoom": 4,
+      "desired_tiles": [
+        {
+          "x": 1,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "zoom": 2
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "zoom": 2
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 5,
+          "zoom": 3
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 3,
+          "y": 5,
+          "zoom": 3
+        },
+        {
+          "x": 4,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 4,
+          "y": 5,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 3,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "zoom": 3
+        },
+        {
+          "x": 6,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 6,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 6,
+          "y": 8,
+          "zoom": 4
+        },
+        {
+          "x": 6,
+          "y": 9,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 8,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 9,
+          "zoom": 4
+        },
+        {
+          "x": 8,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 8,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 8,
+          "y": 8,
+          "zoom": 4
+        },
+        {
+          "x": 8,
+          "y": 9,
+          "zoom": 4
+        },
+        {
+          "x": 9,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 9,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 9,
+          "y": 8,
+          "zoom": 4
+        },
+        {
+          "x": 9,
+          "y": 9,
+          "zoom": 4
+        }
+      ],
+      "desired_count": 32,
+      "loaded_count": 32,
+      "fallback_count": 13,
+      "pending_count": 0,
+      "pending_tiles": 0,
+      "usage": {
+        "bytes_received": 5858741,
+        "cache_bytes": 2775919,
+        "cache_tiles": 192,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 422
+      },
+      "provider": {
+        "bytes_received": 513211,
+        "id": "nasa_gibs",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 120,
+        "requests_sent": 45,
+        "retry_at_ms": null,
+        "state": "ready"
+      },
+      "signals": {
+        "omitted_points": 100,
+        "points_returned": 128,
+        "points_total": 228,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "wheel",
+    "input": "wheel",
+    "selected_area": "",
+    "altitude_m": 3284889.0219290587,
+    "latitude": 5.739098831573271,
+    "longitude": 0.0,
+    "stream": {
+      "generation": 1792938243548044,
+      "source_id": "blue_marble",
+      "source": {
+        "attribution": "NASA EOSDIS GIBS \u00b7 NASA/USGS/ESA source imagery; dates and gaps vary",
+        "imagery_date": "static",
+        "label": "NASA Blue Marble shaded relief",
+        "mode": "open_data",
+        "native_max_zoom": 8,
+        "preview_resolution_m": 4862.009263677499,
+        "retrieved_at_ms": 1792938258292,
+        "source_id": "blue_marble",
+        "source_resolution_m": 4862.009263677499,
+        "state": "loading"
+      },
+      "state": "loading",
+      "min_zoom": 6,
+      "max_zoom": 7,
+      "desired_tiles": [
+        {
+          "x": 28,
+          "y": 28,
+          "zoom": 6
+        },
+        {
+          "x": 28,
+          "y": 29,
+          "zoom": 6
+        },
+        {
+          "x": 28,
+          "y": 33,
+          "zoom": 6
+        },
+        {
+          "x": 29,
+          "y": 28,
+          "zoom": 6
+        },
+        {
+          "x": 29,
+          "y": 29,
+          "zoom": 6
+        },
+        {
+          "x": 29,
+          "y": 30,
+          "zoom": 6
+        },
+        {
+          "x": 29,
+          "y": 31,
+          "zoom": 6
+        },
+        {
+          "x": 29,
+          "y": 32,
+          "zoom": 6
+        },
+        {
+          "x": 30,
+          "y": 29,
+          "zoom": 6
+        },
+        {
+          "x": 30,
+          "y": 32,
+          "zoom": 6
+        },
+        {
+          "x": 31,
+          "y": 29,
+          "zoom": 6
+        },
+        {
+          "x": 31,
+          "y": 32,
+          "zoom": 6
+        },
+        {
+          "x": 32,
+          "y": 29,
+          "zoom": 6
+        },
+        {
+          "x": 32,
+          "y": 32,
+          "zoom": 6
+        },
+        {
+          "x": 33,
+          "y": 29,
+          "zoom": 6
+        },
+        {
+          "x": 33,
+          "y": 32,
+          "zoom": 6
+        },
+        {
+          "x": 34,
+          "y": 28,
+          "zoom": 6
+        },
+        {
+          "x": 34,
+          "y": 29,
+          "zoom": 6
+        },
+        {
+          "x": 34,
+          "y": 30,
+          "zoom": 6
+        },
+        {
+          "x": 34,
+          "y": 31,
+          "zoom": 6
+        },
+        {
+          "x": 34,
+          "y": 32,
+          "zoom": 6
+        },
+        {
+          "x": 35,
+          "y": 28,
+          "zoom": 6
+        },
+        {
+          "x": 35,
+          "y": 29,
+          "zoom": 6
+        },
+        {
+          "x": 35,
+          "y": 33,
+          "zoom": 6
+        },
+        {
+          "x": 60,
+          "y": 60,
+          "zoom": 7
+        },
+        {
+          "x": 60,
+          "y": 61,
+          "zoom": 7
+        },
+        {
+          "x": 60,
+          "y": 62,
+          "zoom": 7
+        },
+        {
+          "x": 60,
+          "y": 63,
+          "zoom": 7
+        },
+        {
+          "x": 61,
+          "y": 60,
+          "zoom": 7
+        },
+        {
+          "x": 61,
+          "y": 61,
+          "zoom": 7
+        },
+        {
+          "x": 61,
+          "y": 62,
+          "zoom": 7
+        },
+        {
+          "x": 61,
+          "y": 63,
+          "zoom": 7
+        },
+        {
+          "x": 62,
+          "y": 60,
+          "zoom": 7
+        },
+        {
+          "x": 62,
+          "y": 61,
+          "zoom": 7
+        },
+        {
+          "x": 62,
+          "y": 62,
+          "zoom": 7
+        },
+        {
+          "x": 62,
+          "y": 63,
+          "zoom": 7
+        },
+        {
+          "x": 63,
+          "y": 60,
+          "zoom": 7
+        },
+        {
+          "x": 63,
+          "y": 61,
+          "zoom": 7
+        },
+        {
+          "x": 63,
+          "y": 62,
+          "zoom": 7
+        },
+        {
+          "x": 63,
+          "y": 63,
+          "zoom": 7
+        },
+        {
+          "x": 64,
+          "y": 60,
+          "zoom": 7
+        },
+        {
+          "x": 64,
+          "y": 61,
+          "zoom": 7
+        },
+        {
+          "x": 64,
+          "y": 62,
+          "zoom": 7
+        },
+        {
+          "x": 64,
+          "y": 63,
+          "zoom": 7
+        },
+        {
+          "x": 65,
+          "y": 60,
+          "zoom": 7
+        },
+        {
+          "x": 65,
+          "y": 61,
+          "zoom": 7
+        },
+        {
+          "x": 65,
+          "y": 62,
+          "zoom": 7
+        },
+        {
+          "x": 65,
+          "y": 63,
+          "zoom": 7
+        },
+        {
+          "x": 66,
+          "y": 60,
+          "zoom": 7
+        },
+        {
+          "x": 66,
+          "y": 61,
+          "zoom": 7
+        },
+        {
+          "x": 66,
+          "y": 62,
+          "zoom": 7
+        },
+        {
+          "x": 66,
+          "y": 63,
+          "zoom": 7
+        },
+        {
+          "x": 67,
+          "y": 60,
+          "zoom": 7
+        },
+        {
+          "x": 67,
+          "y": 61,
+          "zoom": 7
+        },
+        {
+          "x": 67,
+          "y": 62,
+          "zoom": 7
+        },
+        {
+          "x": 67,
+          "y": 63,
+          "zoom": 7
+        }
+      ],
+      "desired_count": 56,
+      "loaded_count": 0,
+      "fallback_count": 53,
+      "pending_count": 68,
+      "pending_tiles": 68,
+      "usage": {
+        "bytes_received": 5922891,
+        "cache_bytes": 2681610,
+        "cache_tiles": 192,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 434
+      },
+      "provider": {
+        "bytes_received": 577361,
+        "id": "nasa_gibs",
+        "in_flight": 4,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 120,
+        "requests_sent": 57,
+        "retry_at_ms": null,
+        "state": "fetching"
+      },
+      "signals": {
+        "omitted_points": 100,
+        "points_returned": 128,
+        "points_total": 228,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "wheel",
+    "input": "wheel",
+    "selected_area": "",
+    "altitude_m": 1208442.9942654883,
+    "latitude": 5.739098894227879,
+    "longitude": 0.0,
+    "stream": {
+      "generation": 1792938243548045,
+      "source_id": "blue_marble",
+      "source": {
+        "attribution": "NASA EOSDIS GIBS \u00b7 NASA/USGS/ESA source imagery; dates and gaps vary",
+        "imagery_date": "static",
+        "label": "NASA Blue Marble shaded relief",
+        "mode": "open_data",
+        "native_max_zoom": 8,
+        "preview_resolution_m": 607.7511572352005,
+        "retrieved_at_ms": 1792938263091,
+        "source_id": "blue_marble",
+        "source_resolution_m": 607.7511572352005,
+        "state": "loading"
+      },
+      "state": "rate_limited",
+      "min_zoom": 8,
+      "max_zoom": 8,
+      "desired_tiles": [
+        {
+          "x": 124,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 124,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 124,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 124,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 124,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 124,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 125,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 125,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 125,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 125,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 125,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 125,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 126,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 126,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 126,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 126,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 126,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 126,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 127,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 127,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 127,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 127,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 127,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 127,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 128,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 128,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 128,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 128,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 128,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 128,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 129,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 129,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 129,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 129,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 129,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 129,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 126,
+          "zoom": 8
+        }
+      ],
+      "desired_count": 48,
+      "loaded_count": 40,
+      "fallback_count": 73,
+      "pending_count": 8,
+      "pending_tiles": 8,
+      "usage": {
+        "bytes_received": 6382894,
+        "cache_bytes": 2198491,
+        "cache_tiles": 192,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 497
+      },
+      "provider": {
+        "bytes_received": 1037364,
+        "id": "nasa_gibs",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 120,
+        "requests_sent": 120,
+        "retry_at_ms": 1792938304129,
+        "state": "waiting_rate_limit"
+      },
+      "signals": {
+        "omitted_points": 100,
+        "points_returned": 128,
+        "points_total": 228,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "004-country.png",
+    "input": "shot",
+    "selected_area": "",
+    "altitude_m": 1208442.9942654883,
+    "latitude": 5.739098894227879,
+    "longitude": 0.0,
+    "stream": {
+      "generation": 1792938243548045,
+      "source_id": "blue_marble",
+      "source": {
+        "attribution": "NASA EOSDIS GIBS \u00b7 NASA/USGS/ESA source imagery; dates and gaps vary",
+        "imagery_date": "static",
+        "label": "NASA Blue Marble shaded relief",
+        "mode": "open_data",
+        "native_max_zoom": 8,
+        "preview_resolution_m": 607.7511572352005,
+        "retrieved_at_ms": 1792938263091,
+        "source_id": "blue_marble",
+        "source_resolution_m": 607.7511572352005,
+        "state": "loading"
+      },
+      "state": "rate_limited",
+      "min_zoom": 8,
+      "max_zoom": 8,
+      "desired_tiles": [
+        {
+          "x": 124,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 124,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 124,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 124,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 124,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 124,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 125,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 125,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 125,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 125,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 125,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 125,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 126,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 126,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 126,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 126,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 126,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 126,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 127,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 127,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 127,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 127,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 127,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 127,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 128,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 128,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 128,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 128,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 128,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 128,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 129,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 129,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 129,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 129,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 129,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 129,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 126,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 126,
+          "zoom": 8
+        }
+      ],
+      "desired_count": 48,
+      "loaded_count": 40,
+      "fallback_count": 73,
+      "pending_count": 8,
+      "pending_tiles": 8,
+      "usage": {
+        "bytes_received": 6382894,
+        "cache_bytes": 2198491,
+        "cache_tiles": 192,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 497
+      },
+      "provider": {
+        "bytes_received": 1037364,
+        "id": "nasa_gibs",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 120,
+        "requests_sent": 120,
+        "retry_at_ms": 1792938304129,
+        "state": "waiting_rate_limit"
+      },
+      "signals": {
+        "omitted_points": 100,
+        "points_returned": 128,
+        "points_total": 228,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "drag",
+    "input": "drag",
+    "selected_area": "",
+    "altitude_m": 1208443.019455378,
+    "latitude": 7.4462046352833235,
+    "longitude": 9.15042927762014,
+    "stream": {
+      "generation": 1792938243548046,
+      "source_id": "blue_marble",
+      "source": {
+        "attribution": "NASA EOSDIS GIBS \u00b7 NASA/USGS/ESA source imagery; dates and gaps vary",
+        "imagery_date": "static",
+        "label": "NASA Blue Marble shaded relief",
+        "mode": "open_data",
+        "native_max_zoom": 8,
+        "preview_resolution_m": 605.6618199369468,
+        "retrieved_at_ms": 1792938263091,
+        "source_id": "blue_marble",
+        "source_resolution_m": 605.6618199369468,
+        "state": "loading"
+      },
+      "state": "rate_limited",
+      "min_zoom": 8,
+      "max_zoom": 8,
+      "desired_tiles": [
+        {
+          "x": 130,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 132,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 132,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 132,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 132,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 132,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 132,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 133,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 133,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 133,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 133,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 133,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 133,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 134,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 134,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 134,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 134,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 134,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 134,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 135,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 135,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 135,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 135,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 135,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 135,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 136,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 136,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 136,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 136,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 136,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 136,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 137,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 137,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 137,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 137,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 137,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 137,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 138,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 138,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 138,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 138,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 138,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 138,
+          "y": 125,
+          "zoom": 8
+        }
+      ],
+      "desired_count": 54,
+      "loaded_count": 4,
+      "fallback_count": 110,
+      "pending_count": 69,
+      "pending_tiles": 69,
+      "usage": {
+        "bytes_received": 6382894,
+        "cache_bytes": 2198491,
+        "cache_tiles": 192,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 497
+      },
+      "provider": {
+        "bytes_received": 1037364,
+        "id": "nasa_gibs",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 120,
+        "requests_sent": 120,
+        "retry_at_ms": 1792938304129,
+        "state": "waiting_rate_limit"
+      },
+      "signals": {
+        "omitted_points": 100,
+        "points_returned": 128,
+        "points_total": 228,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "006-panned-country.png",
+    "input": "shot",
+    "selected_area": "",
+    "altitude_m": 1208443.019455378,
+    "latitude": 7.4462046352833235,
+    "longitude": 9.15042927762014,
+    "stream": {
+      "generation": 1792938243548046,
+      "source_id": "blue_marble",
+      "source": {
+        "attribution": "NASA EOSDIS GIBS \u00b7 NASA/USGS/ESA source imagery; dates and gaps vary",
+        "imagery_date": "static",
+        "label": "NASA Blue Marble shaded relief",
+        "mode": "open_data",
+        "native_max_zoom": 8,
+        "preview_resolution_m": 605.6618199369468,
+        "retrieved_at_ms": 1792938263091,
+        "source_id": "blue_marble",
+        "source_resolution_m": 605.6618199369468,
+        "state": "loading"
+      },
+      "state": "rate_limited",
+      "min_zoom": 8,
+      "max_zoom": 8,
+      "desired_tiles": [
+        {
+          "x": 130,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 130,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 131,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 132,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 132,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 132,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 132,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 132,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 132,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 133,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 133,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 133,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 133,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 133,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 133,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 134,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 134,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 134,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 134,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 134,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 134,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 135,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 135,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 135,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 135,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 135,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 135,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 136,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 136,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 136,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 136,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 136,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 136,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 137,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 137,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 137,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 137,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 137,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 137,
+          "y": 125,
+          "zoom": 8
+        },
+        {
+          "x": 138,
+          "y": 120,
+          "zoom": 8
+        },
+        {
+          "x": 138,
+          "y": 121,
+          "zoom": 8
+        },
+        {
+          "x": 138,
+          "y": 122,
+          "zoom": 8
+        },
+        {
+          "x": 138,
+          "y": 123,
+          "zoom": 8
+        },
+        {
+          "x": 138,
+          "y": 124,
+          "zoom": 8
+        },
+        {
+          "x": 138,
+          "y": 125,
+          "zoom": 8
+        }
+      ],
+      "desired_count": 54,
+      "loaded_count": 4,
+      "fallback_count": 110,
+      "pending_count": 69,
+      "pending_tiles": 69,
+      "usage": {
+        "bytes_received": 6382894,
+        "cache_bytes": 2198491,
+        "cache_tiles": 192,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 497
+      },
+      "provider": {
+        "bytes_received": 1037364,
+        "id": "nasa_gibs",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 120,
+        "requests_sent": 120,
+        "retry_at_ms": 1792938304129,
+        "state": "waiting_rate_limit"
+      },
+      "signals": {
+        "omitted_points": 100,
+        "points_returned": 128,
+        "points_total": 228,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  },
+  {
+    "label": "008-planet-return.png",
+    "input": "shot",
+    "selected_area": "",
+    "altitude_m": 24272231.9818945,
+    "latitude": 5.739098319164468,
+    "longitude": 0.0,
+    "stream": {
+      "generation": 1792938243548051,
+      "source_id": "blue_marble",
+      "source": {
+        "attribution": "NASA EOSDIS GIBS \u00b7 NASA/USGS/ESA source imagery; dates and gaps vary",
+        "imagery_date": "static",
+        "label": "NASA Blue Marble shaded relief",
+        "mode": "open_data",
+        "native_max_zoom": 8,
+        "preview_resolution_m": 9724.018526737143,
+        "retrieved_at_ms": 1792938263091,
+        "source_id": "blue_marble",
+        "source_resolution_m": 9724.018526737143,
+        "state": "ready"
+      },
+      "state": "ready",
+      "min_zoom": 2,
+      "max_zoom": 4,
+      "desired_tiles": [
+        {
+          "x": 1,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 1,
+          "y": 3,
+          "zoom": 2
+        },
+        {
+          "x": 2,
+          "y": 0,
+          "zoom": 2
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "zoom": 2
+        },
+        {
+          "x": 2,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 3,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 2,
+          "y": 5,
+          "zoom": 3
+        },
+        {
+          "x": 3,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 3,
+          "y": 5,
+          "zoom": 3
+        },
+        {
+          "x": 4,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 4,
+          "y": 5,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 2,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 3,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 4,
+          "zoom": 3
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "zoom": 3
+        },
+        {
+          "x": 6,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 6,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 6,
+          "y": 8,
+          "zoom": 4
+        },
+        {
+          "x": 6,
+          "y": 9,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 8,
+          "zoom": 4
+        },
+        {
+          "x": 7,
+          "y": 9,
+          "zoom": 4
+        },
+        {
+          "x": 8,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 8,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 8,
+          "y": 8,
+          "zoom": 4
+        },
+        {
+          "x": 8,
+          "y": 9,
+          "zoom": 4
+        },
+        {
+          "x": 9,
+          "y": 6,
+          "zoom": 4
+        },
+        {
+          "x": 9,
+          "y": 7,
+          "zoom": 4
+        },
+        {
+          "x": 9,
+          "y": 8,
+          "zoom": 4
+        },
+        {
+          "x": 9,
+          "y": 9,
+          "zoom": 4
+        }
+      ],
+      "desired_count": 32,
+      "loaded_count": 32,
+      "fallback_count": 82,
+      "pending_count": 0,
+      "pending_tiles": 0,
+      "usage": {
+        "bytes_received": 6382894,
+        "cache_bytes": 2198491,
+        "cache_tiles": 192,
+        "expires_at_ms": 1792941512038,
+        "max_bytes": 268435456,
+        "max_requests": 1800,
+        "requests_sent": 497
+      },
+      "provider": {
+        "bytes_received": 1037364,
+        "id": "nasa_gibs",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 120,
+        "requests_sent": 120,
+        "retry_at_ms": 1792938304129,
+        "state": "waiting_rate_limit"
+      },
+      "signals": {
+        "omitted_points": 100,
+        "points_returned": 128,
+        "points_total": 228,
+        "state": "Instant\u00e1nea",
+        "total_is_lower_bound": false,
+        "truncated": true
+      },
+      "errors": []
+    }
+  }
+]

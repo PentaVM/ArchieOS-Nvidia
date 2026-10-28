@@ -1,0 +1,13 @@
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+MESA-EGL: warning: failed to get driver name for fd -1
+MESA-EGL: warning: MESA-LOADER: failed to retrieve device information
+MESA-EGL: warning: failed to get driver name for fd -1
+MESA: error: ZINK: vkCreateInstance failed (VK_ERROR_INCOMPATIBLE_DRIVER)
+MESA-EGL: warning: egl: failed to create dri2 screen
+World memory image requested: 64x64
+Scenes with non-explicit cameras with a layer detected! Set the camera explicitly to avoid unnecessary evaluation of scene nodes!
+north/south texture pixels QColor(ARGB 1, 0, 0, 1) QColor(ARGB 1, 1, 0, 0)
+image north row maps to geographical north and south row maps to south

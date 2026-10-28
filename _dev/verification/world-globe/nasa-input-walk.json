@@ -1,0 +1,36 @@
+[
+  {
+    "wait": 5000
+  },
+  {
+    "shot": "planet"
+  },
+  {
+    "wheel": 10,
+    "settle": 1000
+  },
+  {
+    "wheel": 5,
+    "settle": 15000
+  },
+  {
+    "shot": "country"
+  },
+  {
+    "settle": 12000,
+    "drag": [
+      -240,
+      45
+    ]
+  },
+  {
+    "shot": "panned-country"
+  },
+  {
+    "settle": 4000,
+    "key": "Escape"
+  },
+  {
+    "shot": "planet-return"
+  }
+]

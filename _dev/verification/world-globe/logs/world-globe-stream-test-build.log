@@ -1,0 +1,7 @@
+[ 20%] Built target test_globe_stream_qmlimportscan
+[ 20%] Built target test_globe_stream_autogen_timestamp_deps
+[ 20%] Automatic MOC and UIC for target test_globe_stream
+[ 20%] Built target test_globe_stream_autogen
+[ 20%] Building CXX object CMakeFiles/test_globe_stream.dir/tests/test_globe_stream.cpp.o
+[ 40%] Linking CXX executable test_globe_stream
+[100%] Built target test_globe_stream

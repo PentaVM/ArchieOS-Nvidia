@@ -1,0 +1,242 @@
+[  1%] Building the Rust Lumenfield design library
+[  2%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/budget.cpp.o
+[  2%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/camera.cpp.o
+[  3%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/cognition.cpp.o
+    Finished `release` profile [optimized] target(s) in 1.40s
+[  3%] Built target archie-lumen-design-build
+[  3%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/director.cpp.o
+[  4%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/events.cpp.o
+[  4%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/geo.cpp.o
+[  5%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/ingest.cpp.o
+[  5%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/layout.cpp.o
+[  6%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/mesh.cpp.o
+[  7%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/observatory.cpp.o
+[  7%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/palette.cpp.o
+[  8%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/graph.cpp.o
+[  8%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/history.cpp.o
+[  9%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/lod.cpp.o
+[  9%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/lumen.cpp.o
+[ 10%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/scene.cpp.o
+[ 10%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/stage.cpp.o
+[ 12%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/value.cpp.o
+[ 12%] Built target archie-display_copy_qml
+[ 13%] Built target archie-display_copy_res
+[ 13%] Built target generate_qmlls_build_ini_file
+[ 13%] Built target archie-display_qmlimportscan
+[ 13%] Built target test_native_qmlimportscan
+[ 13%] Linking CXX static library libarchie-visual.a
+[ 13%] Built target test_shell_runtime_autogen_timestamp_deps
+[ 13%] Built target test_globe_stream_qmlimportscan
+[ 13%] Built target test_globe_tiles_autogen_timestamp_deps
+[ 13%] Built target archie-visual
+[ 13%] Built target test_earth_meshes_autogen_timestamp_deps
+[ 14%] Built target test_world_texture_qmlimportscan
+[ 14%] Built target test_exploration_credential_autogen_timestamp_deps
+[ 15%] Built target test_world_hud_qmlimportscan
+[ 15%] Built target test_display_control_qmlimportscan
+[ 15%] Building CXX object archie-osm/CMakeFiles/archie-osm.dir/src/blob.cpp.o
+[ 17%] Built target generate_finalqtconf_archie-display
+[ 18%] Building CXX object archie-osm/CMakeFiles/archie-osm.dir/src/building.cpp.o
+[ 18%] Built target test_native_autogen_timestamp_deps
+[ 18%] Automatic MOC and UIC for target test_shell_runtime
+[ 18%] Built target test_shell_runtime_autogen
+[ 18%] Built target test_exploration_preview_autogen_timestamp_deps
+[ 18%] Built target test_globe_stream_autogen_timestamp_deps
+[ 19%] Automatic MOC and UIC for target test_globe_tiles
+[ 19%] Built target test_globe_tiles_autogen
+[ 20%] Automatic MOC and UIC for target test_earth_meshes
+[ 20%] Built target test_earth_meshes_autogen
+[ 20%] Built target test_world_visuals_autogen_timestamp_deps
+[ 20%] Built target test_world_texture_autogen_timestamp_deps
+[ 21%] Automatic MOC and UIC for target test_exploration_credential
+[ 21%] Built target test_exploration_credential_autogen
+[ 21%] Built target test_world_hud_autogen_timestamp_deps
+[ 21%] Built target test_display_control_autogen_timestamp_deps
+[ 23%] Automatic MOC and UIC for target test_native
+[ 23%] Built target test_native_autogen
+[ 23%] Building CXX object CMakeFiles/test_shell_runtime.dir/src/ShellRuntime.cpp.o
+[ 23%] Linking CXX static library libarchie-osm.a
+[ 23%] Built target archie-osm
+[ 23%] Automatic MOC and UIC for target test_exploration_preview
+[ 23%] Built target test_exploration_preview_autogen
+[ 24%] Building CXX object CMakeFiles/test_shell_runtime.dir/test_shell_runtime_autogen/mocs_compilation.cpp.o
+[ 25%] Building CXX object CMakeFiles/test_shell_runtime.dir/tests/test_shell_runtime.cpp.o
+[ 26%] Automatic MOC and UIC for target test_globe_stream
+[ 26%] Built target test_globe_stream_autogen
+[ 27%] Building CXX object CMakeFiles/test_globe_tiles.dir/src/GlobeTiles.cpp.o
+[ 28%] Building CXX object CMakeFiles/test_globe_tiles.dir/test_globe_tiles_autogen/mocs_compilation.cpp.o
+[ 28%] Building CXX object CMakeFiles/test_globe_tiles.dir/tests/test_globe_tiles.cpp.o
+[ 29%] Linking CXX executable test_shell_runtime
+[ 29%] Built target test_shell_runtime
+[ 30%] Building CXX object CMakeFiles/test_earth_meshes.dir/src/EarthMeshes.cpp.o
+[ 30%] Linking CXX executable test_globe_tiles
+[ 30%] Built target test_globe_tiles
+[ 31%] Automatic MOC and UIC for target test_world_visuals
+[ 31%] Built target test_world_visuals_autogen
+[ 32%] Building CXX object CMakeFiles/test_earth_meshes.dir/test_earth_meshes_autogen/mocs_compilation.cpp.o
+[ 32%] Building CXX object CMakeFiles/test_earth_meshes.dir/tests/test_earth_meshes.cpp.o
+[ 32%] Automatic MOC and UIC for target test_world_texture
+[ 32%] Built target test_world_texture_autogen
+[ 34%] Building CXX object CMakeFiles/test_exploration_credential.dir/src/ExplorationCredential.cpp.o
+[ 35%] Building CXX object CMakeFiles/test_exploration_credential.dir/test_exploration_credential_autogen/mocs_compilation.cpp.o
+[ 35%] Building CXX object CMakeFiles/test_exploration_credential.dir/tests/test_exploration_credential.cpp.o
+[ 35%] Linking CXX executable test_earth_meshes
+[ 35%] Built target test_earth_meshes
+[ 35%] Automatic MOC and UIC for target test_world_hud
+[ 35%] Built target test_world_hud_autogen
+[ 36%] Automatic MOC and UIC for target test_display_control
+[ 36%] Built target test_display_control_autogen
+[ 36%] Built target archie-display_autogen_timestamp_deps
+[ 37%] Building CXX object CMakeFiles/test_native.dir/.qt/rcc/qrc_archie-invalid-test-preset.cpp.o
+[ 37%] Building CXX object CMakeFiles/test_native.dir/.qt/rcc/qrc_archie-test-hybrid-assets.cpp.o
+[ 37%] Linking CXX executable test_exploration_credential
+[ 37%] Built target test_exploration_credential
+[ 37%] Building CXX object CMakeFiles/test_exploration_preview.dir/src/ExplorationPreview.cpp.o
+[ 38%] Building CXX object CMakeFiles/test_native.dir/.qt/rcc/qrc_archie-test-presets.cpp.o
+[ 38%] Building CXX object CMakeFiles/test_native.dir/src/LumenField.cpp.o
+[ 38%] Building CXX object CMakeFiles/test_exploration_preview.dir/test_exploration_preview_autogen/mocs_compilation.cpp.o
+[ 39%] Building CXX object CMakeFiles/test_exploration_preview.dir/tests/test_exploration_preview.cpp.o
+[ 40%] Linking CXX executable test_exploration_preview
+[ 40%] Built target test_exploration_preview
+[ 40%] Building CXX object CMakeFiles/test_globe_stream.dir/src/EarthMeshes.cpp.o
+[ 41%] Building CXX object CMakeFiles/test_globe_stream.dir/src/ExplorationCredential.cpp.o
+[ 42%] Building CXX object CMakeFiles/test_native.dir/src/LumenGeometry.cpp.o
+[ 43%] Building CXX object CMakeFiles/test_globe_stream.dir/src/GlobeStreamBridge.cpp.o
+[ 43%] Building CXX object CMakeFiles/test_native.dir/src/XaviDesignBridge.cpp.o
+[ 45%] Building CXX object CMakeFiles/test_globe_stream.dir/src/GlobeTiles.cpp.o
+/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/XaviDesignBridge.cpp: In member function 'void XaviHybridData::rebuild()':
+/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/XaviDesignBridge.cpp:175:83: warning: 'QImage QImage::mirrored(bool, bool) &&' is deprecated: Use flipped(Qt::Orientations) instead [-Wdeprecated-declarations]
+  175 |         auto fresh=reader.read().convertToFormat(QImage::Format_RGBA8888).mirrored(false,true);
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/qt6/QtGui/qimagereader.h:11,
+                 from /usr/include/qt6/QtGui/QImageReader:1,
+                 from /mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/XaviDesignBridge.cpp:7:
+/usr/include/qt6/QtGui/qimage.h:224:26: note: declared here
+  224 |     [[nodiscard]] QImage mirrored(bool horizontally = false, bool vertically = true) &&
+      |                          ^~~~~~~~
+[ 45%] Building CXX object CMakeFiles/test_native.dir/test_native_autogen/mocs_compilation.cpp.o
+[ 46%] Building CXX object CMakeFiles/test_globe_stream.dir/test_globe_stream_autogen/mocs_compilation.cpp.o
+[ 46%] Building CXX object CMakeFiles/test_globe_stream.dir/tests/test_globe_stream.cpp.o
+[ 47%] Building CXX object CMakeFiles/test_native.dir/tests/test_native.cpp.o
+[ 47%] Linking CXX executable test_globe_stream
+[ 47%] Built target test_globe_stream
+[ 47%] Building CXX object CMakeFiles/test_world_visuals.dir/src/WorldVisuals.cpp.o
+[ 47%] Linking CXX executable test_native
+[ 49%] Built target test_native
+[ 49%] Building CXX object CMakeFiles/test_world_visuals.dir/test_world_visuals_autogen/mocs_compilation.cpp.o
+[ 50%] Building CXX object CMakeFiles/test_world_visuals.dir/tests/test_world_visuals.cpp.o
+[ 50%] Building CXX object CMakeFiles/test_world_texture.dir/.qt/rcc/qrc_world-texture-material.cpp.o
+[ 51%] Building CXX object CMakeFiles/test_world_texture.dir/src/EarthMeshes.cpp.o
+[ 51%] Building CXX object CMakeFiles/test_world_texture.dir/src/MeshGeometry.cpp.o
+[ 52%] Linking CXX executable test_world_visuals
+[ 52%] Built target test_world_visuals
+[ 52%] Building CXX object CMakeFiles/test_world_hud.dir/.qt/rcc/qrc_world-hud-component.cpp.o
+[ 53%] Building CXX object CMakeFiles/test_world_hud.dir/.qt/rcc/qrc_world-hud-shell.cpp.o
+[ 54%] Building CXX object CMakeFiles/test_world_hud.dir/test_world_hud_autogen/mocs_compilation.cpp.o
+[ 54%] Building CXX object CMakeFiles/test_world_hud.dir/tests/test_world_hud.cpp.o
+/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/MeshGeometry.cpp: In member function 'void MeshGeometry::rebuild()':
+/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/MeshGeometry.cpp:42:29: warning: 'void* memcpy(void*, const void*, size_t)' reading 12 bytes from a region of size 1 [-Wstringop-overread]
+   42 |     float xyz[3];std::memcpy(xyz,m_vertices.constData(),sizeof(xyz));QVector3D minimum(xyz[0],xyz[1],xyz[2]),maximum=minimum;
+      |                  ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/qt6/QtCore/QByteArray:1,
+                 from /mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/MeshGeometry.h:16,
+                 from /mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/MeshGeometry.cpp:1:
+/usr/include/qt6/QtCore/qbytearray.h:65:23: note: source object 'QByteArray::_empty' of size 1
+   65 |     static const char _empty;
+      |                       ^~~~~~
+[ 54%] Building CXX object CMakeFiles/test_world_texture.dir/test_world_texture_autogen/mocs_compilation.cpp.o
+[ 56%] Building CXX object CMakeFiles/test_world_texture.dir/tests/test_world_texture.cpp.o
+[ 57%] Linking CXX executable test_world_hud
+[ 58%] Built target test_world_hud
+[ 59%] Building CXX object CMakeFiles/test_display_control.dir/.qt/rcc/qrc_archie-control-test-presets.cpp.o
+[ 60%] Building CXX object CMakeFiles/test_display_control.dir/src/DisplayControl.cpp.o
+[ 61%] Linking CXX executable test_world_texture
+[ 62%] Built target test_world_texture
+[ 63%] Automatic MOC and UIC for target archie-display
+[ 63%] Built target archie-display_autogen
+[ 63%] Building CXX object CMakeFiles/test_display_control.dir/src/LumenField.cpp.o
+[ 64%] Building CXX object CMakeFiles/test_display_control.dir/src/LumenGeometry.cpp.o
+[ 64%] Building CXX object CMakeFiles/test_display_control.dir/src/XaviDesignBridge.cpp.o
+/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/XaviDesignBridge.cpp: In member function 'void XaviHybridData::rebuild()':
+/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/XaviDesignBridge.cpp:175:83: warning: 'QImage QImage::mirrored(bool, bool) &&' is deprecated: Use flipped(Qt::Orientations) instead [-Wdeprecated-declarations]
+  175 |         auto fresh=reader.read().convertToFormat(QImage::Format_RGBA8888).mirrored(false,true);
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/qt6/QtGui/qimagereader.h:11,
+                 from /usr/include/qt6/QtGui/QImageReader:1,
+                 from /mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/XaviDesignBridge.cpp:7:
+/usr/include/qt6/QtGui/qimage.h:224:26: note: declared here
+  224 |     [[nodiscard]] QImage mirrored(bool horizontally = false, bool vertically = true) &&
+      |                          ^~~~~~~~
+[ 64%] Building CXX object CMakeFiles/test_display_control.dir/test_display_control_autogen/mocs_compilation.cpp.o
+[ 65%] Building CXX object CMakeFiles/test_display_control.dir/tests/test_display_control.cpp.o
+[ 67%] Running AUTOMOC file extraction for target archie-display
+[ 68%] Building CXX object CMakeFiles/archie-display.dir/.qt/rcc/qrc_archie-display_raw_qml_0.cpp.o
+[ 69%] Building CXX object CMakeFiles/archie-display.dir/.qt/rcc/qrc_archie-grade-shaders.cpp.o
+[ 69%] Building CXX object CMakeFiles/archie-display.dir/.qt/rcc/qrc_archie-native-assets.cpp.o
+[ 70%] Building CXX object CMakeFiles/archie-display.dir/.qt/rcc/qrc_archie-shell-assets.cpp.o
+[ 71%] Building CXX object CMakeFiles/archie-display.dir/.qt/rcc/qrc_qmake_Archie_Observatory.cpp.o
+[ 71%] Running AUTOMOC file extraction for target archie-display
+[ 71%] Building CXX object CMakeFiles/archie-display.dir/.rcc/qmlcache/archie-display_qmlcache_loader.cpp.o
+[ 71%] Linking CXX executable test_display_control
+[ 72%] Built target test_display_control
+[ 73%] Building CXX object CMakeFiles/archie-display.dir/archie-display_autogen/mocs_compilation.cpp.o
+[ 73%] Building CXX object CMakeFiles/archie-display.dir/src/AppCatalog.cpp.o
+[ 74%] Building CXX object CMakeFiles/archie-display.dir/src/ArchieBridge.cpp.o
+[ 75%] Building CXX object CMakeFiles/archie-display.dir/src/DisplayControl.cpp.o
+[ 75%] Building CXX object CMakeFiles/archie-display.dir/src/EarthMeshes.cpp.o
+[ 76%] Building CXX object CMakeFiles/archie-display.dir/src/ExplorationCredential.cpp.o
+[ 76%] Building CXX object CMakeFiles/archie-display.dir/src/ExplorationPreview.cpp.o
+[ 78%] Building CXX object CMakeFiles/archie-display.dir/src/GlobeStreamBridge.cpp.o
+[ 79%] Building CXX object CMakeFiles/archie-display.dir/src/GlobeTiles.cpp.o
+[ 80%] Building CXX object CMakeFiles/archie-display.dir/src/LumenField.cpp.o
+[ 81%] Building CXX object CMakeFiles/archie-display.dir/src/LumenGeometry.cpp.o
+[ 82%] Building CXX object CMakeFiles/archie-display.dir/src/MeshGeometry.cpp.o
+/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/MeshGeometry.cpp: In member function 'void MeshGeometry::rebuild()':
+/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/MeshGeometry.cpp:42:29: warning: 'void* memcpy(void*, const void*, size_t)' reading 12 bytes from a region of size 1 [-Wstringop-overread]
+   42 |     float xyz[3];std::memcpy(xyz,m_vertices.constData(),sizeof(xyz));QVector3D minimum(xyz[0],xyz[1],xyz[2]),maximum=minimum;
+      |                  ~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/qt6/QtCore/QByteArray:1,
+                 from /mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/MeshGeometry.h:16,
+                 from /mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/MeshGeometry.cpp:1:
+/usr/include/qt6/QtCore/qbytearray.h:65:23: note: source object 'QByteArray::_empty' of size 1
+   65 |     static const char _empty;
+      |                       ^~~~~~
+[ 82%] Building CXX object CMakeFiles/archie-display.dir/src/Payload.cpp.o
+[ 82%] Building CXX object CMakeFiles/archie-display.dir/src/ShellRuntime.cpp.o
+[ 82%] Building CXX object CMakeFiles/archie-display.dir/src/WorldVisuals.cpp.o
+[ 82%] Building CXX object CMakeFiles/archie-display.dir/src/XaviDesignBridge.cpp.o
+[ 82%] Building CXX object CMakeFiles/archie-display.dir/src/main.cpp.o
+/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/XaviDesignBridge.cpp: In member function 'void XaviHybridData::rebuild()':
+/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/XaviDesignBridge.cpp:175:83: warning: 'QImage QImage::mirrored(bool, bool) &&' is deprecated: Use flipped(Qt::Orientations) instead [-Wdeprecated-declarations]
+  175 |         auto fresh=reader.read().convertToFormat(QImage::Format_RGBA8888).mirrored(false,true);
+      |                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+In file included from /usr/include/qt6/QtGui/qimagereader.h:11,
+                 from /usr/include/qt6/QtGui/QImageReader:1,
+                 from /mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/XaviDesignBridge.cpp:7:
+/usr/include/qt6/QtGui/qimage.h:224:26: note: declared here
+  224 |     [[nodiscard]] QImage mirrored(bool horizontally = false, bool vertically = true) &&
+      |                          ^~~~~~~~
+[ 83%] Building CXX object CMakeFiles/archie-display.dir/.rcc/qmlcache/archie-display_qml_Exploration_js.cpp.o
+In file included from /mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/main.cpp:8:
+/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/UiWalk.h: In constructor 'UiWalk::UiWalk(QQuickWindow*, const QString&, const QString&, QObject*)':
+/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/UiWalk.h:54:22: warning: ignoring return value of 'virtual bool QFile::open(QIODeviceBase::OpenMode)', declared with attribute 'nodiscard' [-Wunused-result]
+   54 |         m_report.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
+      |         ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /usr/include/qt6/QtCore/qdir.h:11,
+                 from /usr/include/qt6/QtCore/QDir:1,
+                 from /mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/src/UiWalk.h:21:
+/usr/include/qt6/QtCore/qfile.h:271:32: note: declared here
+  271 |     QFILE_MAYBE_NODISCARD bool open(OpenMode flags) override;
+      |                                ^~~~
+[ 83%] Building CXX object CMakeFiles/archie-display.dir/.rcc/qmlcache/archie-display_qml_ForgeView_qml.cpp.o
+[ 83%] Building CXX object CMakeFiles/archie-display.dir/.rcc/qmlcache/archie-display_qml_HologramGrade_qml.cpp.o
+[ 83%] Building CXX object CMakeFiles/archie-display.dir/.rcc/qmlcache/archie-display_qml_LumenScene_qml.cpp.o
+[ 84%] Building CXX object CMakeFiles/archie-display.dir/.rcc/qmlcache/archie-display_qml_Main_qml.cpp.o
+[ 85%] Building CXX object CMakeFiles/archie-display.dir/.rcc/qmlcache/archie-display_qml_OrbHud_qml.cpp.o
+[ 86%] Building CXX object CMakeFiles/archie-display.dir/.rcc/qmlcache/archie-display_qml_OrbViewport_qml.cpp.o
+[ 87%] Building CXX object CMakeFiles/archie-display.dir/.rcc/qmlcache/archie-display_qml_WorldBeacons_qml.cpp.o
+[ 87%] Building CXX object CMakeFiles/archie-display.dir/.rcc/qmlcache/archie-display_qml_WorldHud_qml.cpp.o
+[ 87%] Building CXX object CMakeFiles/archie-display.dir/.rcc/qmlcache/archie-display_qml_WorldImageryMaterial_qml.cpp.o
+[ 89%] Building CXX object CMakeFiles/archie-display.dir/archie-display_qmltyperegistrations.cpp.o
+[ 89%] Linking CXX executable archie-display
+[100%] Built target archie-display

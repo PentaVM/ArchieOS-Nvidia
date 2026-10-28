@@ -28,6 +28,7 @@
 #include <QKeyEvent>
 #include <QKeySequence>
 #include <QMouseEvent>
+#include <QWheelEvent>
 #include <QPointer>
 #include <QQuickItem>
 #include <QQuickWindow>
@@ -37,6 +38,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <functional>
+#include <utility>
 
 class UiWalk final : public QObject {
 public:
@@ -52,6 +54,7 @@ public:
         m_report.open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text);
     }
     bool ready() const { return !m_queue.isEmpty() && m_report.isOpen(); }
+    void setCaptureAllowed(std::function<bool()> allowed) { m_captureAllowed=std::move(allowed); }
     void start(int settleMs) { QTimer::singleShot(settleMs, this, [this] { next(); }); }
 
 private:
@@ -62,6 +65,7 @@ private:
     int m_index = 0;
     int m_clicks = 0;
     int m_noEffect = 0;
+    std::function<bool()> m_captureAllowed;
 
     // The visual tree, not the QObject one: a Repeater's delegates are its parent's child
     // items but not necessarily its QObject children.
@@ -78,7 +82,9 @@ private:
 
     QString state() const {
         QVariant value;
-        if (auto *d = desktop()) QMetaObject::invokeMethod(d, "uiState", Q_RETURN_ARG(QVariant, value));
+        QObject *surface=desktop();
+        if(!surface)surface=m_window;
+        if(surface)QMetaObject::invokeMethod(surface, "uiState", Q_RETURN_ARG(QVariant, value));
         return value.toString();
     }
 
@@ -120,7 +126,13 @@ private:
         return text.isEmpty() ? name : name + QStringLiteral(" · ") + text.left(60);
     }
 
-    QImage grab() const { return m_window->grabWindow(); }
+    QImage grab() const {
+        if(m_captureAllowed && !m_captureAllowed()) {
+            qWarning("archie-display: online-preview imagery cannot be captured or exported");
+            return {};
+        }
+        return m_window->grabWindow();
+    }
 
     static double moved(const QImage &a, const QImage &b, const QRectF &r) {
         if (a.isNull() || b.isNull()) return 0;
@@ -146,6 +158,7 @@ private:
     }
 
     QString save(const QImage &image, const QString &name) {
+        if(image.isNull()) return {};
         const QString file = QStringLiteral("%1-%2.png").arg(m_index, 3, 10, QLatin1Char('0')).arg(name);
         image.save(m_out + QLatin1Char('/') + file);
         return file;
@@ -236,6 +249,29 @@ private:
         if (step.contains(QStringLiteral("label"))) {
             log({{QStringLiteral("kind"), QStringLiteral("label")}, {QStringLiteral("text"), step.value(QStringLiteral("label"))}});
             later(0); return;
+        }
+        if (step.contains(QStringLiteral("state"))) {
+            log({{QStringLiteral("kind"),QStringLiteral("state")},{QStringLiteral("label"),step.value(QStringLiteral("state"))},
+                 {QStringLiteral("state"),QJsonDocument::fromJson(state().toUtf8()).object()}});
+            later(0);return;
+        }
+        if(step.contains(QStringLiteral("wheel")) || step.contains(QStringLiteral("drag"))){
+            const QPointF point(m_window->width()*step.value(QStringLiteral("x")).toDouble(0.65),m_window->height()*step.value(QStringLiteral("y")).toDouble(0.5));
+            const auto before=state();
+            if(step.contains(QStringLiteral("wheel"))){
+                const int ticks=std::clamp(step.value(QStringLiteral("wheel")).toInt(),-10,10);
+                QWheelEvent event(point,m_window->mapToGlobal(point),QPoint(),QPoint(0,ticks*120),Qt::NoButton,Qt::NoModifier,Qt::NoScrollPhase,false);
+                QGuiApplication::sendEvent(m_window,&event);
+            }else{
+                const auto delta=step.value(QStringLiteral("drag")).toArray();
+                const QPointF finish=point+QPointF(delta.at(0).toDouble(),delta.at(1).toDouble());
+                QMouseEvent press(QEvent::MouseButtonPress,point,m_window->mapToGlobal(point),Qt::LeftButton,Qt::LeftButton,Qt::NoModifier);
+                QMouseEvent move(QEvent::MouseMove,finish,m_window->mapToGlobal(finish),Qt::NoButton,Qt::LeftButton,Qt::NoModifier);
+                QMouseEvent release(QEvent::MouseButtonRelease,finish,m_window->mapToGlobal(finish),Qt::LeftButton,Qt::NoButton,Qt::NoModifier);
+                QGuiApplication::sendEvent(m_window,&press);QGuiApplication::sendEvent(m_window,&move);QGuiApplication::sendEvent(m_window,&release);
+            }
+            QTimer::singleShot(settle,this,[this,before,step]{const auto after=state();const auto changed=changedKeys(before,after);log({{QStringLiteral("kind"),step.contains(QStringLiteral("wheel"))?QStringLiteral("wheel"):QStringLiteral("drag")},{QStringLiteral("changed"),QJsonArray::fromStringList(changed)},{QStringLiteral("state"),QJsonDocument::fromJson(after.toUtf8()).object()}});++m_index;next();});
+            return;
         }
         if (step.contains(QStringLiteral("shot"))) {
             log({{QStringLiteral("kind"), QStringLiteral("shot")}, {QStringLiteral("shot"), save(grab(), step.value(QStringLiteral("shot")).toString())},

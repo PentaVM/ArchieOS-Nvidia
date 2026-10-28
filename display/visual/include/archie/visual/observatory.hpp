@@ -264,6 +264,11 @@ public:
     void release_focus();
     /// Earth-fixed orbit/zoom. Invalid input and requests outside Watcher are ignored.
     void orbit_globe(float longitude_delta, float latitude_delta, float zoom_steps);
+    void tilt_globe(float delta_degrees);
+    /// Read-only AOI framing. radius_m is geographic extent, never radial distance.
+    bool frame_globe(double latitude, double longitude, double radius_m, double elevation_m = 0, bool animate = true);
+
+    [[nodiscard]] bool exploration_camera_active() const noexcept { return m_exploration_camera; }
 
     /// Advance to `now_ms` and produce the frame to draw.
     ///
@@ -346,6 +351,8 @@ private:
     std::string m_focused{};
     std::int64_t m_last_tick_ms = 0;
     bool m_ticked = false;
+    bool m_exploration_camera = false;
+    float m_world_tilt = 35.0F;
 };
 
 }  // namespace archie::visual

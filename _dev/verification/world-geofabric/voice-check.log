@@ -1,0 +1,400 @@
+ Downloading crates ...
+  Downloaded bytemuck_derive v1.12.1
+  Downloaded dyn-stack-macros v0.1.3
+  Downloaded gemm-f16 v0.19.0
+  Downloaded allocator-api2 v0.2.21
+  Downloaded gemm-c32 v0.19.0
+  Downloaded gemm-c64 v0.19.0
+  Downloaded gemm-f32 v0.19.0
+  Downloaded gemm-f64 v0.19.0
+  Downloaded reborrow v0.5.5
+  Downloaded seq-macro v0.3.6
+  Downloaded pulp-wasm-simd-flag v0.1.1
+  Downloaded utf-8 v0.7.6
+  Downloaded data-encoding v2.11.1
+  Downloaded dyn-stack v0.13.2
+  Downloaded fdeflate v0.3.7
+  Downloaded foldhash v0.2.0
+  Downloaded gemm v0.19.0
+  Downloaded sha1 v0.10.7
+  Downloaded num_cpus v1.17.0
+  Downloaded float8 v0.6.1
+  Downloaded gemm-common v0.19.0
+  Downloaded thiserror v1.0.69
+  Downloaded bytemuck v1.25.2
+  Downloaded memmap2 v0.9.11
+  Downloaded tokio-tungstenite v0.24.0
+  Downloaded paste v1.0.15
+  Downloaded thiserror-impl v1.0.69
+  Downloaded num-complex v0.4.6
+  Downloaded safetensors v0.7.0
+  Downloaded tungstenite v0.24.0
+  Downloaded candle-nn v0.9.2
+  Downloaded rand_distr v0.5.1
+  Downloaded miniz_oxide v0.8.9
+  Downloaded raw-cpuid v11.6.0
+  Downloaded png v0.18.1
+  Downloaded typed-path v0.12.3
+  Downloaded hashbrown v0.16.1
+  Downloaded pulp v0.22.3
+  Downloaded libm v0.2.16
+  Downloaded zip v7.2.0
+  Downloaded candle-core v0.9.2
+  Downloaded jpeg-decoder v0.3.2
+    Checking cfg-if v1.0.4
+    Checking serde_core v1.0.229
+    Checking itoa v1.0.18
+    Checking windows-link v0.2.1
+    Checking subtle v2.6.1
+    Checking typenum v1.20.1
+    Checking generic-array v0.14.7
+   Compiling serde v1.0.229
+    Checking windows-sys v0.61.2
+    Checking block-buffer v0.10.4
+    Checking crypto-common v0.1.7
+    Checking once_cell v1.21.4
+    Checking digest v0.10.7
+    Checking memchr v2.8.3
+    Checking zerocopy v0.8.56
+    Checking bytes v1.12.1
+    Checking pin-project-lite v0.2.17
+    Checking cpufeatures v0.2.17
+   Compiling serde_json v1.0.151
+    Checking zmij v1.0.23
+    Checking smallvec v1.15.2
+    Checking zeroize v1.9.0
+    Checking getrandom v0.3.4
+    Checking getrandom v0.2.17
+    Checking log v0.4.34
+    Checking rand_core v0.9.5
+    Checking sha2 v0.10.9
+    Checking ppv-lite86 v0.2.21
+    Checking stable_deref_trait v1.2.1
+    Checking thiserror v2.0.20
+    Checking zerofrom v0.1.8
+    Checking rand_chacha v0.9.0
+    Checking socket2 v0.6.5
+    Checking mio v1.2.2
+    Checking futures-core v0.3.34
+    Checking rand v0.9.5
+    Checking tokio v1.53.1
+    Checking yoke v0.8.3
+    Checking tracing-core v0.1.36
+    Checking futures-sink v0.3.34
+    Checking bitflags v2.13.1
+    Checking getrandom v0.4.3
+    Checking deranged v0.5.8
+    Checking powerfmt v0.2.0
+    Checking hex v0.4.3
+    Checking time-core v0.1.9
+    Checking num-conv v0.2.2
+    Checking sha1_smol v1.0.1
+    Checking time v0.3.55
+    Checking uuid v1.26.0
+    Checking tracing v0.1.44
+    Checking zerovec v0.11.8
+    Checking futures-task v0.3.34
+    Checking slab v0.4.12
+    Checking futures-util v0.3.34
+    Checking archie-types v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-types)
+    Checking http v1.5.0
+    Checking untrusted v0.9.0
+    Checking percent-encoding v2.3.2
+    Checking ring v0.17.14
+    Checking tinystr v0.8.4
+    Checking writeable v0.6.4
+    Checking litemap v0.8.3
+    Checking base64 v0.22.1
+    Checking icu_locale_core v2.3.0
+    Checking http-body v1.1.0
+    Checking zerotrie v0.2.5
+    Checking potential_utf v0.1.6
+    Checking futures-channel v0.3.34
+    Checking utf8_iter v1.0.4
+    Checking icu_provider v2.3.1
+    Checking icu_collections v2.3.0
+    Checking httparse v1.10.1
+    Checking windows_x86_64_msvc v0.52.6
+    Checking byteorder v1.5.0
+    Checking tower-service v0.3.3
+    Checking windows-targets v0.52.6
+    Checking libc v0.2.189
+    Checking icu_normalizer_data v2.3.0
+    Checking icu_properties_data v2.3.0
+    Checking rustls-pki-types v1.15.1
+    Checking equivalent v1.0.2
+    Checking try-lock v0.2.5
+    Checking want v0.3.1
+    Checking icu_normalizer v2.3.0
+    Checking icu_properties v2.3.0
+    Checking form_urlencoded v1.2.2
+    Checking sync_wrapper v1.0.2
+    Checking atomic-waker v1.1.2
+    Checking regex-syntax v0.8.11
+    Checking tower-layer v0.3.3
+    Checking httpdate v1.0.3
+   Compiling libm v0.2.16
+    Checking tinyvec_macros v0.1.1
+    Checking tinyvec v1.12.0
+    Checking regex-automata v0.4.18
+   Compiling num-traits v0.2.19
+    Checking hyper v1.11.1
+    Checking idna_adapter v1.2.2
+    Checking rustls-webpki v0.103.15
+    Checking tokio-util v0.7.19
+    Checking ipnet v2.12.1
+    Checking hashbrown v0.17.1
+    Checking lazy_static v1.5.0
+    Checking sharded-slab v0.1.7
+    Checking indexmap v2.14.1
+    Checking hyper-util v0.1.20
+    Checking matchers v0.2.0
+    Checking rustls v0.23.43
+    Checking idna v1.1.0
+    Checking unicode-normalization v0.1.25
+    Checking tower v0.5.3
+    Checking http-body-util v0.1.5
+    Checking tracing-log v0.2.0
+    Checking tracing-serde v0.2.0
+    Checking nu-ansi-term v0.50.3
+    Checking thread_local v1.1.10
+    Checking unicode-properties v0.1.4
+    Checking ryu v1.0.23
+    Checking unicode-bidi v0.3.18
+    Checking serde_urlencoded v0.7.1
+    Checking stringprep v0.1.5
+    Checking tracing-subscriber v0.3.23
+    Checking tokio-rustls v0.26.4
+    Checking url v2.5.8
+    Checking crossbeam-utils v0.8.22
+    Checking webpki-roots v1.0.9
+    Checking archie-vault v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-vault)
+    Checking hmac v0.12.1
+    Checking md-5 v0.10.6
+   Compiling bytemuck_derive v1.12.1
+    Checking scopeguard v1.2.0
+    Checking either v1.18.0
+    Checking fallible-iterator v0.2.0
+    Checking siphasher v1.0.3
+    Checking phf_shared v0.11.3
+    Checking postgres-protocol v0.6.8
+    Checking bytemuck v1.25.2
+    Checking lock_api v0.4.14
+    Checking hyper-rustls v0.27.9
+    Checking crossbeam-epoch v0.9.20
+    Checking tower-http v0.6.11
+    Checking archie-observability v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-observability)
+    Checking parking_lot_core v0.9.12
+    Checking winapi v0.3.9
+    Checking windows-sys v0.52.0
+    Checking socket2 v0.5.10
+    Checking parking_lot v0.12.5
+    Checking reqwest v0.12.28
+    Checking crossbeam-deque v0.8.7
+    Checking postgres-types v0.2.9
+    Checking phf v0.11.3
+    Checking toml_datetime v0.6.11
+    Checking serde_spanned v0.6.9
+    Checking whoami v1.6.1
+    Checking toml_write v0.1.2
+    Checking winnow v0.7.15
+    Checking tokio-postgres v0.7.13
+    Checking toml_edit v0.22.27
+    Checking rayon-core v1.13.0
+    Checking archie-memory v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-memory)
+    Checking toml v0.8.23
+    Checking rayon v1.12.0
+    Checking postgres v0.19.10
+    Checking fs2 v0.4.3
+    Checking archie-policy v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-policy)
+    Checking rand_distr v0.5.1
+    Checking once_cell_polyfill v1.70.2
+    Checking anstyle v1.0.14
+    Checking utf8parse v0.2.2
+    Checking half v2.7.1
+    Checking anstyle-parse v1.0.0
+    Checking anstyle-wincon v3.0.11
+    Checking archie-postgres v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-postgres)
+    Checking prost v0.14.4
+    Checking archie-orb v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-orb)
+    Checking anstyle-query v1.1.5
+    Checking jpeg-encoder v0.6.1
+    Checking colorchoice v1.0.5
+    Checking is_terminal_polyfill v1.70.2
+    Checking font8x8 v0.3.1
+    Checking archie-sentry v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-sentry)
+    Checking anstream v1.0.0
+   Compiling paste v1.0.15
+    Checking clap_lex v1.1.0
+    Checking strsim v0.11.1
+   Compiling crc32fast v1.5.2
+    Checking clap_builder v4.6.6
+   Compiling pulp v0.22.3
+    Checking clap v4.6.6
+    Checking archie-state v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-state)
+    Checking num-complex v0.4.6
+    Checking raw-cpuid v11.6.0
+    Checking archie-registry v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-registry)
+    Checking rand_core v0.6.4
+   Compiling dyn-stack-macros v0.1.3
+    Checking pulp-wasm-simd-flag v0.1.1
+    Checking reborrow v0.5.5
+    Checking dyn-stack v0.13.2
+    Checking simd-adler32 v0.3.10
+   Compiling seq-macro v0.3.6
+    Checking rand_chacha v0.3.1
+    Checking archie-router v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-router)
+    Checking adler2 v2.0.1
+    Checking archie-model-runtime v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-model-runtime)
+    Checking rand v0.8.8
+    Checking gemm-common v0.19.0
+    Checking base64ct v1.8.3
+    Checking miniz_oxide v0.9.1
+    Checking pem-rfc7468 v0.7.0
+    Checking const-oid v0.9.6
+   Compiling thiserror v1.0.69
+    Checking flate2 v1.1.10
+    Checking der v0.7.10
+   Compiling thiserror-impl v1.0.69
+    Checking spki v0.7.3
+    Checking gemm-f32 v0.19.0
+    Checking sha1 v0.10.7
+    Checking allocator-api2 v0.2.21
+    Checking foldhash v0.2.0
+    Checking utf-8 v0.7.6
+    Checking data-encoding v2.11.1
+    Checking hashbrown v0.16.1
+    Checking tungstenite v0.24.0
+    Checking gemm-f16 v0.19.0
+    Checking pkcs8 v0.10.2
+    Checking gemm-c64 v0.19.0
+    Checking gemm-f64 v0.19.0
+    Checking gemm-c32 v0.19.0
+    Checking archie-stage v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-stage)
+    Checking windows-result v0.1.2
+    Checking zune-core v0.4.12
+    Checking signature v2.2.0
+    Checking typed-path v0.12.3
+    Checking mime v0.3.17
+    Checking axum-core v0.4.5
+    Checking zip v7.2.0
+    Checking ed25519 v2.2.3
+    Checking zune-jpeg v0.4.21
+    Checking windows-core v0.57.0
+    Checking curve25519-dalek v4.1.3
+    Checking gemm v0.19.0
+    Checking tokio-tungstenite v0.24.0
+    Checking safetensors v0.7.0
+    Checking archie-search v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-search)
+    Checking float8 v0.6.1
+    Checking archie-notices v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-notices)
+    Checking archie-speech v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-speech)
+    Checking archie-mcp v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-mcp)
+    Checking itertools v0.11.0
+    Checking memmap2 v0.9.11
+    Checking serde_path_to_error v0.1.20
+    Checking weezl v0.1.12
+    Checking matchit v0.7.3
+    Checking num_cpus v1.17.0
+    Checking quick-error v2.0.1
+    Checking fax v0.2.7
+    Checking earcutr v0.4.3
+    Checking tiff v0.10.3
+    Checking candle-core v0.9.2
+    Checking axum v0.7.9
+    Checking archie-cerebra v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-cerebra)
+    Checking ed25519-dalek v2.2.0
+    Checking windows v0.57.0
+    Checking ntapi v0.4.3
+    Checking archie-iris v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-iris)
+    Checking miniz_oxide v0.8.9
+    Checking fdeflate v0.3.7
+    Checking archie-geofabric v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-geofabric)
+    Checking archie-worldd v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-worldd)
+    Checking png v0.18.1
+    Checking archie-workstation v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-workstation)
+    Checking archie-fabric v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-fabric)
+    Checking candle-nn v0.9.2
+    Checking archie-scheduler v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-scheduler)
+    Checking archie-accel v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-accel)
+    Checking anyhow v1.0.104
+    Checking archie-execution v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-execution)
+    Checking archie-slink v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-slink)
+    Checking archie-wanda-lncm v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-wanda-lncm)
+    Checking archie-reflex v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-reflex)
+    Checking archie-a11y v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-a11y)
+   Compiling archie-voice v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-voice)
+    Checking archie-sight v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-sight)
+    Checking jpeg-decoder v0.3.2
+    Checking sysinfo v0.33.1
+    Checking archie-core v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-core)
+    Checking archie-wanda v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-wanda)
+warning: unused import: `super::ffi`
+   --> crates\archie-voice\src\native.rs:817:9
+    |
+817 |     use super::ffi;
+    |         ^^^^^^^^^^
+    |
+    = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: fields `grade`, `runtime`, and `wanda_access` are never read
+   --> crates\archie-voice\src\bin\archie-voice.rs:105:5
+    |
+100 | struct Asking {
+    |        ------ fields in this struct
+...
+105 |     grade: PrivacyGrade,
+    |     ^^^^^
+106 |     runtime: tokio::runtime::Runtime,
+    |     ^^^^^^^
+...
+109 |     wanda_access: archie_voice::wanda::WandaVoiceAccess,
+    |     ^^^^^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: multiple fields are never read
+   --> crates\archie-voice\src\bin\archie-voice.rs:387:5
+    |
+386 | struct StageFlags {
+    |        ---------- fields in this struct
+387 |     socket: String,
+    |     ^^^^^^
+388 |     key_file: String,
+    |     ^^^^^^^^
+389 |     policy: String,
+    |     ^^^^^^
+390 |     display: Option<String>,
+    |     ^^^^^^^
+391 |     steps: usize,
+    |     ^^^^^
+392 |     ground_model: Option<String>,
+    |     ^^^^^^^^^^^^
+393 |     ground_endpoint: Option<String>,
+    |     ^^^^^^^^^^^^^^^
+394 |     app_log: Option<String>,
+    |     ^^^^^^^
+
+warning: function `context_for` is never used
+   --> crates\archie-voice\src\bin\archie-voice.rs:515:4
+    |
+515 | fn context_for(clock: &str, front: Option<String>, openable: &[String]) -> String {
+    |    ^^^^^^^^^^^
+
+warning: struct `Abi` is never constructed
+   --> crates\archie-voice\src\native.rs:850:12
+    |
+850 |     struct Abi {
+    |            ^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: constant `ABI` is never used
+   --> crates\archie-voice\src\native.rs:860:11
+    |
+860 |     const ABI: Abi = Abi {
+    |           ^^^
+
+warning: `archie-voice` (bin "archie-voice" test) generated 3 warnings
+warning: `archie-voice` (lib test) generated 3 warnings (run `cargo fix --lib -p archie-voice --tests` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized] target(s) in 1m 27s

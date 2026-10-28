@@ -269,6 +269,7 @@ void Observatory::set_display_present(bool display_present, std::int64_t now_ms)
 }
 
 void Observatory::request_mode(SceneMode mode) {
+    if (mode != m_modes.target()) m_exploration_camera = false;
     if (mode != m_modes.target() && m_camera.manual_navigation()) m_camera.release_focus();
     m_modes.request(mode);
 }
@@ -277,16 +278,69 @@ void Observatory::orbit_globe(float longitude_delta, float latitude_delta, float
     if (m_modes.target() != SceneMode::Watcher || !std::isfinite(longitude_delta) ||
         !std::isfinite(latitude_delta) || !std::isfinite(zoom_steps)) return;
     const CameraPose current = m_camera.pose();
-    const float radius = std::sqrt(current.eye.x * current.eye.x + current.eye.y * current.eye.y + current.eye.z * current.eye.z);
-    if (!std::isfinite(radius) || radius <= 0.0F) return;
-    constexpr float degrees = 180.0F / 3.14159265F;
-    const float longitude = std::atan2(current.eye.x,current.eye.z) * degrees + std::clamp(longitude_delta,-180.0F,180.0F);
-    const float latitude = std::clamp(std::asin(std::clamp(current.eye.y/radius,-1.0F,1.0F))*degrees + std::clamp(latitude_delta,-180.0F,180.0F),-85.0F,85.0F);
-    const float distance = std::clamp(radius * std::exp(-std::clamp(zoom_steps,-10.0F,10.0F)*0.12F),m_policy.layout.globe.radius*1.15F,m_policy.layout.globe.radius*8.0F);
-    GlobePolicy sphere = m_policy.layout.globe;
-    sphere.radius=distance;sphere.base_elevation=0.0F;sphere.elevation_per_magnitude=0.0F;
-    CameraPose next=current;next.eye=globe_position(GeoPoint{latitude,longitude},0.0F,sphere);next.target=Vec3{};
+    // Geographic pan and altitude zoom are one continuous navigation model. A
+    // close camera moves its ground target; it never becomes trapped orbiting
+    // the last captured AOI. Double intermediates keep metre-scale input useful.
+    const double earth=m_policy.layout.globe.radius;
+    const auto norm=[](Vec3 p){return std::sqrt(double(p.x)*p.x+double(p.y)*p.y+double(p.z)*p.z);};
+    const double eyeRadius=norm(current.eye),targetRadius=norm(current.target);
+    if(!std::isfinite(eyeRadius)||eyeRadius<=0) return;
+    constexpr double degrees=180.0/3.14159265358979323846;
+    const double ground=m_exploration_camera&&targetRadius>earth*0.99 ? targetRadius : earth;
+    const double altitude=std::max(10.0*earth/6371008.8,targetRadius>earth*0.99 ?
+        norm(Vec3{current.eye.x-current.target.x,current.eye.y-current.target.y,current.eye.z-current.target.z}):eyeRadius-ground);
+    const double speed=std::clamp(altitude/earth,0.000001,1.0);
+    const Vec3 anchor=targetRadius>earth*0.99 ? current.target : current.eye;
+    const double anchorRadius=norm(anchor);
+    const double oldLatitude=std::asin(std::clamp(double(anchor.y)/anchorRadius,-1.0,1.0))*degrees;
+    const double longitude=std::atan2(anchor.x,anchor.z)*degrees+
+        std::clamp(double(longitude_delta),-180.0,180.0)*speed/std::max(0.04,std::cos(oldLatitude/degrees));
+    const double latitude=std::clamp(oldLatitude+std::clamp(double(latitude_delta),-180.0,180.0)*speed,-89.0,89.0);
+    const double nextAltitude=std::clamp(altitude*std::exp(-std::clamp(double(zoom_steps),-10.0,10.0)*0.20),10.0*earth/6371008.8,earth*7.0);
+    const auto normal=globe_position({latitude,longitude},0,GlobePolicy{1,0,0});
+    CameraPose next=current;
+    next.eye={float(normal.x*(ground+nextAltitude)),float(normal.y*(ground+nextAltitude)),float(normal.z*(ground+nextAltitude))};
+    // Distant framing looks at Earth's centre. Below one radius a surface
+    // target improves the local near plane and keeps geographic pan intuitive.
+    next.target=nextAltitude<earth ? Vec3{float(normal.x*ground),float(normal.y*ground),float(normal.z*ground)} : Vec3{};
+    m_exploration_camera=nextAltitude<earth;
     m_focused.clear();m_camera.navigate(next);
+    if(nextAltitude*6371008.8/earth<100000.) tilt_globe(0);
+}
+
+void Observatory::tilt_globe(float delta_degrees) {
+    if(m_modes.target()!=SceneMode::Watcher||!std::isfinite(delta_degrees)) return;
+    const auto current=m_camera.pose();const double earth=m_policy.layout.globe.radius;
+    const auto norm=[](Vec3 p){return std::sqrt(double(p.x)*p.x+double(p.y)*p.y+double(p.z)*p.z);};
+    const double radius=norm(current.target);if(radius<earth*0.99||radius>earth*1.01)return;
+    const double nx=current.target.x/radius,ny=current.target.y/radius,nz=current.target.z/radius;
+    const double horizontal=std::hypot(nx,nz);if(horizontal<1e-5)return;
+    m_world_tilt=std::clamp(m_world_tilt+delta_degrees,0.0F,70.0F);
+    const double ex=current.eye.x-current.target.x,ey=current.eye.y-current.target.y,ez=current.eye.z-current.target.z;
+    const double distance=std::sqrt(ex*ex+ey*ey+ez*ez);
+    const double fade=std::clamp((100000.-distance*6371008.8/earth)/80000.,0.,1.);
+    const double angle=m_world_tilt*fade*3.14159265358979323846/180.;
+    const double northX=-nx*ny/horizontal,northY=horizontal,northZ=-nz*ny/horizontal;
+    CameraPose next=current;
+    next.eye={float(current.target.x+distance*(nx*std::cos(angle)-northX*std::sin(angle))),
+              float(current.target.y+distance*(ny*std::cos(angle)-northY*std::sin(angle))),
+              float(current.target.z+distance*(nz*std::cos(angle)-northZ*std::sin(angle)))};
+    m_camera.navigate(next);
+}
+
+bool Observatory::frame_globe(double latitude, double longitude, double radius_m, double elevation_m, bool animate) {
+    if (m_modes.target()!=SceneMode::Watcher || !std::isfinite(latitude) || latitude < -90 || latitude > 90 ||
+        !std::isfinite(longitude) || longitude < -180 || longitude > 180 ||
+        !std::isfinite(radius_m) || radius_m<=0 || radius_m>6371000 ||
+        !std::isfinite(elevation_m) || elevation_m < -12000 || elevation_m > 12000) return false;
+    const float scale=m_policy.layout.globe.radius/6371000.0F;
+    GlobePolicy surface{m_policy.layout.globe.radius+static_cast<float>(elevation_m)*scale,0,0};
+    const auto target=globe_position(GeoPoint{latitude,longitude},0,surface);
+    const float standOff=std::max(25.0F*scale,static_cast<float>(radius_m)*scale*3.0F);
+    const auto normal=globe_position(GeoPoint{latitude,longitude},0,GlobePolicy{1,0,0});
+    CameraPose next=m_camera.pose();next.target=target;
+    next.eye={target.x+normal.x*standOff,target.y+normal.y*standOff,target.z+normal.z*standOff};
+    m_focused.clear();m_exploration_camera=true;m_camera.navigate(next,animate,true);return true;
 }
 
 void Observatory::focus(const std::string& node_id) {
@@ -311,10 +365,12 @@ void Observatory::focus(const std::string& node_id) {
         node->spec.location.has_value()
             ? globe_position(*node->spec.location, node->spec.magnitude, m_policy.layout.globe)
             : place(node->slot, depth, node->spec.severity, m_policy.layout);
+    m_exploration_camera=false;
     m_camera.focus(node_id, framing_for(position));
 }
 
 void Observatory::release_focus() {
+    m_exploration_camera=false;
     m_focused.clear();
     m_camera.release_focus();
 }

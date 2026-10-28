@@ -1,0 +1,48 @@
+{
+  "runtime": "/tmp/archie-world-perf-after-v2/runtime",
+  "navigation": {
+    "bytes_received": 0,
+    "cache_hits": 0,
+    "cached_tiles": 0,
+    "created_at_ms": 1792971820311,
+    "desired_tiles": 0,
+    "domain": "personal",
+    "expires_at_ms": 1792975420311,
+    "generation": 0,
+    "id": "4aea9307960e3b990bff96cb2291227a",
+    "request": {
+      "domain": "personal",
+      "duration_seconds": 3600,
+      "imagery_date": "2026-10-22",
+      "max_bytes": 268435456,
+      "max_requests": 1800,
+      "max_visible_tiles": 64,
+      "max_zoom": 19,
+      "photogrammetry": true,
+      "signals": true,
+      "sources": [
+        "google_satellite",
+        "blue_marble",
+        "sentinel2",
+        "landsat",
+        "natural_color",
+        "infrared",
+        "night_lights",
+        "thermal"
+      ]
+    },
+    "requests_sent": 0,
+    "state": "ready",
+    "updated_at_ms": 1792971820313
+  },
+  "world_port": 19667,
+  "display_port": 19666,
+  "native_port": 19668,
+  "daemon_pids": [
+    16107,
+    16193
+  ],
+  "startup_aoi_jobs": 0,
+  "source": "google_satellite",
+  "renew_navigation": false
+}

@@ -1,0 +1,106 @@
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+MESA-EGL: warning: failed to get driver name for fd -1
+MESA-EGL: warning: MESA-LOADER: failed to retrieve device information
+MESA-EGL: warning: failed to get driver name for fd -1
+MESA: error: ZINK: vkCreateInstance failed (VK_ERROR_INCOMPATIBLE_DRIVER)
+MESA-EGL: warning: egl: failed to create dri2 screen
+qrc:/qt/qml/Archie/Observatory/qml/Main.qml:423:17: QML View3D: Cannot resolve view position without a camera assigned!
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/3dcea88bde0419d23d9edbeef4ecebc403572dde0a4574e2cc81235b46dd2077
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/3dcea88bde0419d23d9edbeef4ecebc403572dde0a4574e2cc81235b46dd2077
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/3dcea88bde0419d23d9edbeef4ecebc403572dde0a4574e2cc81235b46dd2077
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/2be939fa27ded37153cb88e99fe4fced5c3c11746692fd881dd533422270b80e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/2be939fa27ded37153cb88e99fe4fced5c3c11746692fd881dd533422270b80e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/2be939fa27ded37153cb88e99fe4fced5c3c11746692fd881dd533422270b80e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/2be939fa27ded37153cb88e99fe4fced5c3c11746692fd881dd533422270b80e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/2be939fa27ded37153cb88e99fe4fced5c3c11746692fd881dd533422270b80e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/2be939fa27ded37153cb88e99fe4fced5c3c11746692fd881dd533422270b80e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/2be939fa27ded37153cb88e99fe4fced5c3c11746692fd881dd533422270b80e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/4e2fb6975a7b919baa4d2db2a93572de831e3333c548684a4fda18739d8962c1
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/4e2fb6975a7b919baa4d2db2a93572de831e3333c548684a4fda18739d8962c1
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/1324283651ee56bd421d560ff9cf9f21fbeb5dd554b0336ced34b507d2ee0966
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/1324283651ee56bd421d560ff9cf9f21fbeb5dd554b0336ced34b507d2ee0966
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/1324283651ee56bd421d560ff9cf9f21fbeb5dd554b0336ced34b507d2ee0966
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/1324283651ee56bd421d560ff9cf9f21fbeb5dd554b0336ced34b507d2ee0966
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/1324283651ee56bd421d560ff9cf9f21fbeb5dd554b0336ced34b507d2ee0966
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/1324283651ee56bd421d560ff9cf9f21fbeb5dd554b0336ced34b507d2ee0966
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/1324283651ee56bd421d560ff9cf9f21fbeb5dd554b0336ced34b507d2ee0966
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/4e2fb6975a7b919baa4d2db2a93572de831e3333c548684a4fda18739d8962c1
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/155c3a712dabe4bb852b2f460f2cdff220525e2774fc106aa38c2ff9f57ac9d2
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/e5621511903546adca8fc29056e641307ebf8e9b9d617aa531db5590c1d8a25e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/e5621511903546adca8fc29056e641307ebf8e9b9d617aa531db5590c1d8a25e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/e5621511903546adca8fc29056e641307ebf8e9b9d617aa531db5590c1d8a25e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/e5621511903546adca8fc29056e641307ebf8e9b9d617aa531db5590c1d8a25e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/e5621511903546adca8fc29056e641307ebf8e9b9d617aa531db5590c1d8a25e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/e5621511903546adca8fc29056e641307ebf8e9b9d617aa531db5590c1d8a25e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/e5621511903546adca8fc29056e641307ebf8e9b9d617aa531db5590c1d8a25e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/155c3a712dabe4bb852b2f460f2cdff220525e2774fc106aa38c2ff9f57ac9d2
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/155c3a712dabe4bb852b2f460f2cdff220525e2774fc106aa38c2ff9f57ac9d2
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dd455727ee6aa486dc3fb7eeae9b8b988dab7fd77c70d9df468d9c5a2a3c03d6
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dd455727ee6aa486dc3fb7eeae9b8b988dab7fd77c70d9df468d9c5a2a3c03d6
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dd455727ee6aa486dc3fb7eeae9b8b988dab7fd77c70d9df468d9c5a2a3c03d6
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dd455727ee6aa486dc3fb7eeae9b8b988dab7fd77c70d9df468d9c5a2a3c03d6
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dd455727ee6aa486dc3fb7eeae9b8b988dab7fd77c70d9df468d9c5a2a3c03d6
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dd455727ee6aa486dc3fb7eeae9b8b988dab7fd77c70d9df468d9c5a2a3c03d6
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dd455727ee6aa486dc3fb7eeae9b8b988dab7fd77c70d9df468d9c5a2a3c03d6
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dd455727ee6aa486dc3fb7eeae9b8b988dab7fd77c70d9df468d9c5a2a3c03d6
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dd455727ee6aa486dc3fb7eeae9b8b988dab7fd77c70d9df468d9c5a2a3c03d6
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dd455727ee6aa486dc3fb7eeae9b8b988dab7fd77c70d9df468d9c5a2a3c03d6
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/7eec07a93294be9679f4d0bed5454b6cf9524e8749a5c0063d34d69bb12afcee
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/7eec07a93294be9679f4d0bed5454b6cf9524e8749a5c0063d34d69bb12afcee
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/7eec07a93294be9679f4d0bed5454b6cf9524e8749a5c0063d34d69bb12afcee
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/7eec07a93294be9679f4d0bed5454b6cf9524e8749a5c0063d34d69bb12afcee
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/4aebc65500cd19fdaf931452086863a8de0d5a0261cf79f901f569a229d4322f
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/4aebc65500cd19fdaf931452086863a8de0d5a0261cf79f901f569a229d4322f
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/4aebc65500cd19fdaf931452086863a8de0d5a0261cf79f901f569a229d4322f
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/4aebc65500cd19fdaf931452086863a8de0d5a0261cf79f901f569a229d4322f
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dbae9283d30a94ee14c29ebc824fee4041ddbc2b22d20755b36d9b448dc0ace2
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dbae9283d30a94ee14c29ebc824fee4041ddbc2b22d20755b36d9b448dc0ace2
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dbae9283d30a94ee14c29ebc824fee4041ddbc2b22d20755b36d9b448dc0ace2
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dbae9283d30a94ee14c29ebc824fee4041ddbc2b22d20755b36d9b448dc0ace2
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dbae9283d30a94ee14c29ebc824fee4041ddbc2b22d20755b36d9b448dc0ace2
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dbae9283d30a94ee14c29ebc824fee4041ddbc2b22d20755b36d9b448dc0ace2
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dbae9283d30a94ee14c29ebc824fee4041ddbc2b22d20755b36d9b448dc0ace2
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/1641c257b5fb48ea63f499c775923d945c0a4b70cc8da40196af48a4d44f542c
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/1641c257b5fb48ea63f499c775923d945c0a4b70cc8da40196af48a4d44f542c
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/1641c257b5fb48ea63f499c775923d945c0a4b70cc8da40196af48a4d44f542c
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/1641c257b5fb48ea63f499c775923d945c0a4b70cc8da40196af48a4d44f542c
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/c7cb9dce2071f5e721b79dd3bac6895da13bb1fc0ccb598bf4bf4aa808952ba5
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/c7cb9dce2071f5e721b79dd3bac6895da13bb1fc0ccb598bf4bf4aa808952ba5
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/c7cb9dce2071f5e721b79dd3bac6895da13bb1fc0ccb598bf4bf4aa808952ba5
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/c7cb9dce2071f5e721b79dd3bac6895da13bb1fc0ccb598bf4bf4aa808952ba5
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/7702d92753ced563034c729f4d8036c57f78f96e7af4ab6e2d70073dee03626f
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/6b760f5b2bc2ba60c09ee307dece00007c009ac47b1fc2ddef86465459f210a5
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/37d7b3c97dae6e6b7ffa6f96f7da82b02b0b651a2c17148f1b5e5f1e3e99294e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/8b67dad748c80bc982fbae5706d5787f310a941e92932e7310ba3623cfd13cec
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/99113321c499ab505b23d0dd899ac5f49b515f08f3205ef33e933293638c1068
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/8f3372c8676c10f8f99e8972bb040ad97ae998fc4a35f8c3521d5f31cb807dd8
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/06a524fb6a1b1c0f51efb0b8f9e4045e059ac392dbf1755ae04ebd2d00434e0d
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/5045b384cf5c6c2fe35d8044f99c6a93af04507e8f3ddc6d7f792fb436ad0a8d
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/61ece2e73f8bb73fe5cae816e82dcc513a4e5d54a7ee5bdbd96dca009245f1a9
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/eb0c4f0934f23e6a0aa248178e8080c2344b1fbf0e04b1657dab9593b25dda92
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/8c00fdedf7b9d9c16f4f420fc0c668f30f8668bebbfd764ac665accaecdaa3ad
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/abe68185d6f9412b96c19aef07b2b0241b18ea4a361df7c8a06fc9039a1cb1b5
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/2290df76e94659d09182294f67a51cac396685236c3496749053f22860b41bc1
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/cf6eb4eff7f81beb036a445d3da23ce7d18d1dbc883de062b5125c2a78330170
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/520954b775e1db080128a62c9456b88371a093a2245cd7cd516294725e2d0e5a
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/10fed0ac3b5b3b5a55f5ab20ea6fb1fefaf7383474db9db583623c91563dbe8e
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/1f8decada0c220d2e08be5f9328b24be53abd5b5e981b550669ae78d7e9e9ddc
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/9d0bac01e7804db7af2476cb97d8a1fcaa6758773d07a33bb2f17f9548f7c109
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/fc61484c726a5accec8c02ebb0f02ec83e05cae744353fe043195c3b36e28011
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/9e8ac9e7c51983c998d17440353becc806c4211228a49437f304146508bb280c
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/a04e6b727585d2d76ac7d36d3be2e77a3294c626ab2b870e771b2d6a776f0384
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/f47480e252f1e6c9a904c94e8ae749b30ab82b5db2fb5f92409ce95f0addaffe
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/b3110b0cb888f9c7c6da22309b9040e111b3e98345fa65a92c2f334e0a772212
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/8429114f894b1abbd1e4a69adb39aa9d7dc68aa8339e9175fd8b8559ec9a72b7
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/66f7fe4b426e5b1e998cb76396d5ba57e759a9352f34609c177f5dd0c79d4b77
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/cf09e41040beeee2988bbc22331bbd13baed6036b823d3d13d1ebee29c784d03
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/b37d7f3a7bcc06633600c1013f5c93e42033b692b8c4cade865f324c9266ec1a
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/dd6d04fb6d80b4769938b896ed2b7b4fdfeb84aa209a242c8e02103679638391
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/a8018ceb760ac09b22f5f0338b42734e21c891f4c8f926d34d9870cc2dd57319
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/e0c19e99515b2467d22b0dff3c52c563bf89edb68df60faf559419020a8acedd
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/3e65fd30fbecaa292ad1fb6497a525042bb25df2f73c32da54707f17ba006ad9
+qrc:/qt/qml/Archie/Observatory/qml/WorldImageryMaterial.qml:17:13: QML QQuickImage: Failed to get image from provider: image://globe/31a1455dfe26c9e093165d27b2c7fed5572fed7350d0d95a554da1163408b4cc
+archie-display render-check: orb fps=0

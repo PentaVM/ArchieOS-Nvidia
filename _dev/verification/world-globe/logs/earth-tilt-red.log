@@ -1,0 +1,13 @@
+[  4%] Building CXX object CMakeFiles/archie-visual.dir/src/observatory.cpp.o
+[  9%] Linking CXX static library libarchie-visual.a
+[ 90%] Built target archie-visual
+[ 95%] Building CXX object CMakeFiles/test_observatory.dir/tests/test_observatory.cpp.o
+[100%] Linking CXX executable test_observatory
+/usr/bin/ld: CMakeFiles/test_observatory.dir/tests/test_observatory.cpp.o: in function `manual_globe_navigation_stays_bounded_and_can_return_home()':
+test_observatory.cpp:(.text+0x36206): undefined reference to `archie::visual::Observatory::tilt_globe(float)'
+/usr/bin/ld: test_observatory.cpp:(.text+0x36446): undefined reference to `archie::visual::Observatory::tilt_globe(float)'
+collect2: error: ld returned 1 exit status
+make[3]: *** [CMakeFiles/test_observatory.dir/build.make:102: test_observatory] Error 1
+make[2]: *** [CMakeFiles/Makefile2:560: CMakeFiles/test_observatory.dir/all] Error 2
+make[1]: *** [CMakeFiles/Makefile2:567: CMakeFiles/test_observatory.dir/rule] Error 2
+make: *** [Makefile:303: test_observatory] Error 2

@@ -1,0 +1,227 @@
+Start testing: Oct 25 05:19 -03
+----------------------------------------------------------
+1/8 Testing: native_contracts
+1/8 Test: native_contracts
+Command: "/tmp/archie-world-native-check/test_native"
+Directory: /tmp/archie-world-native-check
+"native_contracts" start time: Oct 25 05:19 -03
+Output:
+----------------------------------------------------------
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+********* Start testing of NativeContracts *********
+Config: Using QtTest library 6.12.0, Qt 6.12.0 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 16.2.1 20260810), arch unknown
+PASS   : NativeContracts::initTestCase()
+QWARN  : NativeContracts::zeroBudgetProducesNoFrames() archie-display: preset invalid-test: visibleLimit: outside 12..420
+PASS   : NativeContracts::zeroBudgetProducesNoFrames()
+QWARN  : NativeContracts::reducedMotionPreservesProfileSettings() archie-display: preset invalid-test: visibleLimit: outside 12..420
+PASS   : NativeContracts::reducedMotionPreservesProfileSettings()
+QWARN  : NativeContracts::existingProfilesAndOverlaysRemainAvailable() archie-display: preset invalid-test: visibleLimit: outside 12..420
+PASS   : NativeContracts::existingProfilesAndOverlaysRemainAvailable()
+QWARN  : NativeContracts::newPresetsAreAdditiveAndRestoreOriginalDefaults() archie-display: preset invalid-test: visibleLimit: outside 12..420
+PASS   : NativeContracts::newPresetsAreAdditiveAndRestoreOriginalDefaults()
+QWARN  : NativeContracts::contentSphereListsItsFolderWithoutTheObserver() archie-display: preset invalid-test: visibleLimit: outside 12..420
+PASS   : NativeContracts::contentSphereListsItsFolderWithoutTheObserver()
+QWARN  : NativeContracts::originalProfilesApplyEveryValueOfTheOriginal() archie-display: preset invalid-test: visibleLimit: outside 12..420
+PASS   : NativeContracts::originalProfilesApplyEveryValueOfTheOriginal()
+PASS   : NativeContracts::ribbonGeometryPreservesBothEndpointsAndBounds()
+PASS   : NativeContracts::ribbonSeedsRemainStableWhenEndpointsMove()
+PASS   : NativeContracts::deliveredHybridAssetsDecodeToRequestedCpuBuffers()
+PASS   : NativeContracts::rustMeshUsesTexturedLayoutAndKeepsOriginalFallback()
+QWARN  : NativeContracts::deliveredPresetsShareValidatedCatalogAndKeepOsDensity() archie-display: preset invalid-test: visibleLimit: outside 12..420
+PASS   : NativeContracts::deliveredPresetsShareValidatedCatalogAndKeepOsDensity()
+QWARN  : NativeContracts::invalidPresetDoesNotPartiallyApplyOrEraseComparison() archie-display: preset invalid-test: visibleLimit: outside 12..420
+PASS   : NativeContracts::invalidPresetDoesNotPartiallyApplyOrEraseComparison()
+QWARN  : NativeContracts::onlyOneViewportCanOwnTheController() archie-display: preset invalid-test: visibleLimit: outside 12..420
+PASS   : NativeContracts::onlyOneViewportCanOwnTheController()
+QWARN  : NativeContracts::obsoleteLensResponsesDoNotPublish() archie-display: preset invalid-test: visibleLimit: outside 12..420
+PASS   : NativeContracts::obsoleteLensResponsesDoNotPublish()
+QWARN  : NativeContracts::deactivationStopsFrameTicksAndQueries() archie-display: preset invalid-test: visibleLimit: outside 12..420
+PASS   : NativeContracts::deactivationStopsFrameTicksAndQueries()
+QWARN  : NativeContracts::quietMotionDoesNotOverwriteRotationPreference() archie-display: preset invalid-test: visibleLimit: outside 12..420
+PASS   : NativeContracts::quietMotionDoesNotOverwriteRotationPreference()
+PASS   : NativeContracts::cleanupTestCase()
+Totals: 18 passed, 0 failed, 0 skipped, 0 blacklisted, 1151ms
+********* Finished testing of NativeContracts *********
+<end of output>
+Test time =   1.17 sec
+----------------------------------------------------------
+Test Passed.
+"native_contracts" end time: Oct 25 05:19 -03
+"native_contracts" time elapsed: 00:00:01
+----------------------------------------------------------
+
+2/8 Testing: shell_runtime_contracts
+2/8 Test: shell_runtime_contracts
+Command: "/tmp/archie-world-native-check/test_shell_runtime"
+Directory: /tmp/archie-world-native-check
+"shell_runtime_contracts" start time: Oct 25 05:19 -03
+Output:
+----------------------------------------------------------
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+********* Start testing of ShellRuntimeContracts *********
+Config: Using QtTest library 6.12.0, Qt 6.12.0 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 16.2.1 20260810), arch unknown
+PASS   : ShellRuntimeContracts::initTestCase()
+PASS   : ShellRuntimeContracts::framesAreCompleteAndArgumentsStayLiteral()
+PASS   : ShellRuntimeContracts::anOversizedUnterminatedFrameIsRejected()
+PASS   : ShellRuntimeContracts::missingProgramIsReportedWithoutBlocking()
+PASS   : ShellRuntimeContracts::localModelsAreListedAndOnlyAListedOneIsUsed()
+PASS   : ShellRuntimeContracts::unexpectedExitReconnectsAndStopCancelsReconnect()
+PASS   : ShellRuntimeContracts::cleanupTestCase()
+Totals: 7 passed, 0 failed, 0 skipped, 0 blacklisted, 6529ms
+********* Finished testing of ShellRuntimeContracts *********
+<end of output>
+Test time =   6.53 sec
+----------------------------------------------------------
+Test Passed.
+"shell_runtime_contracts" end time: Oct 25 05:19 -03
+"shell_runtime_contracts" time elapsed: 00:00:06
+----------------------------------------------------------
+
+3/8 Testing: exploration_preview_contracts
+3/8 Test: exploration_preview_contracts
+Command: "/tmp/archie-world-native-check/test_exploration_preview"
+Directory: /tmp/archie-world-native-check
+"exploration_preview_contracts" start time: Oct 25 05:19 -03
+Output:
+----------------------------------------------------------
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+Exploration preview contracts passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"exploration_preview_contracts" end time: Oct 25 05:19 -03
+"exploration_preview_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/8 Testing: world_visual_contracts
+4/8 Test: world_visual_contracts
+Command: "/tmp/archie-world-native-check/test_world_visuals"
+Directory: /tmp/archie-world-native-check
+"world_visual_contracts" start time: Oct 25 05:19 -03
+Output:
+----------------------------------------------------------
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+libpng error: Not a PNG file
+World imagery/beacon DTO contracts passed
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"world_visual_contracts" end time: Oct 25 05:19 -03
+"world_visual_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/8 Testing: world_texture_contracts
+5/8 Test: world_texture_contracts
+Command: "/tmp/archie-world-native-check/test_world_texture"
+Directory: /tmp/archie-world-native-check
+"world_texture_contracts" start time: Oct 25 05:19 -03
+Output:
+----------------------------------------------------------
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+MESA-EGL: warning: failed to get driver name for fd -1
+MESA-EGL: warning: MESA-LOADER: failed to retrieve device information
+MESA-EGL: warning: failed to get driver name for fd -1
+MESA: error: ZINK: vkCreateInstance failed (VK_ERROR_INCOMPATIBLE_DRIVER)
+MESA-EGL: warning: egl: failed to create dri2 screen
+north/south texture pixels QColor(ARGB 1, 0.909804, 0.0784314, 0.0784314) QColor(ARGB 1, 0.0784314, 0.0784314, 0.909804)
+neutral terrain/gray pixels QColor(ARGB 1, 0, 1, 0) QColor(ARGB 1, 0.501961, 0.501961, 0.501961)
+World image-provider texture render contract passed
+<end of output>
+Test time =   0.68 sec
+----------------------------------------------------------
+Test Passed.
+"world_texture_contracts" end time: Oct 25 05:19 -03
+"world_texture_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/8 Testing: exploration_credential_contracts
+6/8 Test: exploration_credential_contracts
+Command: "/tmp/archie-world-native-check/test_exploration_credential"
+Directory: /tmp/archie-world-native-check
+"exploration_credential_contracts" start time: Oct 25 05:19 -03
+Output:
+----------------------------------------------------------
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+World projection credential contracts passed (Unix owner/mode/no-follow)
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"exploration_credential_contracts" end time: Oct 25 05:19 -03
+"exploration_credential_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/8 Testing: world_hud_contracts
+7/8 Test: world_hud_contracts
+Command: "/tmp/archie-world-native-check/test_world_hud"
+Directory: /tmp/archie-world-native-check
+"world_hud_contracts" start time: Oct 25 05:19 -03
+Output:
+----------------------------------------------------------
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+World HUD/beacon QML contracts passed
+<end of output>
+Test time =   0.10 sec
+----------------------------------------------------------
+Test Passed.
+"world_hud_contracts" end time: Oct 25 05:19 -03
+"world_hud_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/8 Testing: display_control_contracts
+8/8 Test: display_control_contracts
+Command: "/tmp/archie-world-native-check/test_display_control"
+Directory: /tmp/archie-world-native-check
+"display_control_contracts" start time: Oct 25 05:19 -03
+Output:
+----------------------------------------------------------
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+********* Start testing of DisplayControlContracts *********
+Config: Using QtTest library 6.12.0, Qt 6.12.0 (x86_64-little_endian-lp64 shared (dynamic) release build; by GCC 16.2.1 20260810), arch unknown
+PASS   : DisplayControlContracts::initTestCase()
+PASS   : DisplayControlContracts::catalogFollowsResourcesAndActualHostScenes()
+PASS   : DisplayControlContracts::presetSuccessMeansAppliedAndFailurePreservesState()
+PASS   : DisplayControlContracts::invalidRequestsNeverDeliverCommands()
+PASS   : DisplayControlContracts::existingVoiceCommandsAreDelivered()
+PASS   : DisplayControlContracts::shellDoesNotAcknowledgeAnUnavailableWorldView()
+PASS   : DisplayControlContracts::shellAcknowledgesWorldOnlyAfterNativeHostIsAvailable()
+PASS   : DisplayControlContracts::overlaysRequireAnActualBoolean()
+PASS   : DisplayControlContracts::shellPanelsAreAllowlistedLocalViews()
+PASS   : DisplayControlContracts::cleanupTestCase()
+Totals: 10 passed, 0 failed, 0 skipped, 0 blacklisted, 719ms
+********* Finished testing of DisplayControlContracts *********
+<end of output>
+Test time =   0.74 sec
+----------------------------------------------------------
+Test Passed.
+"display_control_contracts" end time: Oct 25 05:19 -03
+"display_control_contracts" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 25 05:19 -03

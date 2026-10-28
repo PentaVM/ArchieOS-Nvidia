@@ -1,0 +1,28 @@
+{
+  "run": "/home/archie/.local/share/archie-world-demo/run-1792953322977",
+  "native_control": "responsive",
+  "startup_aoi_jobs": 0,
+  "owner_renewal_enabled": true,
+  "source": "google_satellite",
+  "state": "ready",
+  "min_zoom": 2,
+  "max_zoom": 4,
+  "pending_tiles": 0,
+  "usage": {
+    "bytes_received": 966706,
+    "cache_bytes": 394529,
+    "cache_tiles": 45,
+    "expires_at_ms": 1792956923471,
+    "max_bytes": 268435456,
+    "max_requests": 1800,
+    "requests_sent": 50
+  },
+  "original_tile_dimensions": [
+    [
+      256,
+      256
+    ]
+  ],
+  "sampled_pixel_hashes_absent_from_disk": true,
+  "executable_sha256": "4b5ce61f8e0f4caf2670217d2c37510c24a238c8d87c89b2d989fa97c8fa8d58"
+}

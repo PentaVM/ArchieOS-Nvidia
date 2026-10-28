@@ -1,0 +1,56 @@
+
+running 5 tests
+world_signals::tests::globe_refuses_aircraft_unknown_and_oversized_feeds --- FAILED
+world_signals::tests::globe_requests_are_fixed_global_bounded_natural_event_feeds --- FAILED
+world_signals::tests::globe_keeps_continents_and_both_sides_of_seam_but_rejects_invalid_quakes --- FAILED
+world_signals::tests::globe_eonet_provider_limit_and_output_omissions_remain_explicit --- FAILED
+world_signals::tests::globe_retains_input_scan_ceiling_and_discloses_incomplete_total --- FAILED
+
+failures:
+
+---- world_signals::tests::globe_refuses_aircraft_unknown_and_oversized_feeds stdout ----
+
+thread 'world_signals::tests::globe_refuses_aircraft_unknown_and_oversized_feeds' (20428) panicked at crates/archie-worldd/src/world_signals.rs:870:9:
+assertion failed: decode_global("adsb_lol",
+        &serde_json::to_vec(&json!({"now":now,"ac":[]})).unwrap()).is_err()
+
+---- world_signals::tests::globe_requests_are_fixed_global_bounded_natural_event_feeds stdout ----
+
+thread 'world_signals::tests::globe_requests_are_fixed_global_bounded_natural_event_feeds' (20429) panicked at crates/archie-worldd/src/world_signals.rs:784:9:
+assertion `left == right` failed
+  left: 0
+ right: 2
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- world_signals::tests::globe_keeps_continents_and_both_sides_of_seam_but_rejects_invalid_quakes stdout ----
+
+thread 'world_signals::tests::globe_keeps_continents_and_both_sides_of_seam_but_rejects_invalid_quakes' (20427) panicked at crates/archie-worldd/src/world_signals.rs:818:9:
+assertion `left == right` failed
+  left: (9, 0, 9, 0)
+ right: (9, 4, 5, 0)
+
+---- world_signals::tests::globe_eonet_provider_limit_and_output_omissions_remain_explicit stdout ----
+
+thread 'world_signals::tests::globe_eonet_provider_limit_and_output_omissions_remain_explicit' (20426) panicked at crates/archie-worldd/src/world_signals.rs:849:9:
+assertion `left == right` failed
+  left: (200, 0, 0, 0, 200)
+ right: (200, 200, 128, 72, 0)
+
+---- world_signals::tests::globe_retains_input_scan_ceiling_and_discloses_incomplete_total stdout ----
+
+thread 'world_signals::tests::globe_retains_input_scan_ceiling_and_discloses_incomplete_total' (20430) panicked at crates/archie-worldd/src/world_signals.rs:889:9:
+assertion `left == right` failed
+  left: (4097, 0, 0, 0)
+ right: (4097, 4096, 128, 3968)
+
+
+failures:
+    world_signals::tests::globe_eonet_provider_limit_and_output_omissions_remain_explicit
+    world_signals::tests::globe_keeps_continents_and_both_sides_of_seam_but_rejects_invalid_quakes
+    world_signals::tests::globe_refuses_aircraft_unknown_and_oversized_feeds
+    world_signals::tests::globe_requests_are_fixed_global_bounded_natural_event_feeds
+    world_signals::tests::globe_retains_input_scan_ceiling_and_discloses_incomplete_total
+
+test result: FAILED. 0 passed; 5 failed; 0 ignored; 0 measured; 67 filtered out; finished in 0.19s
+
+error: test failed, to rerun pass `-p archie-worldd --lib`

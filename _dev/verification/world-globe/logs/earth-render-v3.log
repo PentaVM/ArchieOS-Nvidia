@@ -1,0 +1,85 @@
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+qt.scenegraph.general: threaded render loop
+qt.scenegraph.general: Using sg animation driver
+qt.scenegraph.general: Animation Driver: using vsync: 16.67 ms
+qrc:/qt/qml/Archie/Observatory/qml/Main.qml:429:17: QML View3D: Cannot resolve view position without a camera assigned!
+qt.scenegraph.general: Animation Driver: using vsync: 16.67 ms
+qt.scenegraph.general: Creating QRhi with backend OpenGL for window 0x55f9bccb94d0 (wflags 0x1)
+  Graphics API debug/validation layers: 0
+  Debug markers: 0
+  Timestamps: 0
+  Prefer software device: 0
+  Shader/pipeline cache collection: 1
+qt.rhi.general: Created OpenGL context QSurfaceFormat(version 4.6, options QFlags<QSurfaceFormat::FormatOption>(), depthBufferSize 24, redBufferSize 8, greenBufferSize 8, blueBufferSize 8, alphaBufferSize 0, stencilBufferSize 8, samples -1, swapBehavior QSurfaceFormat::DoubleBuffer, swapInterval 1, colorSpace QColorSpace(), profile  QSurfaceFormat::CoreProfile)
+qt.rhi.general: OpenGL VENDOR: Mesa RENDERER: llvmpipe (LLVM 23.1.1, 256 bits) VERSION: 4.6 (Core Profile) Mesa 26.2.4-arch1.1
+qt.scenegraph.general: Created QRhi 0x7f4cb8006620 for window 0x55f9bccb94d0
+qt.scenegraph.general: Attempting to seed pipeline cache for QRhi 0x7f4cb8006620 from '/home/archie/.cache/PentaVM/Archie Observatory/qtpipelinecache-x86_64-little_endian-lp64/qqpc_opengl'
+qt.rhi.general: Seeded pipeline cache with 19 program binaries
+qt.scenegraph.general: MSAA sample count for the swapchain is 1. Alpha channel requested = no.
+qt.scenegraph.general: rhi texture atlas dimensions: 2048x2048
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+archie-display ui-walk: step 0 {"wait":3000}
+archie-display ui-walk: step 1 {"state":"planet"}
+archie-display ui-walk: step 2 {"drag":[368.1752479537,174.8685084042],"settle":20}
+archie-display ui-walk: step 3 {"settle":20,"wheel":10}
+qt.scenegraph.general: animation driver switched to timer mode
+archie-display ui-walk: step 4 {"settle":20,"wheel":10}
+archie-display ui-walk: step 5 {"settle":20,"wheel":10}
+archie-display ui-walk: step 6 {"settle":20,"wheel":10}
+archie-display ui-walk: step 7 {"settle":20,"wheel":10}
+archie-display ui-walk: step 8 {"settle":45000,"wheel":8}
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+archie-display ui-walk: step 9 {"state":"street-rendered"}
+archie-display ui-walk: step 10 {"drag":[-100,20],"settle":30000}
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+qt.scenegraph.general: animation driver switched to timer mode
+qt.scenegraph.general: animation driver switched to vsync mode
+archie-display ui-walk: step 11 {"state":"panned-rendered"}
+archie-display ui-walk: 0 clicks, 0 without effect; report /tmp/archie-world-earth-render-v3/report.jsonl
+qt.scenegraph.general: Total time spent on pipeline creation during the lifetime of the QRhi 0x7f4cb8006620 was 12 ms
+qt.scenegraph.general: Writing pipeline cache contents (722515 bytes) for QRhi 0x7f4cb8006620 to '/home/archie/.cache/PentaVM/Archie Observatory/qtpipelinecache-x86_64-little_endian-lp64/qqpc_opengl'

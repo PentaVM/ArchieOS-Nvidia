@@ -1,0 +1,14 @@
+{
+  "meshes_checked": 64,
+  "center_ray_triangle_hits": 2,
+  "nearest_distance_m": 177.13267348332582,
+  "native_render": {
+    "center_surface": "satellite",
+    "draw_calls": 93,
+    "draw_vertices": 420177,
+    "earth_center_hits": 0,
+    "fps": 5,
+    "graphics_api": "OpenGL"
+  },
+  "source_state": "ready"
+}

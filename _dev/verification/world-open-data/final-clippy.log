@@ -1,0 +1,99 @@
+    Checking serde_core v1.0.229
+    Checking zeroize v1.9.0
+    Checking tokio v1.53.1
+    Checking serde v1.0.229
+    Checking serde_json v1.0.151
+    Checking zerofrom v0.1.8
+    Checking yoke v0.8.3
+    Checking deranged v0.5.8
+    Checking uuid v1.26.0
+    Checking zerovec v0.11.8
+    Checking time v0.3.55
+    Checking tracing v0.1.44
+    Checking zerocopy v0.8.56
+    Checking archie-types v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-types)
+    Checking futures-util v0.3.34
+    Checking tinystr v0.8.4
+    Checking ppv-lite86 v0.2.21
+    Checking icu_locale_core v2.3.0
+    Checking zerotrie v0.2.5
+    Checking potential_utf v0.1.6
+    Checking icu_collections v2.3.0
+    Checking icu_provider v2.3.1
+    Checking rustls-pki-types v1.15.1
+    Checking icu_normalizer v2.3.0
+    Checking icu_properties v2.3.0
+    Checking hyper v1.11.1
+    Checking idna_adapter v1.2.2
+    Checking rustls-webpki v0.103.15
+    Checking tokio-util v0.7.19
+    Checking hyper-util v0.1.20
+    Checking rustls v0.23.43
+    Checking idna v1.1.0
+    Checking tower v0.5.3
+    Checking tracing-serde v0.2.0
+    Checking tracing-subscriber v0.3.23
+    Checking serde_urlencoded v0.7.1
+    Checking tokio-rustls v0.26.4
+    Checking url v2.5.8
+    Checking webpki-roots v1.0.9
+    Checking hyper-rustls v0.27.9
+    Checking tower-http v0.6.11
+    Checking archie-observability v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-observability)
+    Checking reqwest v0.12.28
+    Checking rand_chacha v0.9.0
+    Checking archie-vault v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-vault)
+    Checking rand v0.9.5
+    Checking postgres-protocol v0.6.8
+    Checking clap v4.6.6
+    Checking postgres-types v0.2.9
+    Checking toml_datetime v0.6.11
+    Checking serde_spanned v0.6.9
+    Checking tokio-postgres v0.7.13
+    Checking toml_edit v0.22.27
+    Checking archie-memory v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-memory)
+    Checking postgres v0.19.10
+    Checking toml v0.8.23
+    Checking archie-policy v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-policy)
+    Checking prost v0.14.4
+    Checking archie-orb v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-orb)
+    Checking archie-postgres v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-postgres)
+    Checking archie-sentry v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-sentry)
+    Checking rand_chacha v0.3.1
+    Checking archie-geofabric v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-geofabric)
+    Checking rand v0.8.8
+    Checking half v2.7.1
+    Checking tiff v0.10.3
+    Checking der v0.7.10
+    Checking spki v0.7.3
+    Checking archie-worldd v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-worldd)
+    Checking pkcs8 v0.10.2
+    Checking ed25519 v2.2.3
+    Checking archie-state v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-state)
+    Checking axum-core v0.4.5
+    Checking curve25519-dalek v4.1.3
+    Checking archie-stage v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-stage)
+    Checking archie-registry v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-registry)
+    Checking archie-speech v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-speech)
+    Checking archie-search v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-search)
+    Checking archie-router v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-router)
+    Checking archie-mcp v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-mcp)
+    Checking archie-model-runtime v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-model-runtime)
+    Checking archie-notices v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-notices)
+    Checking serde_path_to_error v0.1.20
+    Checking axum v0.7.9
+    Checking archie-cerebra v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-cerebra)
+    Checking ed25519-dalek v2.2.0
+    Checking archie-fabric v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-fabric)
+    Checking archie-scheduler v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-scheduler)
+    Checking archie-execution v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-execution)
+    Checking archie-workstation v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-workstation)
+   Compiling csv v1.4.0
+   Compiling oui-data v0.2.3
+    Checking phf v0.14.0
+    Checking archie-core v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-core)
+    Checking archie-iris v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-iris)
+    Checking archie-lan v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-lan)
+    Checking archie-displayd v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-displayd)
+    Checking archie-cli v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-cli)
+    Finished `dev` profile [unoptimized] target(s) in 1m 37s

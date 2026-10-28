@@ -28,6 +28,7 @@ pub struct Request {
     /// What followed `?` in the target, still percent-encoded. Only `/api/orb/lumen`
     /// reads it: the view it asks for is presentation, never a command.
     pub query: String,
+    pub authorization: Option<String>,
 }
 
 impl Request {
@@ -50,6 +51,12 @@ impl Request {
             method,
             path,
             query,
+            authorization: raw
+                .lines()
+                .skip(1)
+                .filter_map(|line| line.split_once(':'))
+                .find(|(name, _)| name.eq_ignore_ascii_case("Authorization"))
+                .map(|(_, value)| value.trim().to_string()),
         })
     }
 }

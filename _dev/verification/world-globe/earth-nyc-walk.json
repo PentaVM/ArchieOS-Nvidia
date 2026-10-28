@@ -1,0 +1,55 @@
+[
+  {
+    "wait": 3000
+  },
+  {
+    "state": "planet"
+  },
+  {
+    "drag": [
+      57.550236707447276,
+      378.4832582513097
+    ],
+    "settle": 20
+  },
+  {
+    "wheel": 10,
+    "settle": 20
+  },
+  {
+    "wheel": 10,
+    "settle": 20
+  },
+  {
+    "wheel": 10,
+    "settle": 45000
+  },
+  {
+    "state": "city-3d"
+  },
+  {
+    "wheel": 10,
+    "settle": 20
+  },
+  {
+    "wheel": 10,
+    "settle": 20
+  },
+  {
+    "wheel": 3,
+    "settle": 45000
+  },
+  {
+    "state": "street-3d"
+  },
+  {
+    "drag": [
+      -100,
+      20
+    ],
+    "settle": 15000
+  },
+  {
+    "state": "panned-street-3d"
+  }
+]

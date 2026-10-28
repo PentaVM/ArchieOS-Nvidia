@@ -1,0 +1,101 @@
+[  1%] Building the Rust Lumenfield design library
+[ 13%] Built target archie-visual
+[ 13%] Copying archie-display qml sources into build dir
+[ 13%] Built target archie-display_copy_qml
+[ 14%] Built target archie-display_copy_res
+[ 15%] Built target generate_qmlls_build_ini_file
+[ 15%] Running qmlimportscanner for archie-display
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 15%] Built target archie-display_qmlimportscan
+[ 15%] Built target test_native_qmlimportscan
+[ 15%] Built target test_shell_runtime_autogen_timestamp_deps
+[ 15%] Built target test_exploration_preview_autogen_timestamp_deps
+[ 16%] Built target test_globe_stream_qmlimportscan
+[ 16%] Built target test_globe_tiles_autogen_timestamp_deps
+[ 16%] Built target test_world_visuals_autogen_timestamp_deps
+[ 17%] Built target test_world_texture_qmlimportscan
+[ 17%] Built target test_exploration_credential_autogen_timestamp_deps
+[ 17%] Built target test_world_hud_qmlimportscan
+[ 18%] Built target test_display_control_qmlimportscan
+[ 19%] Built target archie-osm
+[ 19%] Generating qt.conf part for archie-display
+[ 20%] Generating qt.conf file
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 20%] Built target generate_finalqtconf_archie-display
+[ 20%] Automatic MOC and UIC for target test_shell_runtime
+[ 20%] Built target test_shell_runtime_autogen
+[ 20%] Automatic MOC and UIC for target test_exploration_preview
+[ 20%] Built target test_exploration_preview_autogen
+[ 20%] Built target test_globe_stream_autogen_timestamp_deps
+[ 20%] Automatic MOC and UIC for target test_globe_tiles
+[ 20%] Built target test_globe_tiles_autogen
+[ 21%] Automatic MOC and UIC for target test_world_visuals
+[ 21%] Built target test_world_visuals_autogen
+[ 21%] Built target test_world_texture_autogen_timestamp_deps
+[ 21%] Automatic MOC and UIC for target test_exploration_credential
+[ 21%] Built target test_exploration_credential_autogen
+[ 21%] Built target test_world_hud_autogen_timestamp_deps
+    Finished `release` profile [optimized] target(s) in 1.42s
+[ 21%] Built target archie-lumen-design-build
+[ 25%] Built target test_shell_runtime
+[ 28%] Built target test_exploration_preview
+[ 28%] Automatic MOC and UIC for target test_globe_stream
+[ 29%] Building CXX object CMakeFiles/test_globe_tiles.dir/tests/test_globe_tiles.cpp.o
+[ 29%] Built target test_globe_stream_autogen
+[ 31%] Built target test_world_visuals
+[ 31%] Built target test_world_texture_autogen
+[ 34%] Built target test_exploration_credential
+[ 35%] Automatic MOC and UIC for target test_world_hud
+[ 35%] Built target test_world_hud_autogen
+[ 35%] Built target test_display_control_autogen_timestamp_deps
+[ 35%] Built target archie-display_autogen_timestamp_deps
+[ 35%] Built target test_native_autogen_timestamp_deps
+[ 39%] Built target test_globe_stream
+[ 40%] Running rcc for resource world-texture-material
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 41%] Building CXX object CMakeFiles/test_world_texture.dir/.qt/rcc/qrc_world-texture-material.cpp.o
+[ 42%] Linking CXX executable test_world_texture
+[ 43%] Built target test_world_texture
+[ 43%] Running rcc for resource world-hud-component
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 45%] Building CXX object CMakeFiles/test_world_hud.dir/.qt/rcc/qrc_world-hud-component.cpp.o
+[ 45%] Linking CXX executable test_world_hud
+[ 48%] Built target test_world_hud
+[ 49%] Automatic MOC and UIC for target test_display_control
+[ 49%] Built target test_display_control_autogen
+[ 50%] Automatic MOC and UIC for target archie-display
+[ 50%] Built target archie-display_autogen
+[ 51%] Automatic MOC and UIC for target test_native
+[ 51%] Built target test_native_autogen
+[ 57%] Built target test_display_control
+[ 57%] Running AUTOMOC file extraction for target archie-display
+[ 57%] Running rcc for resource archie-display_raw_qml_0
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 57%] Generating .rcc/qmlcache/archie-display_qml_Exploration_js.cpp
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 58%] Building CXX object CMakeFiles/archie-display.dir/.qt/rcc/qrc_archie-display_raw_qml_0.cpp.o
+[ 59%] Linking CXX executable test_globe_tiles
+[ 59%] Running AUTOMOC file extraction for target archie-display
+[ 59%] Building CXX object CMakeFiles/archie-display.dir/.rcc/qmlcache/archie-display_qml_Exploration_js.cpp.o
+[ 59%] Built target test_globe_tiles
+[ 67%] Built target test_native
+[ 68%] Linking CXX executable archie-display
+[100%] Built target archie-display

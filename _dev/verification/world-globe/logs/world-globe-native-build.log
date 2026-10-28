@@ -1,0 +1,59 @@
+[  1%] Building the Rust Lumenfield design library
+[ 13%] Built target archie-visual
+[ 13%] Built target archie-display_copy_qml
+[ 14%] Built target archie-display_copy_res
+[ 15%] Built target generate_qmlls_build_ini_file
+[ 15%] Built target archie-display_qmlimportscan
+[ 15%] Built target test_native_qmlimportscan
+[ 15%] Built target test_shell_runtime_autogen_timestamp_deps
+[ 15%] Built target test_exploration_preview_autogen_timestamp_deps
+[ 16%] Built target test_globe_stream_qmlimportscan
+[ 16%] Built target test_globe_tiles_autogen_timestamp_deps
+[ 16%] Built target test_world_visuals_autogen_timestamp_deps
+[ 17%] Built target test_world_texture_qmlimportscan
+[ 17%] Built target test_exploration_credential_autogen_timestamp_deps
+[ 17%] Built target test_world_hud_qmlimportscan
+[ 18%] Built target test_display_control_qmlimportscan
+[ 19%] Built target archie-osm
+[ 20%] Built target generate_finalqtconf_archie-display
+[ 20%] Built target test_shell_runtime_autogen
+[ 20%] Built target test_exploration_preview_autogen
+[ 20%] Built target test_globe_stream_autogen_timestamp_deps
+[ 20%] Automatic MOC and UIC for target test_globe_tiles
+[ 20%] Built target test_globe_tiles_autogen
+[ 21%] Built target test_world_visuals_autogen
+[ 21%] Built target test_world_texture_autogen_timestamp_deps
+[ 21%] Built target test_exploration_credential_autogen
+[ 21%] Built target test_world_hud_autogen_timestamp_deps
+[ 25%] Built target test_shell_runtime
+[ 28%] Built target test_exploration_preview
+[ 28%] Automatic MOC and UIC for target test_globe_stream
+[ 28%] Built target test_globe_stream_autogen
+[ 28%] Building CXX object CMakeFiles/test_globe_tiles.dir/src/GlobeTiles.cpp.o
+    Finished `release` profile [optimized] target(s) in 0.94s
+[ 28%] Built target archie-lumen-design-build
+[ 30%] Built target test_world_visuals
+[ 30%] Built target test_world_texture_autogen
+[ 32%] Built target test_exploration_credential
+[ 34%] Built target test_world_hud_autogen
+[ 34%] Built target test_display_control_autogen_timestamp_deps
+[ 34%] Built target archie-display_autogen_timestamp_deps
+[ 34%] Built target test_native_autogen_timestamp_deps
+[ 34%] Building CXX object CMakeFiles/test_globe_stream.dir/src/GlobeTiles.cpp.o
+[ 35%] Linking CXX executable test_globe_tiles
+[ 36%] Built target test_globe_tiles
+[ 40%] Built target test_world_texture
+[ 45%] Built target test_world_hud
+[ 46%] Built target test_display_control_autogen
+[ 47%] Linking CXX executable test_globe_stream
+[ 48%] Automatic MOC and UIC for target archie-display
+[ 48%] Built target archie-display_autogen
+[ 49%] Built target test_native_autogen
+[ 54%] Built target test_display_control
+[ 54%] Running AUTOMOC file extraction for target archie-display
+[ 58%] Built target test_globe_stream
+[ 65%] Built target test_native
+[ 65%] Running AUTOMOC file extraction for target archie-display
+[ 67%] Building CXX object CMakeFiles/archie-display.dir/src/GlobeTiles.cpp.o
+[ 68%] Linking CXX executable archie-display
+[100%] Built target archie-display

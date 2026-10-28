@@ -23,7 +23,7 @@ rvc = ["dep:ort", "dep:serde"]
 # WebSocket, IRIS for eyes, and curiosity (identify and search) for what is in front.
 live = [
     "nemo", "wanda", "dep:axum", "dep:reqwest", "dep:futures-util", "dep:serde", "dep:base64",
-    "dep:png", "dep:jpeg-decoder", "dep:archie-search", "dep:ring", "dep:zeroize",
+    "dep:png", "dep:jpeg-decoder", "dep:archie-search", "dep:ring", "dep:zeroize", "dep:archie-worldd", "dep:archie-geofabric", "dep:archie-core",
 ]
 
 [dependencies]
@@ -41,6 +41,9 @@ archie-iris.workspace = true
 archie-notices.workspace = true
 archie-policy.workspace = true
 archie-wanda = { workspace = true, optional = true }
+archie-worldd = { workspace = true, optional = true }
+archie-core = { workspace = true, optional = true }
+archie-geofabric = { workspace = true, optional = true }
 hex.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true

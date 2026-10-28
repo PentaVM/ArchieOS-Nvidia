@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/_dev/verification/world-globe/test_launcher.py", line 3, in <module>
+    from globe_demo import maintain_navigation
+ImportError: cannot import name 'maintain_navigation' from 'globe_demo' (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/_dev/verification/world-globe/globe_demo.py)

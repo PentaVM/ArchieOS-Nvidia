@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import json;from pathlib import Path;r=json.loads(Path("/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/_dev/verification/world-globe/perf-before.json").read_text());assert r[0]["completed_s"]<10 and r[1]["completed_s"]<5,"Cold 17.97s / cached pan 15.05s exceeds performance target"
+                                                                                                                                                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Cold 17.97s / cached pan 15.05s exceeds performance target

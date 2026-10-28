@@ -69,7 +69,7 @@ QStringList DisplayControl::scenes() const
 {
     QStringList names;
     for (const auto &scene : sceneTable) {
-        if (!m_shellMode || QLatin1String(scene.name) != QLatin1String("world"))
+        if (!m_shellMode || m_worldAvailable || QLatin1String(scene.name) != QLatin1String("world"))
             names.append(QString::fromLatin1(scene.name));
     }
     return names;
@@ -111,7 +111,7 @@ QByteArray DisplayControl::answer(const QByteArray &line)
         return QJsonDocument(catalog).toJson(QJsonDocument::Compact) + '\n';
     }
     if (action == QLatin1String("scene")) {
-        if (m_shellMode && value.trimmed().toLower() == QLatin1String("world"))
+        if (m_shellMode && !m_worldAvailable && value.trimmed().toLower() == QLatin1String("world"))
             return refusal(QStringLiteral("World is available in Observatory, not in the shell"));
         const QString scene = sceneNamed(value);
         if (scene.isEmpty())

@@ -13,6 +13,9 @@ archie-state.workspace = true
 archie-memory.workspace = true
 archie-model-runtime.workspace = true
 archie-workstation.workspace = true
+archie-geofabric.workspace = true
+archie-worldd = { workspace = true, features = ["provider"] }
+archie-vault.workspace = true
 archie-orb.workspace = true
 archie-fabric.workspace = true
 archie-registry.workspace = true

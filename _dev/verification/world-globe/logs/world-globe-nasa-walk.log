@@ -1,0 +1,23 @@
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+MESA-EGL: warning: failed to get driver name for fd -1
+MESA-EGL: warning: MESA-LOADER: failed to retrieve device information
+MESA-EGL: warning: failed to get driver name for fd -1
+MESA: error: ZINK: vkCreateInstance failed (VK_ERROR_INCOMPATIBLE_DRIVER)
+MESA-EGL: warning: egl: failed to create dri2 screen
+qrc:/qt/qml/Archie/Observatory/qml/Main.qml:423:17: QML View3D: Cannot resolve view position without a camera assigned!
+archie-display ui-walk: step 0 {"wait":8000}
+archie-display ui-walk: step 1 {"shot":"planet"}
+archie-display ui-walk: step 2 {"settle":1000,"wheel":10}
+archie-display ui-walk: step 3 {"settle":12000,"wheel":5}
+archie-display ui-walk: step 4 {"shot":"country"}
+archie-display ui-walk: step 5 {"drag":[-240,45],"settle":10000}
+archie-display ui-walk: step 6 {"shot":"panned-country"}
+archie-display ui-walk: step 7 {"settle":1000,"wheel":10}
+archie-display ui-walk: step 8 {"settle":12000,"wheel":5}
+archie-display ui-walk: step 9 {"shot":"city"}
+archie-display ui-walk: step 10 {"key":"Escape","settle":8000}
+archie-display ui-walk: step 11 {"shot":"planet-return"}
+archie-display ui-walk: 0 clicks, 0 without effect; report /tmp/archie-world-globe-nasa-walk-v1/report.jsonl

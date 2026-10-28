@@ -1,0 +1,41 @@
+[  1%] Building CXX object CMakeFiles/archie-visual.dir/src/observatory.cpp.o
+[  3%] Linking CXX static library libarchie-visual.a
+[ 33%] Built target archie-visual
+[ 35%] Linking CXX executable test_freshness
+[ 36%] Linking CXX executable test_budget
+[ 38%] Built target test_freshness
+[ 40%] Built target test_budget
+[ 42%] Linking CXX executable test_stage
+[ 43%] Linking CXX executable test_cognition
+[ 45%] Built target test_cognition
+[ 47%] Built target test_stage
+[ 49%] Linking CXX executable test_director
+[ 50%] Linking CXX executable test_graph
+[ 52%] Built target test_director
+[ 54%] Built target test_graph
+[ 56%] Linking CXX executable test_camera
+[ 57%] Linking CXX executable test_scene
+[ 59%] Built target test_camera
+[ 61%] Built target test_scene
+[ 63%] Linking CXX executable test_lod
+[ 64%] Linking CXX executable test_events
+[ 68%] Built target test_lod
+[ 68%] Built target test_events
+[ 71%] Linking CXX executable test_ingest
+[ 71%] Linking CXX executable test_layout
+[ 73%] Built target test_ingest
+[ 75%] Built target test_layout
+[ 77%] Linking CXX executable test_palette
+[ 78%] Linking CXX executable test_observatory
+[ 80%] Built target test_palette
+[ 82%] Built target test_observatory
+[ 84%] Linking CXX executable test_history
+[ 85%] Linking CXX executable test_geo
+[ 87%] Built target test_history
+[ 89%] Built target test_geo
+[ 91%] Linking CXX executable test_mesh
+[ 92%] Linking CXX executable test_world
+[ 94%] Built target test_mesh
+[ 96%] Linking CXX executable test_lumen
+[ 98%] Built target test_world
+[100%] Built target test_lumen

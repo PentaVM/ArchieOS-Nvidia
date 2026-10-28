@@ -1,0 +1,42 @@
+[
+  {
+    "wait": 3000
+  },
+  {
+    "state": "planet"
+  },
+  {
+    "settle": 20,
+    "drag": [
+      609.0785,
+      160.179
+    ]
+  },
+  {
+    "settle": 20,
+    "wheel": 10
+  },
+  {
+    "settle": 20,
+    "wheel": 10
+  },
+  {
+    "settle": 20,
+    "wheel": 10
+  },
+  {
+    "settle": 20,
+    "wheel": 10
+  },
+  {
+    "settle": 20,
+    "wheel": 10
+  },
+  {
+    "settle": 45000,
+    "wheel": 8
+  },
+  {
+    "state": "sfo-street"
+  }
+]

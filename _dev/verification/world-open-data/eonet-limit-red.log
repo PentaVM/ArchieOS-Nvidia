@@ -1,0 +1,19 @@
+
+running 1 test
+world_signals::tests::eonet_provider_limit_marks_filtered_totals_as_lower_bounds --- FAILED
+
+failures:
+
+---- world_signals::tests::eonet_provider_limit_marks_filtered_totals_as_lower_bounds stdout ----
+
+thread 'world_signals::tests::eonet_provider_limit_marks_filtered_totals_as_lower_bounds' (21435) panicked at crates/archie-worldd/src/world_signals.rs:634:13:
+assertion failed: batch.total_is_lower_bound
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    world_signals::tests::eonet_provider_limit_marks_filtered_totals_as_lower_bounds
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 64 filtered out; finished in 0.10s
+
+error: test failed, to rerun pass `-p archie-worldd --lib`

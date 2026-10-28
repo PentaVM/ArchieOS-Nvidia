@@ -64,7 +64,15 @@ con orb_preset, su cinemática con orb_cinematic y sus capas visuales con orb_ov
 un panel local con shell_panel cuando la persona lo pida. Estos cambios son solo visuales: \
 no cambian inferencia ni permisos y no ejecutan operaciones del sistema. No inventes datos \
 que no tienes. Si lo que oíste es un fragmento sin sentido o solo tu nombre, no lo repitas: \
-pregunta en pocas palabras qué necesita, o quédate callado.";
+pregunta en pocas palabras qué necesita, o quédate callado. Para explorar un lugar usa \
+world_resolve si faltan coordenadas, y world_explore solo con coordenadas, radio en metros \
+y dominio personal o work explícitos. Si falta el dominio, pregúntalo; nunca conviertas \
+trabajo en personal. Una captura aceptada está pendiente: no digas que terminó hasta \
+consultar world_status y observar complete. Para navegar por toda la Tierra usa world_navigate; \
+las teselas siguen los movimientos y el zoom del visor dentro de los límites autorizados. \
+world_navigation_status consulta esa sesión y world_navigation_stop la detiene. El dominio y \
+la privacidad de navegación los fija la sesión de voz, nunca los propongas como argumentos. \
+No captures lugares por actividad de aplicaciones.";
 
 /// A string parameter limited to the names the running display reported. When the display
 /// was not reachable at start-up the names are not known here, so the parameter is free and
@@ -80,7 +88,7 @@ fn display_names(names: Option<&[String]>) -> serde_json::Value {
 /// Observatory's views and presets as the running display lists them (`catalog`), plus
 /// bounded native presentation controls.
 pub fn tools(catalog: Option<&archie_orb::control::Catalog>) -> Vec<ToolDefinition> {
-    vec![
+    let mut definitions = vec![
         crate::wanda::tool(),
         ToolDefinition {
             name: "identify".into(),
@@ -128,6 +136,35 @@ pub fn tools(catalog: Option<&archie_orb::control::Catalog>) -> Vec<ToolDefiniti
             }),
         },
         ToolDefinition {
+            name: "world_explore".into(),
+            description: "Envía una captura geográfica acotada a worldd solo cuando la persona la pide. Requiere latitud, longitud, radio en metros y dominio explícito personal o work; pregunta lo que falte. La respuesta acepta un trabajo pendiente, no certifica finalización. No usa foco ni actividad de aplicaciones.".into(),
+            parameters: json!({
+                "type":"object", "additionalProperties":false,
+                "properties": {
+                    "latitude":{"type":"number","minimum":-90,"maximum":90},
+                    "longitude":{"type":"number","minimum":-180,"maximum":180},
+                    "radius_m":{"type":"number","exclusiveMinimum":0,"maximum":100000},
+                    "domain":{"type":"string","enum":["personal","work"]},
+                    "layers":{"type":"array","items":{"type":"string","enum":["terrain","buildings","imagery","signals"]},"minItems":1,"maxItems":4},
+                    "imagery_sources":{"type":"array","items":{"type":"string","enum":["google_satellite","blue_marble","sentinel2","landsat","natural_color","infrared","night_lights","thermal"]},"maxItems":8},
+                    "imagery_date":{"type":"string","pattern":"^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+                    "signal_updates":{"type":"integer","minimum":1,"maximum":60},
+                    "signal_interval_seconds":{"type":"integer","minimum":60,"maximum":3600},
+                    "zoom":{"type":"integer","minimum":0,"maximum":22}
+                }, "required":["latitude","longitude","radius_m","domain"]
+            }),
+        },
+        ToolDefinition {
+            name: "world_status".into(),
+            description: "Consulta el estado de capturas propias del dominio explícito personal o work. Solo un estado complete observado permite afirmar que terminó una captura.".into(),
+            parameters: json!({"type":"object","additionalProperties":false,"properties":{"domain":{"type":"string","enum":["personal","work"]}},"required":["domain"]}),
+        },
+        ToolDefinition {
+            name: "world_resolve".into(),
+            description: "Busca coordenadas candidatas de un nombre de lugar público mediante el proveedor geográfico. Requiere dominio explícito personal o work. No inicia capturas; pide elegir entre resultados ambiguos y definir el radio.".into(),
+            parameters: json!({"type":"object","additionalProperties":false,"properties":{"query":{"type":"string","minLength":1,"maxLength":256},"domain":{"type":"string","enum":["personal","work"]}},"required":["query","domain"]}),
+        },
+        ToolDefinition {
             name: "orb_preset".into(),
             description: "Cambia el aspecto del orbe con uno de los presets del Observatory y abre Orb. field es la vista original (Regiones vivas).".into(),
             parameters: json!({
@@ -162,12 +199,613 @@ pub fn tools(catalog: Option<&archie_orb::control::Catalog>) -> Vec<ToolDefiniti
             description: "Abre un panel local del escritorio nativo: inspector, settings, sentry, activity, notifications, search o forge. No ejecuta operaciones del sistema.".into(),
             parameters: json!({"type":"object", "properties":{"panel":{"type":"string","enum": archie_orb::control::PANELS}}, "required":["panel"]}),
         },
-    ]
+    ];
+    if let Some(region) = definitions.iter().find(|tool| tool.name == "world_explore") {
+        let parameters = region.parameters.clone();
+        definitions.push(ToolDefinition {
+            name: "world_plan".into(),
+            description: "Calcula un plan geográfico acotado con coordenadas, radio en metros y dominio explícito personal o work. No inicia una captura ni descarga datos de proveedores.".into(),
+            parameters,
+        });
+    }
+    for (name, description) in [
+        ("world_pause", "Pausa una captura propia por su identificador exacto y dominio explícito personal o work."),
+        ("world_resume", "Solicita reanudar una captura propia por su identificador exacto y dominio explícito personal o work. Core valida los proveedores y permisos de la solicitud guardada; aceptación no significa finalización."),
+        ("world_cancel", "Cancela una captura propia por su identificador exacto y dominio explícito personal o work."),
+    ] {
+        definitions.push(ToolDefinition {
+            name: name.into(), description: description.into(),
+            parameters: json!({"type":"object","additionalProperties":false,
+                "properties":{"id":{"type":"string","pattern":"^[0-9a-fA-F]{32}$"},"domain":{"type":"string","enum":["personal","work"]}},
+                "required":["id","domain"]}),
+        });
+    }
+    definitions.push(ToolDefinition {
+        name: "world_navigate".into(),
+        description: "Autoriza una sesión acotada de navegación de toda la Tierra solicitada por la persona. El visor obtiene teselas automáticamente al mover o ampliar el mapa. El dominio y privacidad vienen de esta sesión; aceptación no acredita calidad ni disponibilidad de proveedores.".into(),
+        parameters: json!({"type":"object","additionalProperties":false,"properties":{
+            "sources":{"type":"array","items":{"type":"string","enum":["google_satellite","blue_marble","sentinel2","landsat","natural_color","infrared","night_lights","thermal"]},"minItems":1,"maxItems":8},
+            "imagery_date":{"type":"string","pattern":"^[0-9]{4}-[0-9]{2}-[0-9]{2}$"},
+            "max_zoom":{"type":"integer","minimum":0,"maximum":19},
+            "max_visible_tiles":{"type":"integer","minimum":1,"maximum":96},
+            "max_requests":{"type":"integer","minimum":1,"maximum":10000},
+            "max_bytes":{"type":"integer","minimum":1024,"maximum":1073741824},
+            "duration_seconds":{"type":"integer","minimum":1,"maximum":3600},
+            "signals":{"type":"boolean"},
+            "photogrammetry":{"type":"boolean","description":"Habilita mallas 3D de Earth Web solo para vista previa en RAM cuando se selecciona Google Satellite; sin análisis ni persistencia."}
+        },"required":[]}),
+    });
+    for (name, description) in [
+        ("world_navigation_status", "Consulta metadatos de una sesión de navegación propia por su identificador. El alcance viene de esta sesión de voz."),
+        ("world_navigation_stop", "Detiene una sesión de navegación propia por su identificador. El alcance viene de esta sesión de voz."),
+    ] {
+        definitions.push(ToolDefinition {
+            name: name.into(), description: description.into(),
+            parameters: json!({"type":"object","additionalProperties":false,
+                "properties":{"id":{"type":"string","pattern":"^[0-9a-fA-F]{32}$"}},"required":["id"]}),
+        });
+    }
+    definitions
+}
+
+/// Parse strict tool arguments before dispatch. Capture scopes are explicit;
+/// navigation scope is supplied only by the host-selected WorldVoiceScope.
+fn world_command(
+    name: &str,
+    raw: &str,
+) -> Result<archie_worldd::exploration::ExploreCommand, String> {
+    use archie_geofabric::exploration::{
+        self, ExplorationDomain, ExplorationLayer, ExplorationRequest,
+    };
+    use archie_worldd::exploration::ExploreCommand;
+    #[derive(serde::Deserialize)]
+    #[serde(deny_unknown_fields)]
+    struct Region {
+        latitude: f64,
+        longitude: f64,
+        radius_m: f64,
+        domain: ExplorationDomain,
+        zoom: Option<u8>,
+        layers: Option<Vec<ExplorationLayer>>,
+        imagery_sources: Option<Vec<exploration::ImagerySource>>,
+        imagery_date: Option<String>,
+        signal_updates: Option<u32>,
+        signal_interval_seconds: Option<u32>,
+    }
+    #[derive(serde::Deserialize)]
+    #[serde(deny_unknown_fields)]
+    struct Scope {
+        domain: ExplorationDomain,
+    }
+    #[derive(serde::Deserialize)]
+    #[serde(deny_unknown_fields)]
+    struct Place {
+        query: String,
+        domain: ExplorationDomain,
+    }
+    #[derive(serde::Deserialize)]
+    #[serde(deny_unknown_fields)]
+    struct Job {
+        id: String,
+        domain: ExplorationDomain,
+    }
+    #[derive(serde::Deserialize, Default)]
+    #[serde(deny_unknown_fields)]
+    struct Navigation {
+        sources: Option<Vec<exploration::ImagerySource>>,
+        imagery_date: Option<String>,
+        max_zoom: Option<u8>,
+        max_visible_tiles: Option<u32>,
+        max_requests: Option<u32>,
+        max_bytes: Option<u64>,
+        duration_seconds: Option<u32>,
+        signals: Option<bool>,
+        photogrammetry: Option<bool>,
+    }
+    #[derive(serde::Deserialize)]
+    #[serde(deny_unknown_fields)]
+    struct NavigationId {
+        id: String,
+    }
+    let invalid =
+        |_| "Faltan argumentos explícitos o hay un dominio o valor no válido.".to_string();
+    match name {
+        "world_navigate" => {
+            let args: Navigation = serde_json::from_str(raw).map_err(invalid)?;
+            let defaults = archie_worldd::navigation::NavigationRequest::default();
+            let request = archie_worldd::navigation::NavigationRequest {
+                sources: args.sources.unwrap_or(defaults.sources),
+                imagery_date: args.imagery_date,
+                max_zoom: args.max_zoom.unwrap_or(defaults.max_zoom),
+                max_visible_tiles: args.max_visible_tiles.unwrap_or(defaults.max_visible_tiles),
+                max_requests: args.max_requests.unwrap_or(defaults.max_requests),
+                max_bytes: args.max_bytes.unwrap_or(defaults.max_bytes),
+                duration_seconds: args.duration_seconds.unwrap_or(defaults.duration_seconds),
+                signals: args.signals.unwrap_or(defaults.signals),
+                photogrammetry: args.photogrammetry.unwrap_or(defaults.photogrammetry),
+                // This placeholder is replaced only from WorldVoiceScope below.
+                domain: ExplorationDomain::Personal,
+            };
+            request.validate()?;
+            Ok(ExploreCommand::Navigate { request })
+        }
+        "world_navigation_status" | "world_navigation_stop" => {
+            let args: NavigationId = serde_json::from_str(raw).map_err(invalid)?;
+            if args.id.len() != 32 || !args.id.bytes().all(|byte| byte.is_ascii_hexdigit()) {
+                return Err("Identificador de navegación no válido.".into());
+            }
+            Ok(if name == "world_navigation_status" {
+                ExploreCommand::NavigationStatus {
+                    id: args.id,
+                    domain: ExplorationDomain::Personal,
+                }
+            } else {
+                ExploreCommand::NavigationStop {
+                    id: args.id,
+                    domain: ExplorationDomain::Personal,
+                }
+            })
+        }
+        "world_explore" | "world_plan" => {
+            let region: Region = serde_json::from_str(raw).map_err(invalid)?;
+            let request = ExplorationRequest {
+                latitude: region.latitude,
+                longitude: region.longitude,
+                radius_m: region.radius_m,
+                domain: region.domain,
+                zoom: region.zoom.unwrap_or(14),
+                layers: region
+                    .layers
+                    .unwrap_or_else(|| vec![ExplorationLayer::Terrain]),
+                imagery_sources: region.imagery_sources.unwrap_or_default(),
+                imagery_date: region.imagery_date,
+                signal_updates: region.signal_updates.unwrap_or(1),
+                signal_interval_seconds: region.signal_interval_seconds.unwrap_or(60),
+                ..ExplorationRequest::default()
+            };
+            exploration::plan(&request).map_err(|error| error.to_string())?;
+            Ok(if name == "world_plan" {
+                ExploreCommand::Plan { request }
+            } else {
+                ExploreCommand::Explore { request }
+            })
+        }
+        "world_pause" | "world_resume" | "world_cancel" => {
+            let job: Job = serde_json::from_str(raw).map_err(invalid)?;
+            if job.id.len() != 32 || !job.id.bytes().all(|byte| byte.is_ascii_hexdigit()) {
+                return Err("El identificador de captura debe tener treinta y dos caracteres hexadecimales.".into());
+            }
+            Ok(match name {
+                "world_pause" => ExploreCommand::Pause {
+                    id: job.id,
+                    domain: job.domain,
+                },
+                "world_resume" => ExploreCommand::Resume {
+                    id: job.id,
+                    domain: job.domain,
+                },
+                _ => ExploreCommand::Cancel {
+                    id: job.id,
+                    domain: job.domain,
+                },
+            })
+        }
+        "world_status" => {
+            let scope: Scope = serde_json::from_str(raw).map_err(invalid)?;
+            Ok(ExploreCommand::Status {
+                domain: scope.domain,
+            })
+        }
+        "world_resolve" => {
+            let place: Place = serde_json::from_str(raw).map_err(invalid)?;
+            if place.query.trim().is_empty() || place.query.chars().count() > 256 {
+                return Err(
+                    "El lugar debe tener entre uno y doscientos cincuenta y seis caracteres."
+                        .into(),
+                );
+            }
+            Ok(ExploreCommand::Resolve {
+                query: place.query,
+                domain: place.domain,
+            })
+        }
+        _ => Err("Herramienta geográfica desconocida.".into()),
+    }
+}
+
+/// Host-selected session scope; neither field is read from model tool arguments.
+#[derive(Clone)]
+pub struct WorldVoiceScope {
+    pub domain: archie_vault::ContextDomain,
+    pub privacy: archie_types::PrivacyGrade,
+}
+
+fn scoped_world_request(
+    scope: &WorldVoiceScope,
+    mut command: archie_worldd::exploration::ExploreCommand,
+) -> Result<archie_core::control::ControlRequest, String> {
+    use archie_core::control::{ControlRequest, WorldJobAction};
+    use archie_geofabric::exploration::ExplorationDomain;
+    use archie_worldd::exploration::ExploreCommand;
+    let expected = if scope.domain.is_work() {
+        ExplorationDomain::Work
+    } else {
+        ExplorationDomain::Personal
+    };
+    // New navigation tools have no model-supplied scope fields. Bind their
+    // geographic DTO solely to the complete host-selected context.
+    match &mut command {
+        ExploreCommand::Navigate { request } => request.domain = expected,
+        ExploreCommand::NavigationStatus { domain, .. }
+        | ExploreCommand::NavigationStop { domain, .. } => *domain = expected,
+        _ => {}
+    }
+    let requested = match &command {
+        ExploreCommand::Navigate { request } => request.domain,
+        ExploreCommand::NavigationStatus { domain, .. }
+        | ExploreCommand::NavigationStop { domain, .. } => *domain,
+        ExploreCommand::Explore { request } | ExploreCommand::Plan { request } => request.domain,
+        ExploreCommand::Resolve { domain, .. } | ExploreCommand::Status { domain } => *domain,
+        ExploreCommand::Pause { domain, .. }
+        | ExploreCommand::Resume { domain, .. }
+        | ExploreCommand::Cancel { domain, .. } => *domain,
+    };
+    if requested != expected {
+        return Err(
+            "El dominio pedido no coincide con el dominio explícito de esta sesión.".into(),
+        );
+    }
+    let domain = scope.domain.clone();
+    let privacy = scope.privacy;
+    Ok(match command {
+        ExploreCommand::Navigate { request } => ControlRequest::WorldNavigate {
+            request,
+            domain,
+            privacy,
+        },
+        ExploreCommand::NavigationStatus { id, .. } => ControlRequest::WorldNavigationStatus {
+            id,
+            domain,
+            privacy,
+        },
+        ExploreCommand::NavigationStop { id, .. } => ControlRequest::WorldNavigationStop {
+            id,
+            domain,
+            privacy,
+        },
+        ExploreCommand::Explore { request } => ControlRequest::WorldExplore {
+            request,
+            domain,
+            privacy,
+        },
+        ExploreCommand::Plan { request } => ControlRequest::WorldPlan {
+            request,
+            domain,
+            privacy,
+        },
+        ExploreCommand::Resolve { query, .. } => ControlRequest::WorldResolve {
+            query,
+            domain,
+            privacy,
+        },
+        ExploreCommand::Status { .. } => ControlRequest::WorldStatus { domain, privacy },
+        ExploreCommand::Pause { id, .. } => ControlRequest::WorldJob {
+            action: WorldJobAction::Pause,
+            id,
+            domain,
+            privacy,
+        },
+        ExploreCommand::Resume { id, .. } => ControlRequest::WorldJob {
+            action: WorldJobAction::Resume,
+            id,
+            domain,
+            privacy,
+        },
+        ExploreCommand::Cancel { id, .. } => ControlRequest::WorldJob {
+            action: WorldJobAction::Cancel,
+            id,
+            domain,
+            privacy,
+        },
+    })
+}
+
+async fn world_tool(scope: Option<&WorldVoiceScope>, name: &str, raw: &str) -> String {
+    let Some(scope) = scope else {
+        return "No envié la operación: inicia esta sesión con --world-domain personal/owner o work/organización/proyecto y un grado explícito. Core debe autorizarla.".into();
+    };
+    let command = match world_command(name, raw) {
+        Ok(command) => command,
+        Err(error) => return format!("No envié la operación geográfica: {error}"),
+    };
+    let request = match scoped_world_request(scope, command) {
+        Ok(request) => request,
+        Err(error) => return format!("No envié la operación geográfica: {error}"),
+    };
+    match archie_core::world_control::send(request).await {
+        Err(error) => format!("Core no confirmó la operación geográfica: {error}. No se reintentó."),
+        Ok(value) if matches!(name, "world_navigate" | "world_navigation_status" | "world_navigation_stop") => format!(
+            "Navegación {}. Estado {}. Solicitudes observadas {}. Bytes observados {}.",
+            value["navigation"]["id"].as_str().unwrap_or("sin identificador"),
+            value["navigation"]["state"].as_str().unwrap_or("desconocido"),
+            value["navigation"]["requests_sent"], value["navigation"]["bytes_received"]),
+        Ok(value) if matches!(name, "world_explore" | "world_pause" | "world_resume" | "world_cancel") => format!(
+            "Captura aceptada con identificador {}. Estado {}. Esto confirma aceptación, no finalización.",
+            value["job"]["id"].as_str().unwrap_or("no informado"),
+            value["job"]["state"].as_str().unwrap_or("pendiente")),
+        Ok(value) if name == "world_plan" => format!("Plan calculado: {} teselas, radio {} metros. No se inició una captura.",
+            value["plan"]["tiles"].as_array().map_or(0, Vec::len), value["plan"]["request"]["radius_m"]),
+        Ok(value) if name == "world_resolve" => {
+            let places = value["places"].as_array().map(|places| places.iter().take(5).cloned().collect::<Vec<_>>()).unwrap_or_default();
+            format!("Lugares candidatos, sin captura iniciada: {}. Confirma lugar, radio y dominio antes de explorar.", json!(places))
+        },
+        Ok(value) => {
+            let jobs = value["jobs"].as_array().map(|jobs| jobs.iter().map(|job| json!({
+                "id":job["id"],"state":job["state"],"tiles_done":job["tiles_done"],
+                "tiles_total":job["tiles_total"],"bytes_received":job["bytes_received"],"error":job["error"]
+            })).collect::<Vec<_>>()).unwrap_or_default();
+            format!("Estado observado de worldd, dominio {}: {}.", value.get("context_domain").unwrap_or(&value["domain"]), json!(jobs))
+        },
+    }
 }
 
 #[cfg(test)]
 mod tool_tests {
+    #[test]
+    fn photogrammetry_tool_toggle_is_optional_typed_and_cannot_add_authority() {
+        for (raw, expected) in [
+            ("{}", true),
+            (r#"{"photogrammetry":true}"#, true),
+            (r#"{"photogrammetry":false}"#, false),
+        ] {
+            let command = super::world_command("world_navigate", raw).unwrap();
+            let value = serde_json::to_value(command).unwrap();
+            assert_eq!(value["request"]["photogrammetry"], expected);
+        }
+        for raw in [
+            r#"{"photogrammetry":"true"}"#,
+            r#"{"photogrammetry":true,"host":"kh.google.com"}"#,
+            r#"{"photogrammetry":true,"domain":"work"}"#,
+            r#"{"photogrammetry":true,"provider":"google_photorealistic"}"#,
+        ] {
+            assert!(super::world_command("world_navigate", raw).is_err());
+        }
+        let definition = super::tools(None)
+            .into_iter()
+            .find(|definition| definition.name == "world_navigate")
+            .unwrap();
+        assert_eq!(
+            definition.parameters["properties"]["photogrammetry"]["type"],
+            "boolean"
+        );
+    }
+    #[test]
+    fn navigation_tools_use_only_the_host_scope_and_reject_injected_authority() {
+        use archie_core::control::ControlRequest;
+        let scope = super::WorldVoiceScope {
+            domain: archie_vault::ContextDomain::work("org", "project").unwrap(),
+            privacy: archie_types::PrivacyGrade::Public,
+        };
+        for (name, raw) in [
+            ("world_navigate", "{}".to_string()),
+            (
+                "world_navigation_status",
+                format!(r#"{{"id":"{}"}}"#, "a".repeat(32)),
+            ),
+            (
+                "world_navigation_stop",
+                format!(r#"{{"id":"{}"}}"#, "a".repeat(32)),
+            ),
+        ] {
+            let command = super::world_command(name, &raw).unwrap();
+            let request = super::scoped_world_request(&scope, command).unwrap();
+            let value = serde_json::to_value(&request).unwrap();
+            assert_eq!(value["domain"], "work/org/project");
+            assert_eq!(value["privacy"], "public");
+            assert!(request.is_world());
+            for field in ["domain", "privacy", "endpoint", "token"] {
+                let mut injected: serde_json::Value = serde_json::from_str(&raw).unwrap();
+                injected[field] = serde_json::json!("personal");
+                assert!(super::world_command(name, &injected.to_string()).is_err());
+            }
+            assert!(matches!(
+                request,
+                ControlRequest::WorldNavigate { .. }
+                    | ControlRequest::WorldNavigationStatus { .. }
+                    | ControlRequest::WorldNavigationStop { .. }
+            ));
+        }
+        assert!(super::world_command("world_navigation_stop", r#"{"id":"../escape"}"#).is_err());
+    }
+
     use super::*;
+
+    #[test]
+    fn navigation_tool_schemas_expose_limits_but_no_model_scope_or_endpoint() {
+        let definitions = super::tools(None);
+        for name in [
+            "world_navigate",
+            "world_navigation_status",
+            "world_navigation_stop",
+        ] {
+            let definition = definitions
+                .iter()
+                .find(|definition| definition.name == name)
+                .unwrap();
+            assert_eq!(definition.parameters["additionalProperties"], false);
+            for field in ["domain", "privacy", "token", "endpoint"] {
+                assert!(definition.parameters["properties"].get(field).is_none());
+            }
+        }
+        for raw in [
+            r#"{"max_requests":0}"#,
+            r#"{"duration_seconds":3601}"#,
+            r#"{"sources":["unknown"]}"#,
+            r#"{"signals":"true"}"#,
+        ] {
+            assert!(super::world_command("world_navigate", raw).is_err());
+        }
+    }
+
+    #[test]
+    fn world_plan_and_job_controls_are_strict_and_keep_host_scope() {
+        let scope = WorldVoiceScope {
+            domain: archie_vault::ContextDomain::work("org", "project").unwrap(),
+            privacy: archie_types::PrivacyGrade::Public,
+        };
+        let plan = world_command(
+            "world_plan",
+            r#"{"domain":"work","latitude":1,"longitude":2,"radius_m":100}"#,
+        )
+        .unwrap();
+        assert!(matches!(
+            scoped_world_request(&scope, plan).unwrap(),
+            archie_core::control::ControlRequest::WorldPlan { .. }
+        ));
+        for (name, expected) in [
+            ("world_pause", archie_core::control::WorldJobAction::Pause),
+            ("world_resume", archie_core::control::WorldJobAction::Resume),
+            ("world_cancel", archie_core::control::WorldJobAction::Cancel),
+        ] {
+            let command = world_command(
+                name,
+                &json!({"id":"a".repeat(32),"domain":"work"}).to_string(),
+            )
+            .unwrap();
+            let request = scoped_world_request(&scope, command).unwrap();
+            assert!(request.is_mutating());
+            let archie_core::control::ControlRequest::WorldJob {
+                action,
+                id,
+                domain,
+                privacy,
+            } = request
+            else {
+                panic!("typed job control");
+            };
+            assert_eq!(action, expected);
+            assert_eq!(id, "a".repeat(32));
+            assert_eq!(domain.path(), "work/org/project");
+            assert_eq!(privacy, archie_types::PrivacyGrade::Public);
+            assert!(world_command(name, r#"{"domain":"work"}"#).is_err());
+            assert!(world_command(name, r#"{"domain":"work","id":"../bad"}"#).is_err());
+            assert!(world_command(
+                name,
+                &json!({"id":"a".repeat(32),"domain":"work","privacy":"public"}).to_string()
+            )
+            .is_err());
+            let foreign = world_command(
+                name,
+                &json!({"id":"a".repeat(32),"domain":"personal"}).to_string(),
+            )
+            .unwrap();
+            assert!(scoped_world_request(&scope, foreign).is_err());
+        }
+    }
+
+    #[test]
+    fn model_domain_cannot_widen_host_domain_or_privacy() {
+        let scope = WorldVoiceScope {
+            domain: archie_vault::ContextDomain::work("org", "project").unwrap(),
+            privacy: archie_types::PrivacyGrade::Restricted,
+        };
+        let personal = world_command("world_status", r#"{"domain":"personal"}"#).unwrap();
+        assert!(scoped_world_request(&scope, personal).is_err());
+        let work = world_command("world_status", r#"{"domain":"work"}"#).unwrap();
+        let archie_core::control::ControlRequest::WorldStatus { domain, privacy } =
+            scoped_world_request(&scope, work).unwrap()
+        else {
+            panic!("status");
+        };
+        assert_eq!(domain.path(), "work/org/project");
+        assert_eq!(privacy, archie_types::PrivacyGrade::Restricted);
+        assert!(world_command(
+            "world_resolve",
+            r#"{"domain":"work","query":"place","privacy":"public"}"#
+        )
+        .is_err());
+    }
+
+    #[test]
+    fn world_tools_require_explicit_domain_and_explore_coordinates() {
+        let definitions = tools(None);
+        for name in [
+            "world_plan",
+            "world_explore",
+            "world_status",
+            "world_resolve",
+            "world_pause",
+            "world_resume",
+            "world_cancel",
+        ] {
+            let tool = definitions.iter().find(|tool| tool.name == name).unwrap();
+            assert!(tool.parameters["required"]
+                .as_array()
+                .unwrap()
+                .contains(&json!("domain")));
+            assert_eq!(
+                tool.parameters["properties"]["domain"]["enum"],
+                json!(["personal", "work"])
+            );
+        }
+        assert!(world_command("world_status", r#"{}"#).is_err());
+        assert!(world_command("world_status", r#"{"domain":"corporate"}"#).is_err());
+        assert!(world_command(
+            "world_explore",
+            r#"{"domain":"work","latitude":91,"longitude":0,"radius_m":500}"#
+        )
+        .is_err());
+        assert!(world_command(
+            "world_explore",
+            r#"{"domain":"work","latitude":0,"longitude":0}"#
+        )
+        .is_err());
+        let command = world_command(
+            "world_explore",
+            r#"{"domain":"work","latitude":-33,"longitude":-70,"radius_m":500}"#,
+        )
+        .unwrap();
+        let archie_worldd::exploration::ExploreCommand::Explore { request } = command else {
+            panic!("explore command");
+        };
+        assert_eq!(
+            request.domain,
+            archie_geofabric::exploration::ExplorationDomain::Work
+        );
+    }
+
+    #[test]
+    fn voice_imagery_and_refresh_options_are_typed_and_strict() {
+        let args = json!({"domain":"work","latitude":0,"longitude":0,"radius_m":500,
+            "layers":["imagery","signals"],"imagery_sources":["google_satellite","blue_marble"],
+            "imagery_date":"2024-02-29","signal_updates":2,"signal_interval_seconds":120});
+        let archie_worldd::exploration::ExploreCommand::Explore { request } =
+            world_command("world_explore", &args.to_string()).unwrap()
+        else {
+            panic!("explore")
+        };
+        assert_eq!(request.signal_updates, 2);
+        assert_eq!(request.signal_interval_seconds, 120);
+        assert_eq!(request.imagery_sources.len(), 2);
+        for (field, value) in [
+            ("endpoint", json!("https://evil.invalid")),
+            ("signal_updates", json!(61)),
+            ("imagery_date", json!("2023-02-29")),
+        ] {
+            let mut invalid = args.clone();
+            invalid[field] = value;
+            assert!(world_command("world_explore", &invalid.to_string()).is_err());
+        }
+        let definitions = tools(None);
+        let tool = definitions
+            .iter()
+            .find(|tool| tool.name == "world_explore")
+            .unwrap();
+        assert_eq!(
+            tool.parameters["properties"]["signal_updates"]["maximum"],
+            60
+        );
+    }
 
     #[test]
     fn display_catalog_controls_scene_and_preset_enums_without_duplicate_tools() {
@@ -219,6 +857,7 @@ pub enum Outgoing {
 
 /// Everything a live session shares between the page, the eyes and the conversation.
 pub struct Senses {
+    world_scope: Option<WorldVoiceScope>,
     wanda: crate::wanda::WandaVoice,
     pub scene: Mutex<Scene>,
     /// What IRIS has seen over time, thing by thing.
@@ -270,6 +909,26 @@ impl Senses {
         curiosity_budget: u32,
         access: crate::wanda::WandaVoiceAccess,
     ) -> Arc<Self> {
+        Self::new_with_world(
+            audio,
+            identifier,
+            researcher,
+            voice_rate,
+            curiosity_budget,
+            access,
+            None,
+        )
+    }
+
+    pub fn new_with_world(
+        audio: mpsc::Sender<Vec<f32>>,
+        identifier: Identifier,
+        researcher: Option<Researcher>,
+        voice_rate: u32,
+        curiosity_budget: u32,
+        access: crate::wanda::WandaVoiceAccess,
+        world_scope: Option<WorldVoiceScope>,
+    ) -> Arc<Self> {
         let (out, _) = broadcast::channel(512);
         let persistent = match PersistentMemory::open_default() {
             Ok(memory) => Some(memory),
@@ -279,6 +938,7 @@ impl Senses {
             }
         };
         Arc::new(Self {
+            world_scope,
             wanda: crate::wanda::WandaVoice::from_env(access),
             scene: Mutex::new(Scene::default()),
             memory: Mutex::new(Memory::default()),
@@ -374,6 +1034,21 @@ impl Senses {
 
     /// Carries out a live tool; `None` when the tool is not one of them.
     pub async fn handle_tool(&self, name: &str, raw_arguments: &str) -> Option<String> {
+        if matches!(
+            name,
+            "world_plan"
+                | "world_explore"
+                | "world_status"
+                | "world_resolve"
+                | "world_pause"
+                | "world_resume"
+                | "world_cancel"
+                | "world_navigate"
+                | "world_navigation_status"
+                | "world_navigation_stop"
+        ) {
+            return Some(world_tool(self.world_scope.as_ref(), name, raw_arguments).await);
+        }
         if name == "wanda_context" {
             return Some(self.wanda.handle_tool(raw_arguments).await);
         }

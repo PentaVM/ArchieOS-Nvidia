@@ -1,0 +1,19 @@
+
+running 1 test
+navigation_runtime::earth_stream::tests::stop_blocks_late_mesh_publication_and_old_worker_cannot_adopt_new_session --- FAILED
+
+failures:
+
+---- navigation_runtime::earth_stream::tests::stop_blocks_late_mesh_publication_and_old_worker_cannot_adopt_new_session stdout ----
+
+thread 'navigation_runtime::earth_stream::tests::stop_blocks_late_mesh_publication_and_old_worker_cannot_adopt_new_session' (28179) panicked at crates/archie-worldd/src/earth_runtime.rs:626:9:
+revoked session must reject even a queued empty publication
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    navigation_runtime::earth_stream::tests::stop_blocks_late_mesh_publication_and_old_worker_cannot_adopt_new_session
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 91 filtered out; finished in 0.24s
+
+error: test failed, to rerun pass `-p archie-worldd --lib`

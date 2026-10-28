@@ -736,6 +736,8 @@ fn speech_flags(args: &mut Vec<String>) -> Result<SpeechFlags, String> {
 // Read only by the live path (unix + `live`); other builds parse and drop them.
 #[cfg_attr(not(all(unix, feature = "live")), allow(dead_code))]
 struct LiveFlags {
+    /// Explicit full context domain for Core-admitted world proposals. No default.
+    world_domain: Option<archie_vault::ContextDomain>,
     port: u16,
     iris: String,
     /// Milliseconds between IRIS's open looks; frames in between follow what it found.
@@ -758,6 +760,10 @@ struct LiveFlags {
 
 fn live_flags(args: &mut Vec<String>) -> Result<LiveFlags, String> {
     Ok(LiveFlags {
+        world_domain: take(args, "--world-domain")
+            .map(archie_vault::ContextDomain::try_from)
+            .transpose()
+            .map_err(|error| error.to_string())?,
         port: take(args, "--port")
             .map(|n| n.parse::<u16>().map_err(|_| "--port is a port number"))
             .transpose()?
@@ -967,13 +973,21 @@ fn live(asking: Asking, speech: SpeechFlags, flags: LiveFlags) -> Result<ExitCod
             "off (no TAVILY_API_KEY)"
         }
     );
-    let senses = live::Senses::new_with_wanda(
+    let world_scope = flags
+        .world_domain
+        .clone()
+        .map(|domain| live::WorldVoiceScope {
+            domain,
+            privacy: asking.grade,
+        });
+    let senses = live::Senses::new_with_world(
         audio_in,
         identifier,
         researcher,
         rate,
         flags.curiosity,
         asking.wanda_access,
+        world_scope,
     );
     let eyes = eyes::IrisEyes::with_timeout(
         &flags.iris,

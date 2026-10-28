@@ -1,0 +1,128 @@
+-- GLOB mismatch!
+The following files were added:
+  +/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/../shell/prototype/tst_MenuOverWindows.qml
+  +/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/display/native/../shell/prototype/tst_SettingsOptions.qml
+-- Could NOT find WrapVulkanHeaders (missing: Vulkan_INCLUDE_DIR)
+-- Could NOT find WrapVulkanHeaders (missing: Vulkan_INCLUDE_DIR)
+CMake Warning (author) at /usr/lib/cmake/Qt6Core/Qt6CoreMacros.cmake:3637 (message):
+  Qt policy QTP0004 is not set: You need qmldir files for each extra
+  directory that contains .qml files for your module.  Check
+  https://doc.qt.io/qt-6/qt-cmake-policy-qtp0004.html for policy details.
+  Use the qt_policy command to set the policy and suppress this warning.
+
+Call Stack (most recent call first):
+  /usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake:4126 (__qt_internal_setup_policy)
+  /usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake:1039 (qt6_target_qml_sources)
+  /usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake:1492 (qt6_add_qml_module)
+  CMakeLists.txt:73 (qt_add_qml_module)
+This warning is for project developers.  Use -Wno-author to suppress it.
+
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+-- Configuring done (6.3s)
+-- Generating done (5.6s)
+-- Build files have been written to: /tmp/archie-world-native-check
+[ 14%] Built target test_world_hud_qmlimportscan
+[ 14%] Built target test_world_hud_autogen_timestamp_deps
+[ 28%] Automatic MOC and UIC for target test_world_hud
+[ 28%] Built target test_world_hud_autogen
+[ 42%] Running rcc for resource world-hud-shell
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 57%] Running rcc for resource world-hud-component
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 57%] Building CXX object CMakeFiles/test_world_hud.dir/.qt/rcc/qrc_world-hud-component.cpp.o
+[ 71%] Building CXX object CMakeFiles/test_world_hud.dir/.qt/rcc/qrc_world-hud-shell.cpp.o
+[ 85%] Building CXX object CMakeFiles/test_world_hud.dir/tests/test_world_hud.cpp.o
+[100%] Linking CXX executable test_world_hud
+[100%] Built target test_world_hud
+[  0%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/camera.cpp.o
+[  5%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/director.cpp.o
+[  5%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/events.cpp.o
+[ 11%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/geo.cpp.o
+[ 17%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/ingest.cpp.o
+[ 17%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/layout.cpp.o
+[ 23%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/mesh.cpp.o
+[ 29%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/observatory.cpp.o
+[ 35%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/palette.cpp.o
+[ 35%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/graph.cpp.o
+[ 41%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/history.cpp.o
+[ 41%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/lumen.cpp.o
+[ 47%] Building CXX object archie-visual/CMakeFiles/archie-visual.dir/src/scene.cpp.o
+[ 52%] Linking CXX static library libarchie-visual.a
+[ 76%] Built target archie-visual
+[ 76%] Built target test_exploration_preview_autogen_timestamp_deps
+[ 82%] Automatic MOC and UIC for target test_exploration_preview
+[ 82%] Built target test_exploration_preview_autogen
+[ 88%] Building CXX object CMakeFiles/test_exploration_preview.dir/src/ExplorationPreview.cpp.o
+[ 94%] Building CXX object CMakeFiles/test_exploration_preview.dir/tests/test_exploration_preview.cpp.o
+[ 94%] Linking CXX executable test_exploration_preview
+[100%] Built target test_exploration_preview
+[  0%] Built target test_exploration_credential_autogen_timestamp_deps
+[  0%] Automatic MOC and UIC for target test_exploration_credential
+[  0%] Built target test_exploration_credential_autogen
+[ 33%] Building CXX object CMakeFiles/test_exploration_credential.dir/src/ExplorationCredential.cpp.o
+[ 33%] Building CXX object CMakeFiles/test_exploration_credential.dir/tests/test_exploration_credential.cpp.o
+[ 66%] Linking CXX executable test_exploration_credential
+[100%] Built target test_exploration_credential
+Test project /tmp/archie-world-native-check
+    Start 3: exploration_preview_contracts
+1/3 Test #3: exploration_preview_contracts ......   Passed    0.02 sec
+    Start 4: exploration_credential_contracts
+2/3 Test #4: exploration_credential_contracts ...   Passed    0.01 sec
+    Start 5: world_hud_contracts
+3/3 Test #5: world_hud_contracts ................   Passed    0.11 sec
+
+100% tests passed out of 3
+
+Total Test time (real) =   0.14 sec
+[  4%] Building CXX object CMakeFiles/archie-visual.dir/src/camera.cpp.o
+[  9%] Building CXX object CMakeFiles/archie-visual.dir/src/director.cpp.o
+[ 14%] Building CXX object CMakeFiles/archie-visual.dir/src/events.cpp.o
+[ 19%] Building CXX object CMakeFiles/archie-visual.dir/src/geo.cpp.o
+[ 23%] Building CXX object CMakeFiles/archie-visual.dir/src/ingest.cpp.o
+[ 28%] Building CXX object CMakeFiles/archie-visual.dir/src/layout.cpp.o
+[ 33%] Building CXX object CMakeFiles/archie-visual.dir/src/mesh.cpp.o
+[ 38%] Building CXX object CMakeFiles/archie-visual.dir/src/observatory.cpp.o
+[ 42%] Building CXX object CMakeFiles/archie-visual.dir/src/palette.cpp.o
+[ 47%] Building CXX object CMakeFiles/archie-visual.dir/src/graph.cpp.o
+[ 52%] Building CXX object CMakeFiles/archie-visual.dir/src/history.cpp.o
+[ 57%] Building CXX object CMakeFiles/archie-visual.dir/src/lumen.cpp.o
+[ 61%] Building CXX object CMakeFiles/archie-visual.dir/src/scene.cpp.o
+[ 66%] Linking CXX static library libarchie-visual.a
+[ 90%] Built target archie-visual
+[ 95%] Building CXX object CMakeFiles/test_observatory.dir/tests/test_observatory.cpp.o
+[100%] Linking CXX executable test_observatory
+[100%] Built target test_observatory
+[ 90%] Built target archie-visual
+[ 95%] Building CXX object CMakeFiles/test_camera.dir/tests/test_camera.cpp.o
+[100%] Linking CXX executable test_camera
+[100%] Built target test_camera
+Test project /tmp/archie-world-visual-check
+    Start  7: test_camera
+1/2 Test  #7: test_camera ......................   Passed    0.00 sec
+    Start 13: test_observatory
+2/2 Test #13: test_observatory .................   Passed    0.74 sec
+
+100% tests passed out of 2
+
+Total Test time (real) =   0.74 sec
