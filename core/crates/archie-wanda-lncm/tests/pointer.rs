@@ -110,7 +110,18 @@ fn the_copy_head_and_the_index_train_load_serve_and_refuse_tampering() {
 
     // A head that names another generator is refused, and so is a changed index.
     let base = std::fs::read_to_string(dir.join(POINTER_BASE_FILE)).unwrap();
-    std::fs::write(dir.join(POINTER_BASE_FILE), base.replace('0', "1")).unwrap();
+    // Another generator: the hash's first digit changed. (Swapping every '0' for a '1' left
+    // the file as it was whenever the hash had no '0', about one training in sixty.)
+    let at = base.find("\"generator_sha256\"").unwrap();
+    let digit = at + base[at..].find(": \"").unwrap() + 3;
+    let other = if &base[digit..digit + 1] == "0" {
+        "1"
+    } else {
+        "0"
+    };
+    let named_other = format!("{}{other}{}", &base[..digit], &base[digit + 1..]);
+    assert_ne!(named_other, base);
+    std::fs::write(dir.join(POINTER_BASE_FILE), named_other).unwrap();
     assert!(Lncm::load(&dir, &Device::Cpu).is_err());
     std::fs::write(dir.join(POINTER_BASE_FILE), &base).unwrap();
     let mut index = std::fs::read(dir.join(NGRAM_FILE)).unwrap();
