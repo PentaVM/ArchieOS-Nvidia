@@ -200,6 +200,14 @@ qt_add_resources(archie-display "archie-native-assets" BIG_RESOURCES
         apps/archie-lienzo.desktop
         apps/archie-cli.desktop
 )
+# rcc's second pass finds its data by a marker in the first pass's object; an LTO build (the
+# ISO's, CMAKE_INTERPROCEDURAL_OPTIMIZATION=ON) leaves bytecode with no marker in it. Qt names
+# the first-pass object libraries <target>_<resource>_obj (OUTPUT_TARGETS stays empty here).
+foreach(resource_objects IN ITEMS archie-display_archie-brand_obj archie-display_archie-native-assets_obj)
+    if(TARGET ${resource_objects})
+        set_target_properties(${resource_objects} PROPERTIES INTERPROCEDURAL_OPTIMIZATION OFF)
+    endif()
+endforeach()
 
 # The hologram's grade is a 2D pass over the finished 3D view, as Xavi's CSS filter was
 # over his canvas; Qt Quick's ShaderEffect takes it compiled ahead of time.
