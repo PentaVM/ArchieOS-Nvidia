@@ -1,4 +1,5 @@
 import QtQuick
+import "Lang.js" as Tr
 
 // Notification toasts, 380 px, stacked at the top right. DESIGN SAMPLE. Three examples and the
 // pile behind them with its counter; the counter changes without animation.
@@ -39,16 +40,16 @@ Item {
     }
 
     Column { id: col; width: parent.width; spacing: 10
-        Toast { glyph: "activity"; glyphColor: Theme.info; title: "freecad · sweep"; detail: "31 de 50 · motor-bracket · job-7f3a"; progress: 0.62
-            chipText: "en curso"; chipIcon: "activity"; chipTone: "info" }
-        Toast { glyph: "bad"; glyphColor: Theme.bad; title: "Policy rechazó una escritura"; detail: "Fuera del espacio de trabajo"
+        Toast { glyph: "activity"; glyphColor: Theme.info; title: "freecad · sweep"; detail: Tr.t("31 de 50 · motor-bracket · job-7f3a"); progress: 0.62
+            chipText: Tr.t("en curso"); chipIcon: "activity"; chipTone: "info" }
+        Toast { glyph: "bad"; glyphColor: Theme.bad; title: Tr.t("Policy rechazó una escritura"); detail: Tr.t("Fuera del espacio de trabajo")
             chipText: "rechazada"; chipIcon: "bad"; chipTone: "bad" }
-        Toast { glyph: "dkSentry"; title: "Dispositivo nuevo en la red"; detail: "192.168.1.88 · visto por ssdp"
+        Toast { glyph: "dkSentry"; title: Tr.t("Dispositivo nuevo en la red"); detail: Tr.t("192.168.1.88 · visto por ssdp")
             chipText: "Sentry"; chipIcon: "dkSentry"; chipTone: "neutral" }
         Item { width: parent.width; height: 8
             Rectangle { x: 14; y: -3; width: parent.width - 28; height: 8; radius: 4; color: Theme.panel; border.width: 1; border.color: Theme.hair; opacity: 0.8 }
             Rectangle { x: 28; y: 2; width: parent.width - 56; height: 8; radius: 4; color: Theme.panel; border.width: 1; border.color: Theme.hair; opacity: 0.55 } }
         Item { width: parent.width; height: 24
-            Chip { anchors.right: parent.right; icon: "stack"; text: "+3 agrupadas" } }
+            Chip { anchors.right: parent.right; icon: "stack"; text: Tr.t("+3 agrupadas") } }
     }
 }

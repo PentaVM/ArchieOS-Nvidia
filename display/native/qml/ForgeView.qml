@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import "qrc:/archie/shell/prototype" as Shell
+import "../../shell/prototype/Lang.js" as Tr
 
 // FORGE: the machine's applications as a desktop. Large icons, their names, and nothing
 // else to operate: Archie opens and uses them; a person can still click one open.
@@ -57,7 +58,7 @@ Item {
                 visible: forge.missing.length > 0
                 width: parent.width
                 spacing: 16
-                Text { text: "Para instalar"; color: Shell.Theme.t3; font.pixelSize: 12; font.weight: Font.Medium; font.letterSpacing: 0.4 }
+                Text { text: Tr.t("Para instalar"); color: Shell.Theme.t3; font.pixelSize: 12; font.weight: Font.Medium; font.letterSpacing: 0.4 }
                 Grid {
                     width: parent.width
                     columns: grid.columns

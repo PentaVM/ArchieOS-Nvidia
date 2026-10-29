@@ -151,6 +151,8 @@ int main(int argc, char *argv[])
     consoleConfig.irisHealthUrl=QUrl(arguments.value(QStringLiteral("iris-health")));
     WorldConsole worldConsole(consoleConfig);
     QQmlApplicationEngine engine;
+    // The shell's words follow ARCHIE_UI_LANG (Lang.js reads it as Qt.uiLanguage); Spanish otherwise.
+    engine.setUiLanguage(qEnvironmentVariable("ARCHIE_UI_LANG"));
     auto *worldImages=new WorldImageProvider;engine.addImageProvider(QStringLiteral("world"),worldImages);bridge.setWorldImageProvider(worldImages);
     auto *globeImages=new WorldImageProvider;engine.addImageProvider(QStringLiteral("globe"),globeImages);globeStream.setImageProvider(globeImages);
     engine.rootContext()->setContextProperty(QStringLiteral("globeStream"), &globeStream);

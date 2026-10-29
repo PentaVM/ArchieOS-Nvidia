@@ -3,6 +3,7 @@ import QtQuick.Controls
 import QtQuick.Layouts
 import "qrc:/archie/shell/prototype" as Shell
 import "WorldTools.js" as Tools
+import "../../shell/prototype/Lang.js" as Tr
 
 // Xavi (ByXavi270 / XaviCottier): shell design; PentaVM: native implementation.
 // World's minimal HUD: a search field, a navigation rail and panels that open only when
@@ -42,7 +43,7 @@ Item {
     function toggle(name) { panel = panel === name ? "" : name }
     function fly(latitude, longitude, radius, label) {
         details.cedeCamera()
-        details.cameraOwner = label ? "Búsqueda · " + label : "Búsqueda"
+        details.cameraOwner = label ? Tr.t("Búsqueda · ") + label : Tr.t("Búsqueda")
         controller.frameExploration(latitude, longitude, radius, 0, Shell.Theme.spatial)
     }
     function search(text) {
@@ -51,8 +52,8 @@ Item {
         if (!query.length) return
         const point = Tools.parseCoordinates(query)
         if (point) { fly(point.latitude, point.longitude, 25000, point.latitude.toFixed(4) + ", " + point.longitude.toFixed(4)); return }
-        if (!hud.cli) { searchNote = "Buscar por nombre necesita Core. Escribe latitud, longitud."; return }
-        if (hud.cli.busy) { searchNote = "La consola está ocupada; espera su respuesta."; return }
+        if (!hud.cli) { searchNote = Tr.t("Buscar por nombre necesita Core. Escribe latitud, longitud."); return }
+        if (hud.cli.busy) { searchNote = Tr.t("La consola está ocupada; espera su respuesta."); return }
         awaitingPlaces = true
         hud.cli.submit("world resolve " + query)
     }
@@ -71,7 +72,7 @@ Item {
             hud.awaitingPlaces = false
             const found = hud.findPlaces(hud.cli.lastResult, 0) || []
             hud.places = found.filter(function(p) { return Tools.valid(p) }).slice(0, 5)
-            hud.searchNote = hud.places.length ? "" : "Sin lugares para esa búsqueda."
+            hud.searchNote = hud.places.length ? "" : Tr.t("Sin lugares para esa búsqueda.")
         }
         function onErrorChanged() {
             if (!hud.awaitingPlaces || !hud.cli.error) return
@@ -119,7 +120,7 @@ Item {
             TextField {
                 id: field
                 Layout.fillWidth: true
-                placeholderText: "Buscar un lugar o «lat, lon»"
+                placeholderText: Tr.t("Buscar un lugar o «lat, lon»")
                 placeholderTextColor: Shell.Theme.t3
                 color: Shell.Theme.t1; font.family: Shell.Theme.font; font.pixelSize: 14
                 background: null
@@ -151,7 +152,7 @@ Item {
                     color: placeArea.containsMouse ? Shell.Theme.hover : "transparent"
                     Column {
                         anchors.verticalCenter: parent.verticalCenter; x: 10; width: parent.width - 20
-                        Text { width: parent.width; elide: Text.ElideRight; textFormat: Text.PlainText; text: modelData.name || "Sin nombre"; color: Shell.Theme.t1; font.family: Shell.Theme.font; font.pixelSize: 13 }
+                        Text { width: parent.width; elide: Text.ElideRight; textFormat: Text.PlainText; text: modelData.name || Tr.t("Sin nombre"); color: Shell.Theme.t1; font.family: Shell.Theme.font; font.pixelSize: 13 }
                         Text { text: modelData.latitude.toFixed(4) + ", " + modelData.longitude.toFixed(4) + " · " + (modelData.source || ""); color: Shell.Theme.t3; font.family: Shell.Theme.font; font.pixelSize: 10 }
                     }
                     MouseArea {
@@ -194,25 +195,25 @@ Item {
         Column {
             id: railColumn
             anchors.centerIn: parent; spacing: 2
-            RailButton { glyph: "+"; tip: "Acercar"; onPressed: { hud.cedeCamera(); hud.controller.orbitGlobe(0, 0, 1) } }
-            RailButton { glyph: "−"; tip: "Alejar"; onPressed: { hud.cedeCamera(); hud.controller.orbitGlobe(0, 0, -1) } }
+            RailButton { glyph: "+"; tip: Tr.t("Acercar"); onPressed: { hud.cedeCamera(); hud.controller.orbitGlobe(0, 0, 1) } }
+            RailButton { glyph: "−"; tip: Tr.t("Alejar"); onPressed: { hud.cedeCamera(); hud.controller.orbitGlobe(0, 0, -1) } }
             RailButton {
-                glyph: hud.tilted ? "2D" : "3D"; tip: hud.tilted ? "Vista cenital" : "Inclinar (cerca del suelo)"
+                glyph: hud.tilted ? "2D" : "3D"; tip: hud.tilted ? Tr.t("Vista cenital") : Tr.t("Inclinar (cerca del suelo)")
                 active: hud.tilted
                 onPressed: { hud.cedeCamera(); hud.controller.tiltGlobe(hud.tilted ? -70 : 45); hud.tilted = !hud.tilted }
             }
             RailButton {
-                icon: "dkWorld"; tip: "Tierra completa"
+                icon: "dkWorld"; tip: Tr.t("Tierra completa")
                 onPressed: { hud.cedeCamera(); hud.tilted = false; hud.controller.releaseFocus(); hud.controller.orbitGlobe(0, 0, -40) }
             }
             Rectangle { width: 28; height: 1; color: Shell.Theme.hair; anchors.horizontalCenter: parent.horizontalCenter }
-            RailButton { icon: "stack"; tip: "Capas de imagen"; active: hud.panel === "layers"; onPressed: hud.toggle("layers") }
+            RailButton { icon: "stack"; tip: Tr.t("Capas de imagen"); active: hud.panel === "layers"; onPressed: hud.toggle("layers") }
             RailButton {
-                glyph: "⟷"; tip: "Regla"; active: hud.measuring; enabledHere: !!hud.view
+                glyph: "⟷"; tip: Tr.t("Regla"); active: hud.measuring; enabledHere: !!hud.view
                 onPressed: { hud.measuring = !hud.measuring; hud.marks = [] }
             }
-            RailButton { icon: "lines"; tip: "Detalles"; active: hud.panel === "details"; onPressed: hud.toggle("details") }
-            RailButton { icon: "control"; tip: "Consola de Archie"; active: hud.panel === "console"; onPressed: hud.toggle("console") }
+            RailButton { icon: "lines"; tip: Tr.t("Detalles"); active: hud.panel === "details"; onPressed: hud.toggle("details") }
+            RailButton { icon: "control"; tip: Tr.t("Consola de Archie"); active: hud.panel === "console"; onPressed: hud.toggle("console") }
         }
     }
 
@@ -226,10 +227,10 @@ Item {
         Column {
             id: layerColumn
             x: 12; y: 12; width: parent.width - 24; spacing: 4
-            Text { text: "Capas"; color: Shell.Theme.t1; font.family: Shell.Theme.disp; font.pixelSize: 15; font.weight: Font.DemiBold; bottomPadding: 4 }
+            Text { text: Tr.t("Capas"); color: Shell.Theme.t1; font.family: Shell.Theme.disp; font.pixelSize: 15; font.weight: Font.DemiBold; bottomPadding: 4 }
             Text {
                 visible: hud.imageSources.length === 0; width: parent.width; wrapMode: Text.Wrap
-                text: "Aún sin fuentes de imagen publicadas."; color: Shell.Theme.t3; font.family: Shell.Theme.font; font.pixelSize: 12
+                text: Tr.t("Aún sin fuentes de imagen publicadas."); color: Shell.Theme.t3; font.family: Shell.Theme.font; font.pixelSize: 12
             }
             Repeater {
                 model: hud.imageSources
@@ -241,7 +242,7 @@ Item {
                     Column {
                         anchors.verticalCenter: parent.verticalCenter; x: 10; width: parent.width - 20
                         Text { width: parent.width; elide: Text.ElideRight; textFormat: Text.PlainText; text: modelData.label || modelData.source_id; color: Shell.Theme.t1; font.family: Shell.Theme.font; font.pixelSize: 13; font.weight: chosen ? Font.DemiBold : Font.Normal }
-                        Text { width: parent.width; elide: Text.ElideRight; textFormat: Text.PlainText; text: (modelData.imagery_date || "sin fecha") + " · " + (modelData.mode === "online_preview_only" ? "vista en línea" : "datos abiertos") + " · " + (modelData.state || "sin lectura"); color: Shell.Theme.t3; font.family: Shell.Theme.font; font.pixelSize: 10 }
+                        Text { width: parent.width; elide: Text.ElideRight; textFormat: Text.PlainText; text: (modelData.imagery_date || Tr.t("sin fecha")) + " · " + (modelData.mode === "online_preview_only" ? Tr.t("vista en línea") : Tr.t("datos abiertos")) + " · " + (modelData.state || Tr.t("sin lectura")); color: Shell.Theme.t3; font.family: Shell.Theme.font; font.pixelSize: 10 }
                     }
                     MouseArea {
                         id: layerArea; anchors.fill: parent; hoverEnabled: true
@@ -275,9 +276,9 @@ Item {
         Text {
             id: rulerText
             anchors.centerIn: parent
-            text: hud.marks.length === 0 ? "Regla: toca el primer punto"
-                : hud.marks.length === 1 ? "Regla: toca el segundo punto"
-                : "Distancia geodésica: " + Tools.formatDistance(hud.measured)
+            text: hud.marks.length === 0 ? Tr.t("Regla: toca el primer punto")
+                : hud.marks.length === 1 ? Tr.t("Regla: toca el segundo punto")
+                : Tr.t("Distancia geodésica: ") + Tools.formatDistance(hud.measured)
             color: Shell.Theme.t1; font.family: Shell.Theme.font; font.pixelSize: 13; font.weight: Font.Medium
         }
     }
@@ -295,13 +296,13 @@ Item {
             anchors.fill: parent; anchors.margins: 12; spacing: 8
             RowLayout {
                 Layout.fillWidth: true
-                Text { text: "Consola"; color: Shell.Theme.t1; font.family: Shell.Theme.disp; font.pixelSize: 15; font.weight: Font.DemiBold }
+                Text { text: Tr.t("Consola"); color: Shell.Theme.t1; font.family: Shell.Theme.disp; font.pixelSize: 15; font.weight: Font.DemiBold }
                 Text {
                     Layout.fillWidth: true
-                    text: hud.cli ? "world · os · iris — Core y Policy autorizan cada orden" : "Sin consola: este host no configuró el CLI de Archie"
+                    text: hud.cli ? Tr.t("world · os · iris — Core y Policy autorizan cada orden") : Tr.t("Sin consola: este host no configuró el CLI de Archie")
                     color: Shell.Theme.t3; font.family: Shell.Theme.font; font.pixelSize: 11; elide: Text.ElideRight
                 }
-                Button { visible: !!hud.cli && hud.cli.busy; text: "Dejar de esperar"; onClicked: hud.cli.cancel() }
+                Button { visible: !!hud.cli && hud.cli.busy; text: Tr.t("Dejar de esperar"); onClicked: hud.cli.cancel() }
             }
             ListView {
                 id: log
@@ -340,7 +341,7 @@ Item {
         Text {
             id: where
             anchors.centerIn: parent
-            text: hud.below ? hud.below.latitude.toFixed(3) + "°, " + hud.below.longitude.toFixed(3) + "° · cámara "
+            text: hud.below ? hud.below.latitude.toFixed(3) + "°, " + hud.below.longitude.toFixed(3) + Tr.t("° · cámara ")
                   + (hud.altitudeKm >= 10 ? Math.round(hud.altitudeKm).toLocaleString(Qt.locale(), "f", 0) + " km" : (hud.altitudeKm * 1000).toFixed(0) + " m") : ""
             color: Shell.Theme.t2; font.family: Shell.Theme.font; font.pixelSize: 11
             font.features: { "tnum": 1 }

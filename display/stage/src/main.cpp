@@ -183,6 +183,8 @@ int main(int argc, char *argv[])
 
     StageController controller(options);
     QQmlApplicationEngine engine;
+    // The stage's words follow ARCHIE_UI_LANG, as the shell's do (Lang.js); Spanish otherwise.
+    engine.setUiLanguage(qEnvironmentVariable("ARCHIE_UI_LANG"));
     engine.setInitialProperties({
         {QStringLiteral("stage"), QVariant::fromValue(&controller)},
         {QStringLiteral("stageSocketName"), parser.value(socketName)},

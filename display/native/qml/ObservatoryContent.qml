@@ -8,6 +8,7 @@ import "qrc:/archie/shell/prototype" as Shell
 import "Exploration.js" as Exploration
 import "OrbActions.js" as OrbActions
 import "ModelActivity.js" as ModelActivity
+import "../../shell/prototype/Lang.js" as Tr
 
 Item {
     id: root
@@ -75,13 +76,13 @@ Item {
     // anything on the scene on screen does nothing, and the view says so with a popup.
     function viewVerb(action,args) {
         if (action === "window") {
-            if (!root.Window.window) return "No hay una ventana activa"
+            if (!root.Window.window) return Tr.t("No hay una ventana activa")
             root.Window.window.visibility=args.state === "fullscreen" ? Window.FullScreen : args.state === "maximized" ? Window.Maximized : Window.Windowed
             return ""
         }
         if (action === "popup") { root.popupText=args.text; popupTimer.interval=Math.round(args.seconds*1000); popupTimer.restart(); return "" }
         if (action === "pointer") { root.pointerX=args.x; root.pointerY=args.y; pointerTimer.restart() }
-        if (root.scene !== "orb") return action === "pointer" && !args.click ? "" : "Esta acción necesita la vista del Orbe"
+        if (root.scene !== "orb") return action === "pointer" && !args.click ? "" : Tr.t("Esta acción necesita la vista del Orbe")
         if (action === "freeze") { root.frozen=args.enabled; return "" }
         return OrbActions.perform(action,args,lumen,lumenScene,orbHud,root.neural ? neuralOrb : null)
     }
@@ -405,7 +406,7 @@ Item {
                 Text {
                     visible: archieBridge.busy
                     anchors.verticalCenter: parent.verticalCenter
-                    text: "Leyendo…"; color: root.dim; font.pixelSize: 12
+                    text: Tr.t("Leyendo…"); color: root.dim; font.pixelSize: 12
                 }
                 Row {
                     anchors.verticalCenter: parent.verticalCenter
@@ -418,8 +419,8 @@ Item {
                     Text {
                         id: liveText
                         anchors.verticalCenter: parent.verticalCenter
-                        text: !archieBridge.connected ? "Sin conexión"
-                              : snapshot.daemon_reachable ? "Archie en línea" : "Archie no responde"
+                        text: !archieBridge.connected ? Tr.t("Sin conexión")
+                              : snapshot.daemon_reachable ? Tr.t("Archie en línea") : Tr.t("Archie no responde")
                         color: root.soft
                         font.pixelSize: 13
                     }
@@ -856,12 +857,12 @@ Item {
                     id: machineDetails
                     Column {
                         spacing: 6
-                        SectionTitle { text: "MÁQUINA" }
+                        SectionTitle { text: Tr.t("MÁQUINA") }
                         Fact {
-                            label: "presión"
+                            label: Tr.t("presión")
                             value: root.pressureKnown
                                    ? ((root.kernel.verdict || "—") + " · " + (root.kernel.worst_resource || "—"))
-                                   : "sin medir"
+                                   : Tr.t("sin medir")
                             valueColor: root.pressureKnown ? root.verdictColor(root.kernel.verdict) : root.dim
                         }
                         Meter {
@@ -879,7 +880,7 @@ Item {
                             value: root.thermalKnown
                                    ? ((root.kernel.thermal_state || "—")
                                       + (root.kernel.hottest_zone ? " · " + root.kernel.hottest_zone : ""))
-                                   : "sin zonas publicadas"
+                                   : Tr.t("sin zonas publicadas")
                             valueColor: root.thermalKnown ? root.thermalColor(root.kernel.thermal_state) : root.dim
                         }
                         Repeater {
@@ -910,13 +911,13 @@ Item {
                     color: Shell.Theme.panel; border.color: Shell.Theme.hair
                     Text {
                         anchors.centerIn: parent
-                        text: "Detalles"
+                        text: Tr.t("Detalles")
                         color: root.budgetReduced() ? root.amber : root.dim
                         font.pixelSize: 12
                     }
                     MouseArea { anchors.fill: parent; onClicked: orbDetails.opened ? orbDetails.close() : orbDetails.open() }
                     Accessible.role: Accessible.Button
-                    Accessible.name: "Detalles de la máquina"
+                    Accessible.name: Tr.t("Detalles de la máquina")
                     Accessible.onPressAction: orbDetails.open()
                 }
                 Popup {
@@ -959,7 +960,7 @@ Item {
                     readonly property var source:worldHud.activeImage
                     visible:root.scene === "world" && !!source && (source.source_id==="google_satellite" || source.source_id==="sentinel2")
                     anchors.left:parent.left;anchors.bottom:parent.bottom;anchors.leftMargin:18;anchors.bottomMargin:10
-                    text:source ? (source.attribution || (source.source_id==="google_satellite" ? "Imágenes © Google" : "Contiene datos Copernicus Sentinel")) : ""
+                    text:source ? (source.attribution || (source.source_id==="google_satellite" ? Tr.t("Imágenes © Google") : Tr.t("Contiene datos Copernicus Sentinel"))) : ""
                     textFormat:Text.PlainText;color:Qt.rgba(1,1,1,0.55);font.family:Shell.Theme.font;font.pixelSize:10
                 }
                 // World's minimal HUD floats over the globe: search, navigation rail and
@@ -1028,7 +1029,7 @@ Item {
                     Column {
                         width: parent.width
                         spacing: 12
-                        SectionTitle { text: "MODULES · " + root.modules.length }
+                        SectionTitle { text: Tr.t("MODULES · ") + root.modules.length }
                         Repeater {
                             model: root.modules
                             delegate: Rectangle {
@@ -1056,7 +1057,7 @@ Item {
                         SectionTitle { text: "CONTROL BOUNDARY" }
                         Text {
                             width: parent.width
-                            text: "Proyecciones de lectura y cámara con sesión limitada del propietario. La voz y Core conservan la autoridad; el daemon obtiene las fuentes."
+                            text: Tr.t("Proyecciones de lectura y cámara con sesión limitada del propietario. La voz y Core conservan la autoridad; el daemon obtiene las fuentes.")
                             color: root.dim; font.pixelSize: 10; wrapMode: Text.Wrap
                         }
 
@@ -1070,7 +1071,7 @@ Item {
                         SectionTitle { text: "GEOFABRIC · PROVIDER SELECTION" }
                         Text {
                             width: parent.width
-                            text: "Cobertura y fuentes del catálogo GeoFabric. El globo solicita el detalle según la cámara."
+                            text: Tr.t("Cobertura y fuentes del catálogo GeoFabric. El globo solicita el detalle según la cámara.")
                             color: root.dim; font.pixelSize: 9; wrapMode: Text.Wrap
                         }
                         Repeater {

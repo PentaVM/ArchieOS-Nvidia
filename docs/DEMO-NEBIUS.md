@@ -56,6 +56,9 @@ a una persona.
 
 Ajustes útiles (variables de entorno):
 
+- `ARCHIE_UI_LANG=en` — toda la GUI (escritorio, Observatory, Forge, Sentry, World y los
+  avisos del Stage) en inglés; por defecto en español. Con `LISTEN_LANGUAGE=en` y
+  `REHEARSE_LANGUAGE=en` la voz y la narración también van en inglés.
 - `DRAW_SECONDS=90` — plan más corto (por defecto 150 s). El tiempo real depende del
   equipo: en el ensayo con render por software el plan de 120 s tardó 323 s.
 - `TEMPO=person` (por defecto) — el puntero se mueve a ritmo de persona, que es lo que se ve

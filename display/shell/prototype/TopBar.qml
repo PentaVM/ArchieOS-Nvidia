@@ -1,4 +1,5 @@
 import QtQuick
+import "Lang.js" as Tr
 
 // Top bar, 32 px. Order is frozen: left = brand, app, menus; right = link chip, camera/mic,
 // domain, search, activity count, control center, clock.
@@ -56,7 +57,7 @@ Rectangle {
                 sourceSize.height: 80; anchors.verticalCenter: parent.verticalCenter
                 Accessible.role: Accessible.StaticText; Accessible.name: "ArchieOS" } }
         Text { text: bar.app; rightPadding: 12; color: Theme.t1; font.family: Theme.font; font.pixelSize: 13; font.weight: Font.DemiBold; anchors.verticalCenter: parent.verticalCenter }
-        MenuItem { label: "Archivo"; anchors.verticalCenter: parent.verticalCenter } MenuItem { label: "Editar"; anchors.verticalCenter: parent.verticalCenter } MenuItem { label: "Vista"; anchors.verticalCenter: parent.verticalCenter } MenuItem { label: "Ir"; anchors.verticalCenter: parent.verticalCenter } MenuItem { label: "Ventana"; anchors.verticalCenter: parent.verticalCenter }
+        MenuItem { label: Tr.t("Archivo"); anchors.verticalCenter: parent.verticalCenter } MenuItem { label: Tr.t("Editar"); anchors.verticalCenter: parent.verticalCenter } MenuItem { label: Tr.t("Vista"); anchors.verticalCenter: parent.verticalCenter } MenuItem { label: Tr.t("Ir"); anchors.verticalCenter: parent.verticalCenter } MenuItem { label: Tr.t("Ventana"); anchors.verticalCenter: parent.verticalCenter }
     }
     Row {
         anchors.right: parent.right; anchors.rightMargin: 12; anchors.verticalCenter: parent.verticalCenter; spacing: 6
@@ -66,15 +67,15 @@ Rectangle {
         // The domain is the one the host was started with; with none, the chip is not drawn.
         // It opens the workspace menu (decision 5 of the handoff: the selector lives in this chip).
         Item { objectName: "bar.domain"; visible: bar.domain !== ""; width: visible ? dom.width : 0; height: dom.height; anchors.verticalCenter: parent.verticalCenter
-            Chip { id: dom; text: "Dominio"; sub: bar.domain; domain: bar.domain.indexOf("work/") === 0 ? "work" : "personal"; tone: "neutral" }
+            Chip { id: dom; text: Tr.t("Dominio"); sub: bar.domain; domain: bar.domain.indexOf("work/") === 0 ? "work" : "personal"; tone: "neutral" }
             MouseArea { anchors.fill: parent; onClicked: bar.toggle("workspace") } }
         Item { width: 13; height: 14; anchors.verticalCenter: parent.verticalCenter
             Rectangle { anchors.centerIn: parent; width: 1; height: 14; color: Theme.hair } }
-        IconButton { objectName: "bar.palette"; icon: "search"; label: "Buscar"; active: bar.overlay === "palette"; onClicked: bar.toggle("palette"); anchors.verticalCenter: parent.verticalCenter }
+        IconButton { objectName: "bar.palette"; icon: "search"; label: Tr.t("Buscar"); active: bar.overlay === "palette"; onClicked: bar.toggle("palette"); anchors.verticalCenter: parent.verticalCenter }
         // Running long jobs from the bridge; "—" when no workspace is configured, never a made-up 0.
-        IconButton { objectName: "bar.activity"; icon: "activity"; label: "Actividad"; count: bar.bridge.jobs.state === "ok" ? String(bar.bridge.runningJobs) : "—"
+        IconButton { objectName: "bar.activity"; icon: "activity"; label: Tr.t("Actividad"); count: bar.bridge.jobs.state === "ok" ? String(bar.bridge.runningJobs) : "—"
             active: bar.overlay === "activity"; onClicked: bar.toggle("activity"); anchors.verticalCenter: parent.verticalCenter }
-        IconButton { objectName: "bar.control"; icon: "control"; label: "Centro de control"; active: bar.overlay === "control"; onClicked: bar.toggle("control"); anchors.verticalCenter: parent.verticalCenter }
+        IconButton { objectName: "bar.control"; icon: "control"; label: Tr.t("Centro de control"); active: bar.overlay === "control"; onClicked: bar.toggle("control"); anchors.verticalCenter: parent.verticalCenter }
         Text { leftPadding: 8; text: Demo.barClock; color: Theme.t1; font.family: Theme.font; font.pixelSize: 13; font.weight: Font.Medium
             font.features: { "tnum": 1 }; anchors.verticalCenter: parent.verticalCenter }
     }

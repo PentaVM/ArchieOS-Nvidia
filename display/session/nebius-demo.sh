@@ -15,6 +15,7 @@
 #   ARCHIE_DISPLAY   the shell                         default: the native build, else PATH
 #   WORLD_BIN_DIR    World's daemons and CLI           default: core/target/release, if built
 #   RUN_DIR          key, sockets, logs, the profile   default: /tmp/archie-demo
+#   ARCHIE_UI_LANG   the desktop's language: en       default: Spanish
 #   ARCHIE_ROOT      Core node for World's console     default: /home/archie/archie-node, if there
 #   SESSION_LOG      the take's log, each line timed   default: $RUN_DIR/takes/take-<time>.log
 #

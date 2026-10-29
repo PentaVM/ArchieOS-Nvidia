@@ -1,4 +1,5 @@
 import QtQuick
+import "Lang.js" as Tr
 
 // Workspace selector, a 300 px menu under the "Dominio" chip of the bar. DESIGN SAMPLE.
 // The switch itself is done by the compositor (as archie-session.sh does today); the shell only
@@ -12,7 +13,7 @@ Panel {
     property string st: Demo.state
     property string sel: ""
     readonly property bool domainSwitchAvailable: false
-    readonly property string domainSwitchReason: "Cambiar el dominio requiere un contrato del compositor y del backend; no está disponible desde la shell."
+    readonly property string domainSwitchReason: Tr.t("Cambiar el dominio requiere un contrato del compositor y del backend; no está disponible desde la shell.")
     signal chosen(string which)
 
     component Row2: Rectangle {
@@ -37,22 +38,22 @@ Panel {
     }
 
     Column { id: col; x: 8; y: 8; width: parent.width - 16; spacing: 0
-        Eyebrow { text: "Espacio de trabajo"; leftPadding: 10; topPadding: 8; bottomPadding: 6 }
-        Row2 { icon: "dkOrb"; name: "Orbe"; on: wm.st === "vacio" || wm.sel === "orb"; ring: Demo.focusRing; onClicked: { wm.sel = "orb"; wm.chosen("orb") } }
+        Eyebrow { text: Tr.t("Espacio de trabajo"); leftPadding: 10; topPadding: 8; bottomPadding: 6 }
+        Row2 { icon: "dkOrb"; name: Tr.t("Orbe"); on: wm.st === "vacio" || wm.sel === "orb"; ring: Demo.focusRing; onClicked: { wm.sel = "orb"; wm.chosen("orb") } }
         Row2 { visible: wm.st !== "vacio"; available: wm.domainSwitchAvailable; domain: "personal"; name: "Personal"; on: false
             Icon { visible: wm.st !== "offline" && wm.sel === "personal"; name: "done"; size: 14; color: Theme.ok }
-            Chip { visible: wm.st === "offline"; small: true; tone: "unk"; icon: "unknown"; text: "Archie"; sub: "sin lectura" }
-            Chip { visible: wm.st === "degraded"; small: true; tone: "unk"; icon: "unknown"; text: "ventanas"; sub: "sin lectura" } }
-        Row2 { visible: wm.st !== "vacio"; available: wm.domainSwitchAvailable; domain: "work"; name: "Trabajo"; on: false
-            Chip { visible: wm.st === "offline"; small: true; tone: "unk"; icon: "unknown"; text: "Archie"; sub: "sin lectura" }
+            Chip { visible: wm.st === "offline"; small: true; tone: "unk"; icon: "unknown"; text: "Archie"; sub: Tr.t("sin lectura") }
+            Chip { visible: wm.st === "degraded"; small: true; tone: "unk"; icon: "unknown"; text: "ventanas"; sub: Tr.t("sin lectura") } }
+        Row2 { visible: wm.st !== "vacio"; available: wm.domainSwitchAvailable; domain: "work"; name: Tr.t("Trabajo"); on: false
+            Chip { visible: wm.st === "offline"; small: true; tone: "unk"; icon: "unknown"; text: "Archie"; sub: Tr.t("sin lectura") }
             Icon { visible: wm.st !== "offline" && wm.sel === "work"; name: "done"; size: 14; color: Theme.ok } }
         Item { visible: wm.st === "vacio"; width: parent.width; height: vb.height + 12
-            VoidBox { id: vb; x: 4; y: 8; width: parent.width - 8; icon: "spaces"; title: "Espacios sin lectura"; text: "No hay un contrato de lectura del compositor. Esta vista no determina qué espacios existen." } }
+            VoidBox { id: vb; x: 4; y: 8; width: parent.width - 8; icon: "spaces"; title: Tr.t("Espacios sin lectura"); text: Tr.t("No hay un contrato de lectura del compositor. Esta vista no determina qué espacios existen.") } }
         NoteBox { width: parent.width; text: wm.domainSwitchReason }
         Item { visible: wm.st === "error"; width: parent.width; height: eb.height + 8
-            ErrBox { id: eb; x: 4; y: 8; width: parent.width - 8; text: "Sin lectura confirmada del compositor. No se ha cambiado el dominio." } }
+            ErrBox { id: eb; x: 4; y: 8; width: parent.width - 8; text: Tr.t("Sin lectura confirmada del compositor. No se ha cambiado el dominio.") } }
         Item { visible: wm.st === "stale"; width: parent.width; height: nb.height + 8
-            NoteBox { id: nb; x: 4; y: 8; width: parent.width - 8; icon: "recents"; text: "Sin lectura actual del compositor." } }
+            NoteBox { id: nb; x: 4; y: 8; width: parent.width - 8; icon: "recents"; text: Tr.t("Sin lectura actual del compositor.") } }
         Row { leftPadding: 10; topPadding: 12; bottomPadding: 4; spacing: 4
             Kbd { label: "Esc"; anchors.verticalCenter: parent.verticalCenter } Text { text: "salir"; color: Theme.t3; font.family: Theme.font; font.pixelSize: 12; anchors.verticalCenter: parent.verticalCenter; leftPadding: 2 } }
     }

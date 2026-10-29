@@ -1,4 +1,5 @@
 #include "LumenField.h"
+#include "UiText.h"
 
 #include "LumenGeometry.h"
 #include "XaviDesignBridge.h"
@@ -78,6 +79,9 @@ constexpr Category contentCategoryTable[] = {
 
 QString categoryLabel(const QString &key)
 {
+    // The keys are English words already: in English the label is the key, capitalised.
+    if (uiEnglish() && !key.isEmpty())
+        return key.left(1).toUpper() + key.mid(1);
     for (const auto &c : categoryTable)
         if (key == QLatin1String(c.key))
             return QString::fromUtf8(c.label);
@@ -1045,10 +1049,10 @@ void LumenField::request()
         }
         if (reply->isOpen()) body->append(reply->read(maximumSceneBytes + 1 - body->size()));
         if (body->size() > maximumSceneBytes) {
-            setStatus(QStringLiteral("SIN CAMPO"), QStringLiteral("la escena superó el límite de 8 MiB"));
+            setStatus(uiText(QStringLiteral("SIN CAMPO"), QStringLiteral("NO FIELD")), uiText(QStringLiteral("la escena superó el límite de 8 MiB"), QStringLiteral("the scene went past the 8 MiB limit")));
         } else
         if (reply->error() != QNetworkReply::NoError) {
-            setStatus(QStringLiteral("SIN CAMPO"), QStringLiteral("archie-displayd no responde: ") + reply->errorString());
+            setStatus(uiText(QStringLiteral("SIN CAMPO"), QStringLiteral("NO FIELD")), uiText(QStringLiteral("archie-displayd no responde: "), QStringLiteral("archie-displayd is not responding: ")) + reply->errorString());
         } else if (structure == structureKey()) {
             // Shape and look settings only move what is drawn; a reply for slightly older
             // values is still the right field, so continuous changes never freeze it.
@@ -1099,7 +1103,7 @@ void LumenField::requestContent()
                 return;
             }
             if (body.isEmpty())
-                field.setStatus(QStringLiteral("SIN CAMPO"), QStringLiteral("no se pudo leer ") + QString::fromUtf8(root));
+                field.setStatus(uiText(QStringLiteral("SIN CAMPO"), QStringLiteral("NO FIELD")), uiText(QStringLiteral("no se pudo leer "), QStringLiteral("could not read ")) + QString::fromUtf8(root));
             else if (structure == field.structureKey())
                 field.accept(body);
             else
@@ -1330,7 +1334,7 @@ void LumenField::accept(const QByteArray &body)
     QJsonParseError parseError;
     const QJsonDocument document = QJsonDocument::fromJson(body, &parseError);
     if (parseError.error != QJsonParseError::NoError || !document.isObject()) {
-        setStatus(QStringLiteral("SIN CAMPO"), QStringLiteral("escena ilegible: ") + parseError.errorString());
+        setStatus(uiText(QStringLiteral("SIN CAMPO"), QStringLiteral("NO FIELD")), uiText(QStringLiteral("escena ilegible: "), QStringLiteral("unreadable scene: ")) + parseError.errorString());
         return;
     }
     const QJsonObject object = document.object();
@@ -1532,10 +1536,10 @@ void LumenField::accept(const QByteArray &body)
         emit projectionStarted();
     }
     if (m_sceneInfo.contains(QStringLiteral("contentName")))
-        setStatus(QStringLiteral("CONTENIDO · ") + m_sceneInfo.value(QStringLiteral("contentName")).toString().toUpper());
+        setStatus(uiText(QStringLiteral("CONTENIDO · "), QStringLiteral("CONTENT · ")) + m_sceneInfo.value(QStringLiteral("contentName")).toString().toUpper());
     else
-        setStatus(m_lens == QLatin1String("entities") ? QStringLiteral("ENTIDADES · UNA POR OBSERVACIÓN")
-                                                      : QStringLiteral("ESTRUCTURA + RELACIONES OBSERVADAS"));
+        setStatus(m_lens == QLatin1String("entities") ? uiText(QStringLiteral("ENTIDADES · UNA POR OBSERVACIÓN"), QStringLiteral("ENTITIES · ONE PER OBSERVATION"))
+                                                      : uiText(QStringLiteral("ESTRUCTURA + RELACIONES OBSERVADAS"), QStringLiteral("STRUCTURE + OBSERVED RELATIONS")));
     emit sceneChanged();
 }
 
@@ -1951,7 +1955,7 @@ void LumenField::updateSelectionInfo()
             continue;
         const int other = edge.source == i ? edge.target : edge.source;
         attached.push_back(QVariantMap{
-            {QStringLiteral("kind"), edge.kind == QLatin1String("observed") ? QStringLiteral("OBSERVADA") : QStringLiteral("SEMÁNTICA")},
+            {QStringLiteral("kind"), edge.kind == QLatin1String("observed") ? uiText(QStringLiteral("OBSERVADA"), QStringLiteral("OBSERVED")) : uiText(QStringLiteral("SEMÁNTICA"), QStringLiteral("SEMANTIC"))},
             {QStringLiteral("id"), m_nodes[static_cast<std::size_t>(other)].id},
             {QStringLiteral("name"), m_nodes[static_cast<std::size_t>(other)].name},
             {QStringLiteral("evidence"), edge.evidence},
@@ -1959,10 +1963,10 @@ void LumenField::updateSelectionInfo()
             {QStringLiteral("count"), edge.count},
         });
     }
-    const QString tag = node.kind == QLatin1String("root") ? QStringLiteral("RAÍZ")
-                        : node.kind == QLatin1String("group") ? QStringLiteral("GRUPO DE ENTIDADES")
-                        : node.kind == QLatin1String("module") ? QStringLiteral("MÓDULO OBSERVADO")
-                                                                : QStringLiteral("ENTIDAD OBSERVADA");
+    const QString tag = node.kind == QLatin1String("root") ? uiText(QStringLiteral("RAÍZ"), QStringLiteral("ROOT"))
+                        : node.kind == QLatin1String("group") ? uiText(QStringLiteral("GRUPO DE ENTIDADES"), QStringLiteral("ENTITY GROUP"))
+                        : node.kind == QLatin1String("module") ? uiText(QStringLiteral("MÓDULO OBSERVADO"), QStringLiteral("OBSERVED MODULE"))
+                                                                : uiText(QStringLiteral("ENTIDAD OBSERVADA"), QStringLiteral("OBSERVED ENTITY"));
     m_selectionInfo = {
         {QStringLiteral("id"), node.id},
         {QStringLiteral("name"), node.name},
@@ -1997,9 +2001,9 @@ void LumenField::updateHoveredInfo()
         const Node &node = m_nodes[static_cast<std::size_t>(i)];
         m_hoveredInfo = {{QStringLiteral("id"), node.id},
                          {QStringLiteral("name"), node.name},
-                         {QStringLiteral("label"), node.kind == QLatin1String("group") ? QStringLiteral("Grupo")
-                                                   : node.kind == QLatin1String("module") ? QStringLiteral("Módulo")
-                                                   : node.kind == QLatin1String("root") ? QStringLiteral("Raíz")
+                         {QStringLiteral("label"), node.kind == QLatin1String("group") ? uiText(QStringLiteral("Grupo"), QStringLiteral("Group"))
+                                                   : node.kind == QLatin1String("module") ? uiText(QStringLiteral("Módulo"), QStringLiteral("Module"))
+                                                   : node.kind == QLatin1String("root") ? uiText(QStringLiteral("Raíz"), QStringLiteral("Root"))
                                                                                          : categoryLabel(node.category)}};
     }
     emit hoveredChanged();

@@ -5,6 +5,7 @@ import Archie.Observatory
 import "OrbActions.js" as OrbActions
 import "ModelActivity.js" as ModelActivity
 import "qrc:/archie/shell/prototype" as Shell
+import "../../shell/prototype/Lang.js" as Tr
 
 // Shared by the shell and native renderer: one controller, one active scene.
 Item {
@@ -34,7 +35,7 @@ Item {
     readonly property bool neural: !!controller.settings.fieldSource && controller.settings.fieldSource === "neural"
 
     function viewVerb(action,args) {
-        if (!viewport.presented || !viewport.ownsController) return "El Orbe no está visible"
+        if (!viewport.presented || !viewport.ownsController) return Tr.t("El Orbe no está visible")
         if (action === "freeze") { viewport.frozen=args.enabled; return "" }
         return OrbActions.perform(action,args,controller,scene,orbHud,viewport.neural ? neuralView : null)
     }

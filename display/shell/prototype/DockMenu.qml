@@ -1,4 +1,5 @@
 import QtQuick
+import "Lang.js" as Tr
 
 // Context menu of a dock icon (right click): what that app's window can do. The Orb's entry shows
 // or hides the desktop's windows. Every action goes through the window manager (Wm).
@@ -13,15 +14,15 @@ Panel {
     enterDy: 8
 
     readonly property bool isOrb: target === "orb"
-    readonly property var items: target === "world" ? [{l:"Mostrar World",act:"world"},{l:"Volver al Orbe",act:"orb"}] : isOrb ? [
-        { l: Demo.bare ? "Mostrar las ventanas" : "Mostrar el escritorio", act: "desk" },
-        { l: "Minimizar todas", act: "minAll", dis: Wm.shownCount() === 0 },
-        { l: "Cerrar todas", act: "closeAll", dis: Wm.openCount() === 0 } ] : [
-        { l: !Wm.isOpen(target) ? "Abrir " + Wm.title(target) : (Wm.isMin(target) || Demo.bare ? "Mostrar" : "Traer al frente"), act: "open" },
-        { l: "Minimizar", act: "min", dis: !Wm.isShown(target) },
+    readonly property var items: target === "world" ? [{l:Tr.t("Mostrar World"),act:"world"},{l:Tr.t("Volver al Orbe"),act:"orb"}] : isOrb ? [
+        { l: Demo.bare ? Tr.t("Mostrar las ventanas") : Tr.t("Mostrar el escritorio"), act: "desk" },
+        { l: Tr.t("Minimizar todas"), act: "minAll", dis: Wm.shownCount() === 0 },
+        { l: Tr.t("Cerrar todas"), act: "closeAll", dis: Wm.openCount() === 0 } ] : [
+        { l: !Wm.isOpen(target) ? Tr.t("Abrir ") + Wm.title(target) : (Wm.isMin(target) || Demo.bare ? Tr.t("Mostrar") : Tr.t("Traer al frente")), act: "open" },
+        { l: Tr.t("Minimizar"), act: "min", dis: !Wm.isShown(target) },
         { l: "Zoom", act: "zoom", dis: !Wm.isShown(target) },
         { sep: true },
-        { l: "Cerrar ventana", act: "close", dis: !Wm.isOpen(target) } ]
+        { l: Tr.t("Cerrar ventana"), act: "close", dis: !Wm.isOpen(target) } ]
 
     function run(act) {
         if (act === "world" || act === "orb") spaceRequested(act)

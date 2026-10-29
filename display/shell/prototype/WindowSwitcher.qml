@@ -1,4 +1,5 @@
 import QtQuick
+import "Lang.js" as Tr
 
 // Local Qt surfaces only. The external compositor and Core domains are not inferred.
 Panel {
@@ -10,7 +11,7 @@ Panel {
     signal chosen(string key)
     readonly property var all: Wm.list()
     readonly property var flat: all.map(function(w) {
-        return { title: w.title, app: w.min ? "minimizada" : w.front ? "en primer plano" : "abierta", key: w.id, on: w.front }
+        return { title: w.title, app: w.min ? "minimizada" : w.front ? Tr.t("en primer plano") : "abierta", key: w.id, on: w.front }
     })
     readonly property bool none: flat.length === 0
     property int sel: 0
@@ -40,21 +41,21 @@ Panel {
                 Icon { anchors.centerIn: parent; name: tile.iconOf[tile.info.key] || "devunk"; size: 20; color: Theme.dk[tile.info.key] ? Theme.dockInk : Theme.t1 } }
             Text { width: parent.width; elide: Text.ElideRight; text: tile.info.title; color: Theme.t1; font.family: Theme.font; font.pixelSize: 13; font.weight: Font.Medium }
             Text { width: parent.width; elide: Text.ElideRight; text: tile.info.app; color: Theme.t3; font.family: Theme.font; font.pixelSize: 11 }
-            Chip { small: true; icon: "unknown"; tone: "unk"; text: "Dominio sin lectura" }
+            Chip { small: true; icon: "unknown"; tone: "unk"; text: Tr.t("Dominio sin lectura") }
         }
         MouseArea { anchors.fill: parent; enabled: tile.info.key !== ""; onClicked: tile.requested(tile.info.key) }
     }
     Column { id: col; x: 20; y: 20; width: parent.width - 40; spacing: 12
-        Text { text: "Ventanas"; color: Theme.t1; font.family: Theme.disp; font.pixelSize: 22; font.weight: Font.DemiBold }
-        Chip { icon: "windows"; text: "Ventanas locales de esta shell" }
-        VoidBox { visible: sw.none; icon: "windows"; title: "No hay ventanas locales abiertas"; text: "Abre una vista desde el dock o la paleta." }
+        Text { text: Tr.t("Ventanas"); color: Theme.t1; font.family: Theme.disp; font.pixelSize: 22; font.weight: Font.DemiBold }
+        Chip { icon: "windows"; text: Tr.t("Ventanas locales de esta shell") }
+        VoidBox { visible: sw.none; icon: "windows"; title: Tr.t("No hay ventanas locales abiertas"); text: Tr.t("Abre una vista desde el dock o la paleta.") }
         Flow { visible: !sw.none; width: parent.width; spacing: 16
             Repeater { model: sw.flat
                 delegate: Tile { info: modelData; ring: modelData.key === sw.selKey
                     onRequested: function(key) { sw.activateKey(key) } }
             }
         }
-        NoteBox { text: "No enumera ni cambia ventanas de otras aplicaciones. La selección local no establece dominio ni autoridad de Core." }
+        NoteBox { text: Tr.t("No enumera ni cambia ventanas de otras aplicaciones. La selección local no establece dominio ni autoridad de Core.") }
     }
     FootHints { id: foot; y: col.y + col.implicitHeight + 16; hints: [["Tab","siguiente"],["⇧ Tab","anterior"],["↵","mostrar"],["Esc","salir"]] }
 }

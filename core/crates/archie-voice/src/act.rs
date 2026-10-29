@@ -421,9 +421,20 @@ pub fn dock_button(name: &str) -> Option<&'static str> {
         "forge" | "forja" => "Forge",
         "sentry" | "sentinel" | "centinela" => "Sentry",
         "stage" | "escenario" => "Stage",
-        "ajustes" | "settings" | "configuración" | "configuracion" | "preferencias" => "Ajustes",
+        "ajustes" | "settings" | "configuración" | "configuracion" | "preferencias" => {
+            settings_button()
+        }
         _ => return None,
     })
+}
+
+/// The settings button's name on the dock, which follows the desktop's language
+/// (ARCHIE_UI_LANG, as display/shell/prototype/Lang.js reads it).
+fn settings_button() -> &'static str {
+    match std::env::var("ARCHIE_UI_LANG") {
+        Ok(lang) if lang.starts_with("en") => "Settings",
+        _ => "Ajustes",
+    }
 }
 
 fn permitted<'a>(

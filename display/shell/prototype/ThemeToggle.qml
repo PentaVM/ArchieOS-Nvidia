@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import "Lang.js" as Tr
 
 AbstractButton {
     id: control
@@ -7,10 +8,10 @@ AbstractButton {
     property bool compact: false
     implicitWidth: compact ? 78 : 104
     implicitHeight: compact ? 26 : 32
-    text: Theme.light ? "Claro" : "Oscuro"
+    text: Theme.light ? Tr.t("Claro") : Tr.t("Oscuro")
     activeFocusOnTab: true
-    Accessible.name: Theme.light ? "Cambiar a tema oscuro" : "Cambiar a tema claro"
-    Accessible.description: "Tema de toda la interfaz"
+    Accessible.name: Theme.light ? Tr.t("Cambiar a tema oscuro") : Tr.t("Cambiar a tema claro")
+    Accessible.description: Tr.t("Tema de toda la interfaz")
     onClicked: { Theme.toggleColorMode(); ToolTip.hide() }
     Keys.onReturnPressed: clicked()
     background: Rectangle {
@@ -29,6 +30,6 @@ AbstractButton {
         verticalAlignment: Text.AlignVCenter
     }
     ToolTip.visible: hovered
-    ToolTip.text: Theme.light ? "Cambiar a tema oscuro" : "Cambiar a tema claro"
+    ToolTip.text: Theme.light ? Tr.t("Cambiar a tema oscuro") : Tr.t("Cambiar a tema claro")
     ToolTip.delay: 500
 }

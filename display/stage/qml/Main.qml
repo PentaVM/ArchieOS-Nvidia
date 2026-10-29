@@ -5,6 +5,7 @@ import QtQuick.Shapes
 import QtQuick.Window
 import QtWayland.Compositor
 import QtWayland.Compositor.XdgShell
+import "qrc:/archie/shell/prototype/Lang.js" as Tr
 
 // The stage. Applications are hosted as surfaces on a desk that the director's camera
 // frames; everything drawn over the desk — the agent's cursor, its ripples, the caption,
@@ -83,8 +84,8 @@ WaylandCompositor {
              : compositor.stage.authority === "operator" ? compositor.amber : compositor.red
     }
     function authorityLabel() {
-        return compositor.stage.authority === "autonomous" ? "ARCHIE TRABAJA"
-             : compositor.stage.authority === "operator" ? "CONTROL HUMANO" : "PAUSADO"
+        return compositor.stage.authority === "autonomous" ? Tr.t("ARCHIE TRABAJA")
+             : compositor.stage.authority === "operator" ? Tr.t("CONTROL HUMANO") : Tr.t("PAUSADO")
     }
     function windowSlot(index) {
         void compositor.layoutVersion
@@ -125,18 +126,18 @@ WaylandCompositor {
     function captionText() {
         const app = compositor.appName(stage.captionApp)
         switch (stage.captionVerb) {
-        case "moving": return "moviendo el puntero · " + app
-        case "clicking": return "clic · " + app
-        case "double_clicking": return "doble clic · " + app
-        case "dragging": return "arrastrando · " + app
-        case "scrolling": return "desplazando · " + app
-        case "typing": return "escribiendo " + stage.captionCount + " caracteres · " + app
-        case "pressing_keys": return "pulsando " + stage.captionCount + (stage.captionCount === 1 ? " tecla · " : " teclas · ") + app
-        case "focusing": return "enfocando · " + app
-        case "drawing": return "dibujando · " + app
-        case "observing": return "mirando · " + app
-        case "interrupted": return "acción detenida · el control es tuyo"
-        case "refused": return "rechazado · " + refusalText(stage.captionRefusal) + " · " + app
+        case "moving": return Tr.t("moviendo el puntero · ") + app
+        case "clicking": return Tr.t("clic · ") + app
+        case "double_clicking": return Tr.t("doble clic · ") + app
+        case "dragging": return Tr.t("arrastrando · ") + app
+        case "scrolling": return Tr.t("desplazando · ") + app
+        case "typing": return Tr.t("escribiendo ") + stage.captionCount + Tr.t(" caracteres · ") + app
+        case "pressing_keys": return Tr.t("pulsando ") + stage.captionCount + (stage.captionCount === 1 ? Tr.t(" tecla · ") : Tr.t(" teclas · ")) + app
+        case "focusing": return Tr.t("enfocando · ") + app
+        case "drawing": return Tr.t("dibujando · ") + app
+        case "observing": return Tr.t("mirando · ") + app
+        case "interrupted": return Tr.t("acción detenida · el control es tuyo")
+        case "refused": return Tr.t("rechazado · ") + refusalText(stage.captionRefusal) + " · " + app
         }
         return ""
     }
@@ -145,35 +146,35 @@ WaylandCompositor {
     function activityText(raw) {
         const entry = { verb: raw.verb, count: raw.count, refusal: raw.refusal, app: compositor.appName(raw.app) }
         switch (entry.verb) {
-        case "moving": return "movió el puntero · " + entry.app
-        case "clicking": return "clic · " + entry.app
-        case "double_clicking": return "doble clic · " + entry.app
-        case "dragging": return "arrastró · " + entry.app
-        case "scrolling": return "desplazó · " + entry.app
-        case "typing": return "escribió " + entry.count + " car. · " + entry.app
-        case "pressing_keys": return (entry.count === 1 ? "tecla · " : "atajo · ") + entry.app
-        case "focusing": return "enfocó · " + entry.app
-        case "drawing": return "dibujó · " + entry.app
-        case "observing": return "miró · " + entry.app
-        case "interrupted": return "detenida por ti · " + entry.app
-        case "refused": return "no se hizo: " + refusalText(entry.refusal) + " · " + entry.app
+        case "moving": return Tr.t("movió el puntero · ") + entry.app
+        case "clicking": return Tr.t("clic · ") + entry.app
+        case "double_clicking": return Tr.t("doble clic · ") + entry.app
+        case "dragging": return Tr.t("arrastró · ") + entry.app
+        case "scrolling": return Tr.t("desplazó · ") + entry.app
+        case "typing": return Tr.t("escribió ") + entry.count + Tr.t(" car. · ") + entry.app
+        case "pressing_keys": return (entry.count === 1 ? "tecla · " : Tr.t("atajo · ")) + entry.app
+        case "focusing": return Tr.t("enfocó · ") + entry.app
+        case "drawing": return Tr.t("dibujó · ") + entry.app
+        case "observing": return Tr.t("miró · ") + entry.app
+        case "interrupted": return Tr.t("detenida por ti · ") + entry.app
+        case "refused": return Tr.t("no se hizo: ") + refusalText(entry.refusal) + " · " + entry.app
         }
         return entry.app
     }
 
     function refusalText(code) {
         switch (code) {
-        case "operator_has_control": return "tienes el control"
-        case "stage_paused": return "en pausa"
-        case "surface_changed": return "la ventana cambió"
+        case "operator_has_control": return Tr.t("tienes el control")
+        case "stage_paused": return Tr.t("en pausa")
+        case "surface_changed": return Tr.t("la ventana cambió")
         case "surface_unknown":
-        case "surface_unmapped": return "la ventana ya no existe"
-        case "app_mismatch": return "otra aplicación"
-        case "point_outside_surface": return "fuera de la ventana"
-        case "command_expired": return "orden vencida"
-        case "command_replayed": return "orden repetida"
-        case "not_typeable": return "ese texto no se puede escribir aquí"
-        case "capture_failed": return "no se pudo capturar la ventana"
+        case "surface_unmapped": return Tr.t("la ventana ya no existe")
+        case "app_mismatch": return Tr.t("otra aplicación")
+        case "point_outside_surface": return Tr.t("fuera de la ventana")
+        case "command_expired": return Tr.t("orden vencida")
+        case "command_replayed": return Tr.t("orden repetida")
+        case "not_typeable": return Tr.t("ese texto no se puede escribir aquí")
+        case "capture_failed": return Tr.t("no se pudo capturar la ventana")
         }
         return code
     }
@@ -346,7 +347,7 @@ WaylandCompositor {
                         }
                         function title() {
                             const t = frame.shellSurface && frame.shellSurface.toplevel ? frame.shellSurface.toplevel.title : ""
-                            return t.length ? t : (frame.appId().length ? frame.appId() : "aplicación sin nombre")
+                            return t.length ? t : (frame.appId().length ? frame.appId() : Tr.t("aplicación sin nombre"))
                         }
                         function sendSize() {
                             if (frame.shellSurface && frame.shellSurface.toplevel)
@@ -682,7 +683,7 @@ WaylandCompositor {
                     spacing: 14
                     Text {
                         anchors.verticalCenter: parent.verticalCenter
-                        text: compositor.stage.surfaceCount === 1 ? "1 aplicación" : compositor.stage.surfaceCount + " aplicaciones"
+                        text: compositor.stage.surfaceCount === 1 ? Tr.t("1 aplicación") : compositor.stage.surfaceCount + Tr.t(" aplicaciones")
                         color: compositor.dim
                         font.family: "monospace"
                         font.pixelSize: 11
@@ -714,15 +715,15 @@ WaylandCompositor {
                 spacing: 10
                 Image { anchors.horizontalCenter: parent.horizontalCenter; source: "qrc:/archie/brand/archieos-logo-dark.png"; height: 64; fillMode: Image.PreserveAspectFit; smooth: true; mipmap: true; sourceSize.height: 256 }
                 Text { anchors.horizontalCenter: parent.horizontalCenter; text: "Stage"; color: compositor.ink; font.pixelSize: 24; font.weight: Font.Light; font.letterSpacing: 3 }
-                Text { anchors.horizontalCenter: parent.horizontalCenter; text: "Las aplicaciones que Archie use aparecerán aquí."; color: compositor.soft; font.pixelSize: 16 }
+                Text { anchors.horizontalCenter: parent.horizontalCenter; text: Tr.t("Las aplicaciones que Archie use aparecerán aquí."); color: compositor.soft; font.pixelSize: 16 }
                 Text {
                     anchors.horizontalCenter: parent.horizontalCenter
-                    text: "WAYLAND_DISPLAY=" + compositor.socketName + (compositor.stage.listening ? "  ·  control listo" : "  ·  sin control: Archie no puede actuar")
+                    text: "WAYLAND_DISPLAY=" + compositor.socketName + (compositor.stage.listening ? Tr.t("  ·  control listo") : Tr.t("  ·  sin control: Archie no puede actuar"))
                     color: compositor.dim
                     font.family: "monospace"
                     font.pixelSize: 12
                 }
-                Text { anchors.horizontalCenter: parent.horizontalCenter; text: "Mueve el mouse o pulsa una tecla para tomar el control · Ctrl+Alt+Esc pausa · Ctrl+Alt+Enter reanuda"; color: compositor.dim; font.pixelSize: 12 }
+                Text { anchors.horizontalCenter: parent.horizontalCenter; text: Tr.t("Mueve el mouse o pulsa una tecla para tomar el control · Ctrl+Alt+Esc pausa · Ctrl+Alt+Enter reanuda"); color: compositor.dim; font.pixelSize: 12 }
             }
 
             // Ripples: a press that happened, expanding once.
@@ -904,8 +905,8 @@ WaylandCompositor {
                     id: bannerLabel
                     anchors.centerIn: parent
                     text: compositor.stage.banner === "paused"
-                          ? "PAUSADO · Archie no actuará hasta que pulses Ctrl+Alt+Enter"
-                          : "CONTROL HUMANO · Archie retoma cuando dejes de usar el mouse y el teclado"
+                          ? Tr.t("PAUSADO · Archie no actuará hasta que pulses Ctrl+Alt+Enter")
+                          : Tr.t("CONTROL HUMANO · Archie retoma cuando dejes de usar el mouse y el teclado")
                     color: compositor.stage.banner === "paused" ? compositor.red : compositor.amber
                     font.pixelSize: 19
                 }

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Controls
 import "NeuralLabelLayout.js" as LabelLayout
+import "../../shell/prototype/Lang.js" as Tr
 
 // The neural sphere's HUD (hud.ts): a label over each folder of the first level and over
 // every running program, and the selection's card. Positions come from Rust in the
@@ -36,7 +37,7 @@ Item {
     readonly property color labelEdge: borderColor
     readonly property string rootDisplayName: {
         const path=String(hud.rootLabel || (hud.card.length>1 ? hud.card[1] : "")).replace(/\\/g,"/").replace(/\/+$/,"")
-        return (path.slice(path.lastIndexOf("/")+1) || "Orbe").toUpperCase()
+        return (path.slice(path.lastIndexOf("/")+1) || Tr.t("Orbe")).toUpperCase()
     }
     readonly property var labelPlan: { hud.frame; return hud.positionLabels() }
     readonly property var placedLabels: labelPlan.labels
@@ -93,7 +94,7 @@ Item {
         color: hud.labelBacking; border.color: hud.labelEdge
         Text {
             anchors.centerIn: parent
-            text: hud.field.error.length > 0 ? "!  Detalles" : hud.field.loading ? "·  Leyendo" : "Detalles"
+            text: hud.field.error.length > 0 ? Tr.t("!  Detalles") : hud.field.loading ? Tr.t("·  Leyendo") : Tr.t("Detalles")
             color: hud.field.error.length > 0 ? hud.errorColor : hud.mutedColor
             font.family: hud.family; font.pixelSize: 12
         }
@@ -102,7 +103,7 @@ Item {
             onClicked: details.opened ? details.close() : details.open()
         }
         Accessible.role: Accessible.Button
-        Accessible.name: "Detalles de la esfera"
+        Accessible.name: Tr.t("Detalles de la esfera")
         Accessible.onPressAction: details.open()
     }
     Popup {
@@ -115,26 +116,26 @@ Item {
         background: Rectangle { color: hud.labelBacking; radius: 10; border.color: hud.labelEdge }
         contentItem: Column {
             spacing: 8
-            Text { width: parent.width; text: "Instantánea de archivos"; color: hud.textColor; font.family: hud.family; font.pixelSize: 14; font.weight: Font.Medium }
+            Text { width: parent.width; text: Tr.t("Instantánea de archivos"); color: hud.textColor; font.family: hud.family; font.pixelSize: 14; font.weight: Font.Medium }
             Text { width: parent.width; text: hud.rootLabel; textFormat: Text.PlainText; wrapMode: Text.WrapAnywhere; color: hud.mutedColor; font.family: hud.family; font.pixelSize: 11 }
             Text {
                 width: parent.width
-                text: "Hasta " + hud.field.limit + " nodos · " + hud.field.filesPerFolder + " archivos por carpeta\n" + hud.field.scannedAt
-                    + "\nOmite ocultos y carpetas de compilación. Destellos decorativos; enlaces de estructura visual."
-                    + "\nRótulos en pantalla: " + hud.placedLabels.length + " de " + hud.rows.length
-                    + "\nRótulos omitidos por espacio o límite: " + hud.overflowLabelCount
+                text: Tr.t("Hasta ") + hud.field.limit + " nodos · " + hud.field.filesPerFolder + Tr.t(" archivos por carpeta\n") + hud.field.scannedAt
+                    + Tr.t("\nOmite ocultos y carpetas de compilación. Destellos decorativos; enlaces de estructura visual.")
+                    + Tr.t("\nRótulos en pantalla: ") + hud.placedLabels.length + Tr.t(" de ") + hud.rows.length
+                    + Tr.t("\nRótulos omitidos por espacio o límite: ") + hud.overflowLabelCount
                 color: hud.mutedColor; font.family: hud.family; font.pixelSize: 11; wrapMode: Text.Wrap
             }
             Text { width: parent.width; visible: text.length > 0; text: hud.field.error; textFormat: Text.PlainText; color: hud.errorColor; font.family: hud.family; font.pixelSize: 11; wrapMode: Text.Wrap }
             Text {
                 objectName: "neuralDetails.telemetry"
                 width: parent.width
-                text: hud.telemetryKnown ? "Actividad de modelos: publicada por Core" : "Actividad de modelos: sin telemetría de Core todavía"
+                text: hud.telemetryKnown ? Tr.t("Actividad de modelos: publicada por Core") : Tr.t("Actividad de modelos: sin telemetría de Core todavía")
                 color: hud.mutedColor; font.family: hud.family; font.pixelSize: 11; wrapMode: Text.Wrap
             }
             Loader { width: parent.width; active: hud.machine !== null; visible: active; sourceComponent: hud.machine }
             Button {
-                text: "Actualizar"
+                text: Tr.t("Actualizar")
                 enabled: hud.navigationEnabled && !hud.field.loading
                 onClicked: hud.field.refresh()
                 palette.button: hud.surfaceColor; palette.buttonText: hud.textColor
@@ -203,7 +204,7 @@ Item {
                     objectName: "neuralSelectionText." + index
                     width: selectionText.width
                     visible: modelData.length > 0
-                    text: index===0 && hud.card[0]==="." ? hud.rootDisplayName : modelData; textFormat: Text.PlainText
+                    text: index===0 && hud.card[0]==="." ? hud.rootDisplayName : Tr.composed(modelData); textFormat: Text.PlainText
                     wrapMode: Text.WrapAnywhere
                     color: index === 0 ? hud.textColor : hud.mutedColor
                     font.family: hud.family

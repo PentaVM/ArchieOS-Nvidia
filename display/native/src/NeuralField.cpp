@@ -1,4 +1,5 @@
 #include "NeuralField.h"
+#include "UiText.h"
 
 #include <QColor>
 #include <QCoreApplication>
@@ -176,7 +177,7 @@ void NeuralField::accept(NeuralIndex *index)
     m_loading = false;
     if (!index) {
         release();
-        m_error = QStringLiteral("No se pudo leer la carpeta %1").arg(m_root);
+        m_error = uiText(QStringLiteral("No se pudo leer la carpeta %1"), QStringLiteral("Could not read the folder %1")).arg(m_root);
         emit errorChanged();
         publish();
         return;
@@ -202,7 +203,7 @@ void NeuralField::accept(NeuralIndex *index)
         }
     }
     if (!m_sphere) {
-        m_error = QStringLiteral("La esfera neuronal no pudo crearse");
+        m_error = uiText(QStringLiteral("La esfera neuronal no pudo crearse"), QStringLiteral("The neural sphere could not be created"));
         emit errorChanged();
         emit sourceChanged();
         publish();

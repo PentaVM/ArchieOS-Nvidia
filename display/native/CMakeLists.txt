@@ -127,6 +127,13 @@ qt_add_resources(archie-display "archie-shell-assets"
 # three-second boot animation as 90 JPEG frames at 30 fps.
 file(GLOB ARCHIE_BRAND CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/../shell/brand/*.png"
     "${CMAKE_CURRENT_SOURCE_DIR}/../shell/brand/boot/*.jpg")
+# The shell's words (Lang.js), where the Observatory's QML imports them relative to itself:
+# qml/../../shell/prototype both in the source tree and under the module's qrc path. The
+# file keeps the alias its first resource gave it (prototype/Lang.js), hence the prefix.
+qt_add_resources(archie-display "archie-observatory-words"
+    PREFIX "/qt/qml/Archie/shell"
+    BASE "${CMAKE_CURRENT_SOURCE_DIR}/../shell/prototype"
+    FILES "${CMAKE_CURRENT_SOURCE_DIR}/../shell/prototype/Lang.js")
 qt_add_resources(archie-display "archie-brand" BIG_RESOURCES
     PREFIX "/archie/shell"
     BASE "${CMAKE_CURRENT_SOURCE_DIR}/../shell"
@@ -337,6 +344,9 @@ if(ARCHIE_NATIVE_BUILD_TESTS)
         FILES ${ARCHIE_SHELL_QML} ${ARCHIE_SHELL_JS} ${ARCHIE_SHELL_FONTS} "${CMAKE_CURRENT_SOURCE_DIR}/../shell/prototype/qmldir")
     qt_add_resources(test_world_hud "world-hud-component" PREFIX "/world-test" BASE "${CMAKE_CURRENT_SOURCE_DIR}/qml"
         FILES qml/WorldHud.qml qml/WorldDetails.qml qml/WorldTools.js qml/WorldBeacons.qml qml/Exploration.js)
+    # qrc:/world-test/../../shell/prototype: the shell's words, where the HUD imports them.
+    qt_add_resources(test_world_hud "world-hud-words" PREFIX "/shell" BASE "${CMAKE_CURRENT_SOURCE_DIR}/../shell/prototype"
+        FILES "${CMAKE_CURRENT_SOURCE_DIR}/../shell/prototype/Lang.js")
     qt_add_executable(test_world_console tests/test_world_console.cpp src/WorldConsole.cpp src/WorldConsole.h)
     target_include_directories(test_world_console PRIVATE src)
     target_link_libraries(test_world_console PRIVATE Qt6::Core Qt6::Network Qt6::Test)

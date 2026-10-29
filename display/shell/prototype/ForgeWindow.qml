@@ -1,4 +1,5 @@
 import QtQuick
+import "Lang.js" as Tr
 
 // Forge: the applications on this machine, opened in this session through the native app
 // catalog (the same one the Observatory's Forge uses). Opening an application is a launch in the person's own session; Forge never runs a
@@ -20,20 +21,20 @@ AppWindow {
         target: fg.hasCatalog ? appCatalog : null
         function onLaunched(id, ok, message) {
             var app = fg.allApps.filter(function(a) { return a.id === id })[0]
-            fg.note = (app ? app.name : id) + (ok ? ": abierta" : ": " + message)
+            fg.note = (app ? app.name : id) + (ok ? Tr.t(": abierta") : ": " + message)
             noteTimer.restart()
         }
     }
     Timer { id: noteTimer; interval: 4000; onTriggered: fg.note = "" }
     function launch(id) { return fg.hasCatalog && appCatalog.launch(id) }
 
-    trailing:[Chip { text:"Este equipo"; tone:"neutral" }]
-    sidebar:[Eyebrow { text:"Aplicaciones" }]
+    trailing:[Chip { text:Tr.t("Este equipo"); tone:"neutral" }]
+    sidebar:[Eyebrow { text:Tr.t("Aplicaciones") }]
 
     // ---- applications ----
     Column { visible:fg.section===0; width:parent.width; spacing:12
-        Eyebrow { text:"Aplicaciones de este equipo" }
-        NoteBox { visible:!fg.hasCatalog; icon:"unknown"; text:"Este host no tiene el catálogo nativo de aplicaciones." }
+        Eyebrow { text:Tr.t("Aplicaciones de este equipo") }
+        NoteBox { visible:!fg.hasCatalog; icon:"unknown"; text:Tr.t("Este host no tiene el catálogo nativo de aplicaciones.") }
         NoteBox { visible:fg.hasCatalog && !appCatalog.canLaunch; icon:"unknown"; text:fg.hasCatalog ? appCatalog.launchNote : "" }
         NoteBox { visible:fg.note!==""; icon:"done"; text:fg.note }
         Flow { width:parent.width; spacing:10
@@ -53,10 +54,10 @@ AppWindow {
                         color:modelData.available ? Theme.t1 : Theme.t3; font.family:Theme.font; font.pixelSize:12 }
                     Accessible.role: Accessible.Button; Accessible.name: modelData.name || ""
                     MouseArea { id:ama; anchors.fill:parent; hoverEnabled:true; enabled:parent.ready; onClicked:fg.launch(modelData.id) } } } }
-        Eyebrow { visible:fg.suggested.length>0; text:"Para instalar" }
+        Eyebrow { visible:fg.suggested.length>0; text:Tr.t("Para instalar") }
         Repeater { model:fg.suggested
             delegate:ListRow { glyph:"plus"; iconSource:modelData.icon || ""; title:modelData.name; sub:(modelData.comment || "") + " · " + (modelData.missing || "")
-                Chip { small:true; text:"no instalada"; tone:"unk" } } }
+                Chip { small:true; text:Tr.t("no instalada"); tone:"unk" } } }
     }
 
 }

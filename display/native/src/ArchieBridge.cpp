@@ -1,4 +1,5 @@
 #include "ArchieBridge.h"
+#include "UiText.h"
 
 #include "Payload.h"
 #include "ExplorationPreview.h"
@@ -500,7 +501,7 @@ bool ArchieBridge::selectExplorationJob(const QString &id)
     if(!known)return false;
     if(id==m_selectedExplorationJob){refreshExploration();return true;}
     m_selectedExplorationJob=id;++m_explorationSelectionRevision;clearExplorationVisuals();
-    m_exploration.insert(QStringLiteral("selected_job_id"),id);m_exploration.insert(QStringLiteral("source"),QStringLiteral("unavailable"));m_exploration.insert(QStringLiteral("error"),QStringLiteral("Cargando captura guardada del área seleccionada"));
+    m_exploration.insert(QStringLiteral("selected_job_id"),id);m_exploration.insert(QStringLiteral("source"),QStringLiteral("unavailable"));m_exploration.insert(QStringLiteral("error"),uiText(QStringLiteral("Cargando captura guardada del área seleccionada"), QStringLiteral("Loading the saved capture of the selected area")));
     emit explorationSelectionChanged();emit explorationChanged();refreshExploration();return true;
 }
 
@@ -508,7 +509,7 @@ void ArchieBridge::latestExplorationJob()
 {
     if(m_selectedExplorationJob.isEmpty())return;
     m_selectedExplorationJob.clear();++m_explorationSelectionRevision;clearExplorationVisuals();
-    m_exploration.remove(QStringLiteral("selected_job_id"));m_exploration.insert(QStringLiteral("source"),QStringLiteral("unavailable"));m_exploration.insert(QStringLiteral("error"),QStringLiteral("Cargando captura de la última área"));
+    m_exploration.remove(QStringLiteral("selected_job_id"));m_exploration.insert(QStringLiteral("source"),QStringLiteral("unavailable"));m_exploration.insert(QStringLiteral("error"),uiText(QStringLiteral("Cargando captura de la última área"), QStringLiteral("Loading the last area's capture")));
     emit explorationSelectionChanged();emit explorationChanged();refreshExploration();
 }
 

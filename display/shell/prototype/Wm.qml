@@ -1,5 +1,6 @@
 pragma Singleton
 import QtQuick
+import "Lang.js" as Tr
 
 // Window manager of the shell prototype: which windows exist, which are minimised or zoomed, which
 // one is in front. This manages local Qt surfaces only, never external applications, OS
@@ -18,8 +19,8 @@ QtObject {
         vault:  { title: "Vault",   icon: "dkVault",  domain: "" },
         forge:  { title: "Forge",   icon: "dkForge",  domain: "" },
         sentry: { title: "Sentry",  icon: "dkSentry", domain: "" },
-        stage:  { title: "Stage · vista local", icon: "dkStage", domain: "" },
-        set:    { title: "Ajustes", icon: "dkSet",    domain: "" } })
+        stage:  { title: Tr.t("Stage · vista local"), icon: "dkStage", domain: "" },
+        set:    { title: Tr.t("Ajustes"), icon: "dkSet",    domain: "" } })
 
     property int top: 3
     property var st: ({
@@ -60,7 +61,7 @@ QtObject {
         }
         return best
     }
-    function frontTitle() { var f = front(); return f === "" ? "Escritorio" : meta[f].title }
+    function frontTitle() { var f = front(); return f === "" ? Tr.t("Escritorio") : meta[f].title }
     function shownCount() { var n = 0; for (var i = 0; i < ids.length; i++) if (isShown(ids[i])) n++; return n }
     function openCount() { var n = 0; for (var i = 0; i < ids.length; i++) if (isOpen(ids[i])) n++; return n }
 

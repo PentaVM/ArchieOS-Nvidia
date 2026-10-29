@@ -1,28 +1,29 @@
 .pragma library
+.import "../../shell/prototype/Lang.js" as Tr
 function known(value) { return typeof value === "number" && Number.isFinite(value); }
-function count(value) { return known(value) ? String(value) : "Sin lectura"; }
+function count(value) { return known(value) ? String(value) : Tr.t("Sin lectura"); }
 function timestampUtc(value) {
-    if(!known(value)) return "Sin lectura";
+    if(!known(value)) return Tr.t("Sin lectura");
     var date=new Date(value);
-    return Number.isFinite(date.getTime()) ? date.toISOString().slice(0,19).replace("T"," ")+" UTC" : "Sin lectura";
+    return Number.isFinite(date.getTime()) ? date.toISOString().slice(0,19).replace("T"," ")+" UTC" : Tr.t("Sin lectura");
 }
 function signalSummary(source) {
-    var parts=[source.state || "Instantánea"];
+    var parts=[source.state || Tr.t("Instantánea")];
     var total=known(source.matched_total)?source.matched_total:source.points_total;
-    if(known(total)) parts.push((source.total_is_lower_bound?"≥":"")+total+" coincidencias");
-    if(source.total_is_lower_bound || source.truncated) parts.push("cobertura parcial");
-    if(known(source.omitted_points) && source.omitted_points>0) parts.push(source.omitted_points+" omitidas");
-    if(known(source.retrieved_at_ms)) parts.push("Instantánea: "+timestampUtc(source.retrieved_at_ms));
+    if(known(total)) parts.push((source.total_is_lower_bound?"≥":"")+total+Tr.t(" coincidencias"));
+    if(source.total_is_lower_bound || source.truncated) parts.push(Tr.t("cobertura parcial"));
+    if(known(source.omitted_points) && source.omitted_points>0) parts.push(source.omitted_points+Tr.t(" omitidas"));
+    if(known(source.retrieved_at_ms)) parts.push(Tr.t("Instantánea: ")+timestampUtc(source.retrieved_at_ms));
     if(source.error) parts.push(source.error);
     return parts.join(" · ");
 }
 function bytes(value) {
-    if (!known(value)) return "Sin lectura";
+    if (!known(value)) return Tr.t("Sin lectura");
     var n=Number(value);
     return n < 1024 ? n + " B" : n < 1048576 ? (n/1024).toFixed(1)+" KiB" : (n/1048576).toFixed(1)+" MiB";
 }
 function state(value) {
-    return ({queued:"En cola",running:"Explorando",waiting_rate_limit:"Esperando cuota",paused:"En pausa",complete:"Completo",failed:"Error",cancelled:"Cancelado"})[value] || "Sin lectura";
+    return ({queued:Tr.t("En cola"),running:Tr.t("Explorando"),waiting_rate_limit:Tr.t("Esperando cuota"),paused:Tr.t("En pausa"),complete:Tr.t("Completo"),failed:"Error",cancelled:Tr.t("Cancelado")})[value] || Tr.t("Sin lectura");
 }
 function tone(value) { return value==="failed" ? "bad" : value==="waiting_rate_limit" || value==="paused" ? "warn" : value==="complete" ? "ok" : "neutral"; }
 function validCamera(camera) {
@@ -57,7 +58,7 @@ function cameraElevation(job) {
 function elevationRange(job) {
     var samples=job.preview && job.preview.terrain && job.preview.terrain.elevations_m;
     var values=(samples || []).filter(function(value) { return known(value) && value>=-12000 && value<=12000; });
-    return values.length ? Math.min.apply(null,values).toFixed(1)+" … "+Math.max.apply(null,values).toFixed(1)+" m" : "Sin lectura";
+    return values.length ? Math.min.apply(null,values).toFixed(1)+" … "+Math.max.apply(null,values).toFixed(1)+" m" : Tr.t("Sin lectura");
 }
 function localTerrainView(frame, meshes) {
     if(!frame || frame.explorationCamera!==true || !frame.cameraEye || !frame.cameraTarget) return false;
@@ -83,10 +84,10 @@ function inference(snapshot) {
     var tps=gauges[prefix+"effective_output_tokens_per_second_x1000"];
     var tokens=gauges[prefix+"output_tokens"];
     return {
-        tps:gauges[prefix+"effective_output_tps_available"]===1 && known(tps) && tps>=0 ? (tps/1000).toFixed(2)+" tok/s" : "Sin fuente medida publicada",
-        tokens:gauges[prefix+"output_tokens_available"]===1 && known(tokens) && tokens>=0 ? String(tokens) : "Sin lectura",
-        elapsed:gauges[prefix+"request_elapsed_ms_available"]===1 && known(gauges[prefix+"request_elapsed_ms"]) && gauges[prefix+"request_elapsed_ms"]>=0 ? gauges[prefix+"request_elapsed_ms"]+" ms" : "Sin lectura",
-        observed:known(gauges[prefix+"observed_at_ms"]) ? new Date(gauges[prefix+"observed_at_ms"]).toLocaleTimeString() : "Sin lectura"
+        tps:gauges[prefix+"effective_output_tps_available"]===1 && known(tps) && tps>=0 ? (tps/1000).toFixed(2)+" tok/s" : Tr.t("Sin fuente medida publicada"),
+        tokens:gauges[prefix+"output_tokens_available"]===1 && known(tokens) && tokens>=0 ? String(tokens) : Tr.t("Sin lectura"),
+        elapsed:gauges[prefix+"request_elapsed_ms_available"]===1 && known(gauges[prefix+"request_elapsed_ms"]) && gauges[prefix+"request_elapsed_ms"]>=0 ? gauges[prefix+"request_elapsed_ms"]+" ms" : Tr.t("Sin lectura"),
+        observed:known(gauges[prefix+"observed_at_ms"]) ? new Date(gauges[prefix+"observed_at_ms"]).toLocaleTimeString() : Tr.t("Sin lectura")
     };
 }
 

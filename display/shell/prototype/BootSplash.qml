@@ -1,4 +1,5 @@
 import QtQuick
+import "Lang.js" as Tr
 
 // The ArchieOS start: the three-second boot animation from the logo package (design by
 // Xavi), drawn over the desktop while it comes up, then faded away. It is the same 90
@@ -51,5 +52,5 @@ Rectangle {
     Keys.onPressed: function(event) { splash.finish(); event.accepted = true }
     focus: visible
     Accessible.role: Accessible.Animation
-    Accessible.name: "ArchieOS iniciando"
+    Accessible.name: Tr.t("ArchieOS iniciando")
 }

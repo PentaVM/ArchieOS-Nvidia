@@ -1,5 +1,6 @@
 import QtQuick
 import "ActionRules.js" as ActionRules
+import "Lang.js" as Tr
 
 // Command palette / universal launcher, 720 px wide. Search field, grouped results with a type
 // chip, key hints at the foot. Never searches the web while typing; actions without a contract
@@ -13,7 +14,7 @@ Panel {
     signal activated(string act)
     property var actionContext: ({})
     readonly property var rows: Synthetic.search(inp.text).filter(function(r) {
-        return r.group !== "Archivos"
+        return r.group !== Tr.t("Archivos")
     }).map(function(r) {
         var row = Object.assign({}, r)
         if (!row.act || !ActionRules.allowed(row.act, pal.actionContext))
@@ -43,7 +44,7 @@ Panel {
                         if (e.key === Qt.Key_Down) { pal.current = Math.min(pal.rows.length - 1, pal.current + 1); e.accepted = true }
                         else if (e.key === Qt.Key_Up) { pal.current = Math.max(0, pal.current - 1); e.accepted = true }
                         else if (e.key === Qt.Key_Return || e.key === Qt.Key_Enter) { pal.run(pal.current); e.accepted = true } } }
-                Text { visible: inp.text === ""; text: "Buscar apps, carpetas y acciones"; color: Theme.tdis; font.family: Theme.font; font.pixelSize: 13; anchors.verticalCenter: parent.verticalCenter } } }
+                Text { visible: inp.text === ""; text: Tr.t("Buscar apps, carpetas y acciones"); color: Theme.tdis; font.family: Theme.font; font.pixelSize: 13; anchors.verticalCenter: parent.verticalCenter } } }
         Kbd { anchors.right: parent.right; anchors.rightMargin: 16; anchors.verticalCenter: parent.verticalCenter; label: "esc" } }
 
     Column { id: body; y: sf.height + 4; width: parent.width
@@ -68,7 +69,7 @@ Panel {
                         Kbd { visible: parent.parent.sel && !parent.parent.dis; label: "↵"; anchors.verticalCenter: parent.verticalCenter } }
                     MouseArea { anchors.fill: parent; hoverEnabled: true; onEntered: pal.current = index; onClicked: pal.run(index) } } } }
         Item { visible: pal.rows.length === 0; width: pal.width; height: 64
-            Text { anchors.centerIn: parent; text: "Sin resultados para «" + inp.text + "»"; color: Theme.t3; font.family: Theme.font; font.pixelSize: 13 } } }
+            Text { anchors.centerIn: parent; text: Tr.t("Sin resultados para «") + inp.text + "»"; color: Theme.t3; font.family: Theme.font; font.pixelSize: 13 } } }
 
     Item { id: pf; x: 0; y: sf.height + 4 + body.implicitHeight + 10; width: parent.width; height: 40
         Rectangle { width: parent.width; height: 1; color: Theme.hair }
@@ -77,5 +78,5 @@ Panel {
             Row { spacing: 4; Kbd { label: "↵" } Text { text: "abrir"; color: Theme.t3; font.family: Theme.font; font.pixelSize: 12; leftPadding: 4; anchors.verticalCenter: parent.verticalCenter } }
             Row { spacing: 4; Kbd { label: "esc" } Text { text: "cerrar"; color: Theme.t3; font.family: Theme.font; font.pixelSize: 12; leftPadding: 4; anchors.verticalCenter: parent.verticalCenter } } }
         Text { anchors.right: parent.right; anchors.rightMargin: 20; anchors.verticalCenter: parent.verticalCenter
-            text: pal.rows.length + " resultados"; color: Theme.t3; font.family: Theme.font; font.pixelSize: 12 } }
+            text: pal.rows.length + Tr.t(" resultados"); color: Theme.t3; font.family: Theme.font; font.pixelSize: 12 } }
 }

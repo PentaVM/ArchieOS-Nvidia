@@ -1,4 +1,5 @@
 #include "GlobeStreamBridge.h"
+#include "UiText.h"
 #include "ExplorationCredential.h"
 #include "WorldImageProvider.h"
 #include <QTcpSocket>
@@ -19,7 +20,7 @@ GlobeStreamBridge::GlobeStreamBridge(const QString &runtimeDirectory,QObject *pa
     const std::pair<const char*,const char*> catalog[]={{"blue_marble","NASA Blue Marble"},{"google_satellite","Google Satellite · experimental"},{"sentinel2","Sentinel-2"},{"landsat","Landsat"},{"natural_color","NASA Natural Color"},{"infrared","NASA Infrared"},{"night_lights","NASA Black Marble"},{"thermal","NASA Thermal"}};
     for(const auto &[id,label]:catalog)m_sources.push_back(QVariantMap{{QStringLiteral("source_id"),QString::fromUtf8(id)},{QStringLiteral("label"),QString::fromUtf8(label)},{QStringLiteral("mode"),QString::fromLatin1(id)==QStringLiteral("google_satellite")?QStringLiteral("online_preview_only"):QStringLiteral("open_data")}});
     m_timer.setInterval(250);m_timer.setTimerType(Qt::CoarseTimer);connect(&m_timer,&QTimer::timeout,this,&GlobeStreamBridge::tick);m_timer.start();
-    error(QStringLiteral("La voz o la CLI deben autorizar una sesión de navegación"),QStringLiteral("authorization_required"));
+    error(uiText(QStringLiteral("La voz o la CLI deben autorizar una sesión de navegación"), QStringLiteral("The voice or the CLI must authorize a navigation session")),QStringLiteral("authorization_required"));
 }
 GlobeStreamBridge::~GlobeStreamBridge(){for(auto *socket:m_requests){socket->disconnect();socket->abort();}}
 void GlobeStreamBridge::error(const QString &message,const QString &state){auto next=m_status;next[QStringLiteral("state")]=state;next[QStringLiteral("error")]=message;if(next!=m_status){m_status=next;emit statusChanged();}}
@@ -40,7 +41,7 @@ void GlobeStreamBridge::setViewport(QVector3D eye,QVector3D target,int width,int
 void GlobeStreamBridge::tick(){
     if(m_viewport.isEmpty()||m_requests.size()>=2)return;
     const auto session=worldNavigationSession(m_runtime);
-    if(session.isEmpty()){if(!m_session.isEmpty()){m_session.clear();++m_generation;clearScene();}error(QStringLiteral("Sesión de navegación ausente, vencida o sin permiso privado"),QStringLiteral("authorization_required"));return;}
+    if(session.isEmpty()){if(!m_session.isEmpty()){m_session.clear();++m_generation;clearScene();}error(uiText(QStringLiteral("Sesión de navegación ausente, vencida o sin permiso privado"), QStringLiteral("Navigation session missing, expired or without private permission")),QStringLiteral("authorization_required"));return;}
     const auto id=session.value(QStringLiteral("session_id")).toString();if(id!=m_session){if(!m_session.isEmpty()){++m_generation;clearScene();}m_session=id;m_dirty=true;m_poll=false;}
     if(m_dirty){m_dirty=false;request(session,true);}else if((m_poll||QDateTime::currentMSecsSinceEpoch()-m_lastPoll>=5000)&&m_requests.isEmpty())request(session,false);
 }

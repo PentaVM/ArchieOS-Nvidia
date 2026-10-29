@@ -1,5 +1,6 @@
 import QtQuick
 import "qrc:/archie/shell/prototype" as Shell
+import "../../shell/prototype/Lang.js" as Tr
 
 // What sits over the orb: almost nothing. The orb is configured by Cortex, not by
 // panels, so this layer only keeps the hands (drag to turn, scroll to approach, click to
@@ -31,11 +32,11 @@ Item {
     }
 
     readonly property var s: hud.controller.scene
-    readonly property string mode: Number(s.speak || 0) > 0.05 ? "Hablando"
-                                   : Number(s.think || 0) > 0.05 ? "Pensando"
-                                   : Number(s.listen || 0) > 0.05 ? "Escuchando" : "En reposo"
-    readonly property color modeColour: mode === "Hablando" ? Shell.Theme.info
-        : mode === "Pensando" ? Shell.Theme.warn : mode === "Escuchando" ? Shell.Theme.ok : mutedColor
+    readonly property string mode: Number(s.speak || 0) > 0.05 ? Tr.t("Hablando")
+                                   : Number(s.think || 0) > 0.05 ? Tr.t("Pensando")
+                                   : Number(s.listen || 0) > 0.05 ? Tr.t("Escuchando") : Tr.t("En reposo")
+    readonly property color modeColour: mode === Tr.t("Hablando") ? Shell.Theme.info
+        : mode === Tr.t("Pensando") ? Shell.Theme.warn : mode === Tr.t("Escuchando") ? Shell.Theme.ok : mutedColor
 
     HoverHandler {
         id: hover
@@ -137,7 +138,7 @@ Item {
             }
             Rectangle { width: 170; height: 1; color: hud.secondaryColor; opacity: 0.55 }
             Text {
-                text: Number(hud.s.contentElements || 0).toFixed(0) + " ELEMENTOS  ·  "
+                text: Number(hud.s.contentElements || 0).toFixed(0) + Tr.t(" ELEMENTOS  ·  ")
                       + contentLabels.sizeText(Number(hud.s.contentBytes || 0))
                 color: hud.secondaryColor
                 font.family: hud.family
@@ -177,7 +178,7 @@ Item {
             width: 7; height: 7; radius: 3.5
             color: hud.modeColour
             SequentialAnimation on opacity {
-                running: hud.visible && hud.labelsVisible && !hud.controller.reducedMotion && hud.mode !== "En reposo"
+                running: hud.visible && hud.labelsVisible && !hud.controller.reducedMotion && hud.mode !== Tr.t("En reposo")
                 loops: 3
                 NumberAnimation { to: 0.35; duration: 700; easing.type: Easing.InOutSine }
                 NumberAnimation { to: 1.0; duration: 700; easing.type: Easing.InOutSine }
@@ -205,7 +206,7 @@ Item {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 14
         visible: hud.labelsVisible && hud.controller.error.length > 0
-        text: "Sin conexión con el observador del sistema"
+        text: Tr.t("Sin conexión con el observador del sistema")
         color: hud.errorColor
         font.pixelSize: 11
         Rectangle { anchors.fill: parent; anchors.margins: -4; z: -1; radius: 4; color: Shell.Theme.panel; border.color: Shell.Theme.hair }

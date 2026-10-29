@@ -1,5 +1,6 @@
 import QtQuick
 import "ActionRules.js" as ActionRules
+import "Lang.js" as Tr
 
 // Native desktop surfaces managed locally by Wm. Core, Policy and the external
 // compositor keep their own authority; window state never grants a capability.
@@ -99,7 +100,7 @@ Item {
 
     function run(id) {
         if (typeof id !== "string" || !ActionRules.allowed(id, actionContext())) {
-            actionNote = typeof id === "string" ? ActionRules.reason(id, actionContext()) : "Acción no válida"
+            actionNote = typeof id === "string" ? ActionRules.reason(id, actionContext()) : Tr.t("Acción no válida")
             actionDenied(String(id), actionNote)
             return false
         }
@@ -119,14 +120,14 @@ Item {
         case "app.world":
             overlay=""; activeSpace="world"; Demo.orbNav=false; Demo.bare=true
             if (!worldViewComponent) worldLoader.setSource("qrc:/qt/qml/Archie/Observatory/qml/ObservatoryContent.qml", {scene:"world",embedded:true})
-            if (worldLoader.status === Loader.Error) { activeSpace="orb"; actionNote="World no pudo cargar su vista nativa"; return false }
+            if (worldLoader.status === Loader.Error) { activeSpace="orb"; actionNote=Tr.t("World no pudo cargar su vista nativa"); return false }
             return true
         case "app.orb": activeSpace="orb"; overlay = ""; Demo.bare = true; if (typeof archieBridge !== "undefined") archieBridge.requestMode("cerebra"); break
         case "app.vault": case "app.forge": case "app.sentry": case "app.set":
             overlay = ""; Wm.open(id.slice(4)); break
         case "app.stage": {
             var stage = appCatalog.apps.filter(function(a) { return a.available && a.id.indexOf("archie-stage") >= 0 })
-            if (!stage.length) { actionNote = "Stage no está instalado en el catálogo"; actionDenied(id, actionNote); return false }
+            if (!stage.length) { actionNote = Tr.t("Stage no está instalado en el catálogo"); actionDenied(id, actionNote); return false }
             return appCatalog.launch(stage[0].id)
         }
         case "win.close": Wm.closeFront(); break
@@ -246,7 +247,7 @@ Item {
     Rectangle { visible: Demo.orbNav; z: 700; anchors.horizontalCenter: parent.horizontalCenter; y: 40; width: navTxt.implicitWidth + 28; height: 30; radius: 15
         MouseArea { anchors.fill: parent; onClicked: Demo.orbNav = false }
         color: Theme.panel; border.width: 1; border.color: Theme.hair
-        Text { id: navTxt; anchors.centerIn: parent; text: "Navegando la esfera en 3D · Esc o clic aquí para fijar la cámara"; color: Theme.t2; font.family: Theme.font; font.pixelSize: 12 } }
+        Text { id: navTxt; anchors.centerIn: parent; text: Tr.t("Navegando la esfera en 3D · Esc o clic aquí para fijar la cámara"); color: Theme.t2; font.family: Theme.font; font.pixelSize: 12 } }
 
     Item { anchors.fill: parent; z: 1000
         // Popover dismissal covers the desktop, leaving the global bar usable.

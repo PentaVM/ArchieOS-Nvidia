@@ -1,4 +1,5 @@
 import QtQuick
+import "Lang.js" as Tr
 
 // The native host provides the existing controller and budget bridge. Plain QML
 // previews keep their desktop background without importing native types.
@@ -24,7 +25,7 @@ Item {
     property var originalGrade: ({})
     property var changedLook: ({})
 
-    function viewVerb(action,args) { return loaded && viewport.item ? viewport.item.viewVerb(action,args) : "El Orbe no está disponible" }
+    function viewVerb(action,args) { return loaded && viewport.item ? viewport.item.viewVerb(action,args) : Tr.t("El Orbe no está disponible") }
 
     function loadNative() {
         if (!nativeAvailable) return
@@ -86,7 +87,7 @@ Item {
     Text {
         visible:lv.loaded && lv.nativeController && lv.nativeController.settings.fieldSource !== "neural" && !lv.nativeController.loaded
         anchors.horizontalCenter:parent.horizontalCenter; anchors.bottom:parent.bottom; anchors.bottomMargin:110
-        text:lv.nativeController && lv.nativeController.error ? "Orbe sin lectura del observador" : "Orbe sin señales TFOG recibidas"
+        text:lv.nativeController && lv.nativeController.error ? Tr.t("Orbe sin lectura del observador") : Tr.t("Orbe sin señales TFOG recibidas")
         color:Theme.t3; font.family:Theme.font; font.pixelSize:12
     }
     Binding { target: viewport.item; property: "navigationEnabled"; value: lv.navigationEnabled; when: lv.loaded }

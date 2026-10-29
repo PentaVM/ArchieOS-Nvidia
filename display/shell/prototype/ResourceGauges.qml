@@ -1,4 +1,5 @@
 import QtQuick
+import "Lang.js" as Tr
 
 // Machine pressure and temperature (archie-displayd /api/kernel via the bridge). RFC-006:
 // unmeasured and idle never look the same. A source with no reading draws a dashed line and
@@ -9,10 +10,10 @@ Column {
     spacing: 10
     readonly property var kernel: bridge && bridge.kernel ? bridge.kernel : null
     readonly property var pressure: kernel && kernel.pressure_availability.state === "available" ? kernel.pressure : null
-    readonly property string pressureWhy: !kernel ? "sin lectura: el bridge no recibió telemetría"
+    readonly property string pressureWhy: !kernel ? Tr.t("sin lectura: el bridge no recibió telemetría")
         : (kernel.pressure_availability.state === "unavailable" ? kernel.pressure_availability.reason : "")
     readonly property bool thermal: kernel && kernel.thermal_availability.state === "available"
-    readonly property string thermalWhy: !kernel ? "sin lectura: el bridge no recibió telemetría"
+    readonly property string thermalWhy: !kernel ? Tr.t("sin lectura: el bridge no recibió telemetría")
         : (kernel.thermal_availability.state === "unavailable" ? kernel.thermal_availability.reason : "")
     function pct(w) { return Math.round(w) + " %" }
     // Verdict and the 60 s / 300 s windows of the resource that drove it (cpu when none is named).
@@ -20,7 +21,7 @@ Column {
         if (!pressure) return ""
         var r = kernel.worst_resource
         var res = (r === "memory" || r === "io" || r === "cpu") ? pressure[r] : pressure.cpu
-        return "Veredicto de presión: " + (kernel.verdict ? kernel.verdict : "—") + (r ? " (" + r + ")" : "")
+        return Tr.t("Veredicto de presión: ") + (kernel.verdict ? kernel.verdict : "—") + (r ? " (" + r + ")" : "")
             + " · 60 s: " + pct(res.some.avg60) + " · 300 s: " + pct(res.some.avg300)
     }
     function tone(v) { return v > 0.85 ? "bad" : (v > 0.7 ? "warn" : "ok") }
@@ -70,34 +71,34 @@ Column {
 
     // Header: RECURSOS + the UI budget chip (real, from the telemetry, even with archied down).
     Item { width: parent.width; height: 22
-        Text { text: "RECURSOS"; color: Theme.t3; font.family: Theme.disp; font.pixelSize: 10; font.weight: Font.DemiBold
+        Text { text: Tr.t("RECURSOS"); color: Theme.t3; font.family: Theme.disp; font.pixelSize: 10; font.weight: Font.DemiBold
             font.letterSpacing: 1.2; anchors.verticalCenter: parent.verticalCenter }
         Chip { anchors.right: parent.right; anchors.verticalCenter: parent.verticalCenter
             icon: kernel ? "ok" : "unknown"; tone: kernel ? "neutral" : "unk"
-            text: kernel ? kernel.display_budget : "presupuesto sin lectura" } }
+            text: kernel ? kernel.display_budget : Tr.t("presupuesto sin lectura") } }
 
-    Card { heading: "Presión · ventana de 10 s"
+    Card { heading: Tr.t("Presión · ventana de 10 s")
         MeterRow { icon: "cpu"; label: "CPU"; v: pressure ? pressure.cpu.some.avg10 / 100 : -1
-            valueText: pressure ? pct(pressure.cpu.some.avg10) : "no medido"; tone: pressure ? g.tone(pressure.cpu.some.avg10 / 100) === "ok" ? "acc" : g.tone(pressure.cpu.some.avg10 / 100) : "acc" }
-        MeterRow { icon: "mem"; label: "Memoria"; v: pressure ? pressure.memory.some.avg10 / 100 : -1
-            valueText: pressure ? pct(pressure.memory.some.avg10) : "no medido"; tone: pressure ? g.tone(pressure.memory.some.avg10 / 100) === "ok" ? "acc" : g.tone(pressure.memory.some.avg10 / 100) : "acc" }
-        MeterRow { icon: "io"; label: "E/S"; v: pressure ? pressure.io.some.avg10 / 100 : -1
-            valueText: pressure ? pct(pressure.io.some.avg10) : "no medido"; tone: pressure ? g.tone(pressure.io.some.avg10 / 100) === "ok" ? "acc" : g.tone(pressure.io.some.avg10 / 100) : "acc" }
+            valueText: pressure ? pct(pressure.cpu.some.avg10) : Tr.t("no medido"); tone: pressure ? g.tone(pressure.cpu.some.avg10 / 100) === "ok" ? "acc" : g.tone(pressure.cpu.some.avg10 / 100) : "acc" }
+        MeterRow { icon: "mem"; label: Tr.t("Memoria"); v: pressure ? pressure.memory.some.avg10 / 100 : -1
+            valueText: pressure ? pct(pressure.memory.some.avg10) : Tr.t("no medido"); tone: pressure ? g.tone(pressure.memory.some.avg10 / 100) === "ok" ? "acc" : g.tone(pressure.memory.some.avg10 / 100) : "acc" }
+        MeterRow { icon: "io"; label: Tr.t("E/S"); v: pressure ? pressure.io.some.avg10 / 100 : -1
+            valueText: pressure ? pct(pressure.io.some.avg10) : Tr.t("no medido"); tone: pressure ? g.tone(pressure.io.some.avg10 / 100) === "ok" ? "acc" : g.tone(pressure.io.some.avg10 / 100) : "acc" }
         // Real data the old panel never showed: the verdict and the longer windows.
         Why { visible: pressure !== null; text: verdictText() }
         Why { visible: pressure === null; text: pressureWhy }
     }
-    Card { heading: thermal ? "Temperatura · hacia el límite crítico de cada zona" : "Temperatura por zona"
+    Card { heading: thermal ? Tr.t("Temperatura · hacia el límite crítico de cada zona") : Tr.t("Temperatura por zona")
         Repeater { model: thermal ? kernel.zones : []
             delegate: MeterRow { icon: "temp"; label: modelData.zone_type
                 v: modelData.headroom_fraction === null || modelData.headroom_fraction === undefined ? -1 : modelData.headroom_fraction
                 limit: v >= 0; tone: v >= 0 ? (g.tone(v) === "ok" ? "acc" : g.tone(v)) : "acc"
                 valueText: modelData.celsius.toFixed(0) + " °C" } }
-        MeterRow { visible: !thermal; icon: "temp"; label: "Zonas"; v: -1; valueText: "sin zonas" }
+        MeterRow { visible: !thermal; icon: "temp"; label: Tr.t("Zonas"); v: -1; valueText: Tr.t("sin zonas") }
         // per zone without a declared critical trip: no scale, so no bar, and it says so
         Repeater { model: thermal ? kernel.zones : []
             delegate: Why { visible: modelData.headroom_fraction === null || modelData.headroom_fraction === undefined
-                text: modelData.zone_type + ": el firmware no declara un límite crítico: no hay escala" } }
+                text: modelData.zone_type + Tr.t(": el firmware no declara un límite crítico: no hay escala") } }
         Why { visible: !thermal; text: thermalWhy }
     }
 }

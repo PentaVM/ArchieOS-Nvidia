@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import "../../shell/prototype/Lang.js" as Tr
 
 // Read-only observations supplied by Core's projection. Catalog membership and a
 // healthy server alone do not establish current model activity or a measured rate.
@@ -30,12 +31,12 @@ Item {
     Text {
         objectName: "modelActivity.unavailable"
         visible: !Array.isArray(hud.models)
-        text: "Sin telemetría"
+        text: Tr.t("Sin telemetría")
         color: hud.textColor; font.family: hud.family; font.pixelSize: 11
     }
     Text {
         visible: hud.activeModels.length > 0
-        text: "Modelos"
+        text: Tr.t("Modelos")
         color: hud.textColor; font.family: hud.family; font.pixelSize: 10
     }
     Repeater {
@@ -67,7 +68,7 @@ Item {
             HoverHandler { id: hover }
             ToolTip.visible: hover.hovered
             ToolTip.delay: 500
-            ToolTip.text: "Velocidad efectiva de la última ejecución medida, incluido el tiempo de la solicitud."
+            ToolTip.text: Tr.t("Velocidad efectiva de la última ejecución medida, incluido el tiempo de la solicitud.")
         }
     }
     }
