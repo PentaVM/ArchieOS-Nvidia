@@ -43,7 +43,7 @@ Panel {
         Row2 { visible: wm.st !== "vacio"; available: wm.domainSwitchAvailable; domain: "personal"; name: "Personal"; on: false
             Icon { visible: wm.st !== "offline" && wm.sel === "personal"; name: "done"; size: 14; color: Theme.ok }
             Chip { visible: wm.st === "offline"; small: true; tone: "unk"; icon: "unknown"; text: "Archie"; sub: Tr.t("sin lectura") }
-            Chip { visible: wm.st === "degraded"; small: true; tone: "unk"; icon: "unknown"; text: "ventanas"; sub: Tr.t("sin lectura") } }
+            Chip { visible: wm.st === "degraded"; small: true; tone: "unk"; icon: "unknown"; text: Tr.t("ventanas"); sub: Tr.t("sin lectura") } }
         Row2 { visible: wm.st !== "vacio"; available: wm.domainSwitchAvailable; domain: "work"; name: Tr.t("Trabajo"); on: false
             Chip { visible: wm.st === "offline"; small: true; tone: "unk"; icon: "unknown"; text: "Archie"; sub: Tr.t("sin lectura") }
             Icon { visible: wm.st !== "offline" && wm.sel === "work"; name: "done"; size: 14; color: Theme.ok } }
@@ -55,6 +55,6 @@ Panel {
         Item { visible: wm.st === "stale"; width: parent.width; height: nb.height + 8
             NoteBox { id: nb; x: 4; y: 8; width: parent.width - 8; icon: "recents"; text: Tr.t("Sin lectura actual del compositor.") } }
         Row { leftPadding: 10; topPadding: 12; bottomPadding: 4; spacing: 4
-            Kbd { label: "Esc"; anchors.verticalCenter: parent.verticalCenter } Text { text: "salir"; color: Theme.t3; font.family: Theme.font; font.pixelSize: 12; anchors.verticalCenter: parent.verticalCenter; leftPadding: 2 } }
+            Kbd { label: "Esc"; anchors.verticalCenter: parent.verticalCenter } Text { text: Tr.t("salir"); color: Theme.t3; font.family: Theme.font; font.pixelSize: 12; anchors.verticalCenter: parent.verticalCenter; leftPadding: 2 } }
     }
 }

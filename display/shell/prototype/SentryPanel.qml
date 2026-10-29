@@ -70,12 +70,12 @@ Panel {
             Chip { visible: lan.state === "ok"; icon: lan.stale ? "stale" : "done"; tone: lan.stale ? "warn" : "ok"
                 text: lan.stale ? Tr.t("inventario desactualizado") : Tr.t("inventario actualizado"); sub: Tr.t("hace ") + sp.ageText(lan.age_seconds) }
             Chip { visible: lan.state === "missing"; icon: "unknown"; tone: "unk"; text: Tr.t("escáner"); sub: Tr.t("sin ejecutar") }
-            Chip { visible: lan.state === "not_configured"; icon: "unknown"; tone: "unk"; text: "inventario"; sub: Tr.t("no configurado") }
+            Chip { visible: lan.state === "not_configured"; icon: "unknown"; tone: "unk"; text: Tr.t("inventario"); sub: Tr.t("no configurado") }
             Chip { visible: lan.state === "unreadable"; icon: "bad"; tone: "bad"; text: Tr.t("sin permiso para leer el inventario") }
             Chip { visible: lan.state === "invalid"; icon: "warn"; tone: "warn"; text: Tr.t("inventario no válido") }
             // device counter: "—" when unknown, never 0
             Chip { visible: lan.state === "ok"; text: lan.total + (lan.total === 1 ? Tr.t(" dispositivo") : Tr.t(" dispositivos")) }
-            Chip { visible: lan.state !== "ok"; icon: "unknown"; tone: "unk"; text: "dispositivos"; sub: "—" }
+            Chip { visible: lan.state !== "ok"; icon: "unknown"; tone: "unk"; text: Tr.t("dispositivos"); sub: "—" }
         }
         NoteBox { visible: sp.lan.state === "bridge_silent"; width: parent.width; text: Tr.t("El bridge está en silencio. El inventario retenido es histórico; no confirma presencia ni estado actual.") }
         Item { width: 1; height: 16 }

@@ -18,6 +18,15 @@ function composed(text) {
 }
 
 var words = {
+    "actualizado": "updated",
+    "desactualizado": "out of date",
+    "dispositivos": "devices",
+    "inventario": "inventory",
+    "rechazada": "refused",
+    "salir": "leave",
+    "temperatura": "temperature",
+    "ventanas": "windows",
+    "minimizada": "minimized",
     "  ·  control listo": "  ·  control ready",
     "  ·  sin control: Archie no puede actuar": "  ·  no control: Archie cannot act",
     " ELEMENTOS  ·  ": " ITEMS  ·  ",

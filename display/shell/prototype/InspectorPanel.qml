@@ -38,7 +38,7 @@ Panel {
             delegate: ListRow { glyph:"trace"; mono:true; title:String(modelData.trajectory_id)
                 sub:String(modelData.correction_kind) + Tr.t(" · modelo ") + modelData.model_id
                     + Tr.t(" · contexto ") + modelData.selected_context_count + Tr.t(", omitidos ") + modelData.omitted_candidate_count
-                Chip { small:true; text:"minimizada"; tone:"neutral" }
+                Chip { small:true; text:Tr.t("minimizada"); tone:"neutral" }
             }
         }
         Row { spacing:12; Eyebrow { text:Tr.t("Señales de IRIS, Cortex, voz y Stage") }

@@ -876,7 +876,7 @@ Item {
                             valueColor: root.budgetReduced() ? root.amber : root.soft
                         }
                         Fact {
-                            label: "temperatura"
+                            label: Tr.t("temperatura")
                             value: root.thermalKnown
                                    ? ((root.kernel.thermal_state || "—")
                                       + (root.kernel.hottest_zone ? " · " + root.kernel.hottest_zone : ""))

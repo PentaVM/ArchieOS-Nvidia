@@ -43,7 +43,7 @@ Item {
         Toast { glyph: "activity"; glyphColor: Theme.info; title: "freecad · sweep"; detail: Tr.t("31 de 50 · motor-bracket · job-7f3a"); progress: 0.62
             chipText: Tr.t("en curso"); chipIcon: "activity"; chipTone: "info" }
         Toast { glyph: "bad"; glyphColor: Theme.bad; title: Tr.t("Policy rechazó una escritura"); detail: Tr.t("Fuera del espacio de trabajo")
-            chipText: "rechazada"; chipIcon: "bad"; chipTone: "bad" }
+            chipText: Tr.t("rechazada"); chipIcon: "bad"; chipTone: "bad" }
         Toast { glyph: "dkSentry"; title: Tr.t("Dispositivo nuevo en la red"); detail: Tr.t("192.168.1.88 · visto por ssdp")
             chipText: "Sentry"; chipIcon: "dkSentry"; chipTone: "neutral" }
         Item { width: parent.width; height: 8

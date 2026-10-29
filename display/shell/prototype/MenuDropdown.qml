@@ -18,7 +18,7 @@ Panel {
     readonly property var items: {
         var v = vault
         var m = {
-            Tr.t("Archivo"): [
+            [Tr.t("Archivo")]: [
                 { l: Tr.t("Nueva pestaña"), id: "vault.newTab", k: "Ctrl T" },
                 { l: Tr.t("Cerrar pestaña"), id: "vault.closeTab" },
                 { l: Tr.t("Abrir seleccionado"), id: "vault.open", k: "↵", dis: !v || v.selected < 0 },
@@ -26,9 +26,9 @@ Panel {
                 { sep: true },
                 { l: Tr.t("Buscar…"), id: "overlay.search", k: "/" },
                 { l: Tr.t("Paleta de comandos"), id: "overlay.palette", k: "Ctrl K" } ],
-            Tr.t("Editar"): [
+            [Tr.t("Editar")]: [
                 { l: Tr.t("Orden: ") + (!v ? Tr.t("nombre") : [Tr.t("nombre A→Z"), Tr.t("nombre Z→A"), Tr.t("más recientes")][v.sortMode]), id: "vault.sort" } ],
-            Tr.t("Vista"): [
+            [Tr.t("Vista")]: [
                 { l: Tr.t("Lista"), id: "vault.list", k: "G", on: !!v && !v.gridView },
                 { l: Tr.t("Cuadrícula"), id: "vault.grid", k: "G", on: !!v && v.gridView },
                 { sep: true },
@@ -39,9 +39,9 @@ Panel {
                 { l: Tr.t("Navegar la esfera en 3D"), id: "orb.nav", k: Tr.t("Ctrl Espacio"), on: Demo.orbNav },
                 { l: Tr.t("Escritorio vacío"), id: "desk.toggle", k: "H", on: Demo.bare } ],
             // Vault's own places, so the menu and the sidebar never disagree.
-            Tr.t("Ir"): (v ? v.places : []).map(function(p, i) {
+            [Tr.t("Ir")]: (v ? v.places : []).map(function(p, i) {
                 return { l: p.name, id: "go:" + i, on: !!v && v.place === i } }),
-            Tr.t("Ventana"): [
+            [Tr.t("Ventana")]: [
                 { l: Tr.t("Minimizar"), id: "win.min", k: "Ctrl M", dis: Wm.front() === "" },
                 { l: "Zoom", id: "win.zoom", dis: Wm.front() === "" },
                 { l: Tr.t("Cerrar ventana"), id: "win.close", k: "Ctrl W", dis: Wm.front() === "" },
