@@ -28,6 +28,7 @@
 #   DESKTOP=1     ArchieOS's own shell inside the stage, as its desktop: the apps Archie
 #                 opens are framed over it, between its top bar and its dock
 #   ARCHIE_DISPLAY  the shell's binary                    default: archie-display
+#   DESKTOP_ARGS  more shell flags, e.g. "--theme dark" or "--no-boot-splash"
 #   WORLD_BIN_DIR   where archie, archie-worldd and archie-displayd are: World's dock icon
 #                 then opens the globe on a bounded navigation session of its own (see
 #                 docs/WORLD-EXPLORATION.md), renewed hourly while the shell is open
@@ -162,6 +163,8 @@ if [ "${DESKTOP:-0}" = 1 ]; then
     set -- --world-context "\"${WORLD_CONTEXT:-personal/owner}\"" \
         --stage-socket "$RUN_DIR/control.sock" --stage-key-file "$RUN_DIR/key" --stage-policy "$POLICY"
     [ -n "${ARCHIE_ROOT:-}" ] && set -- "$@" --archie-root "$ARCHIE_ROOT"
+    # shellcheck disable=SC2086 # DESKTOP_ARGS is a list of flags on purpose.
+    [ -n "${DESKTOP_ARGS:-}" ] && set -- "$@" $DESKTOP_ARGS
     # Sentry's LAN inventory, when the node has one (escanear-lan.bat hands it over).
     [ -n "${ARCHIE_ROOT:-}" ] && [ -s "$ARCHIE_ROOT/var/lib/sentry/lan.json" ] \
         && set -- "$@" --lan-file "$ARCHIE_ROOT/var/lib/sentry/lan.json"
