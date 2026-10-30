@@ -6,3 +6,5 @@ Exec=archie-offline --background
 Icon=archieos
 Terminal=false
 Categories=System;
+# The window it opens is archie-display's.
+StartupWMClass=archie-display

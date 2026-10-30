@@ -478,8 +478,13 @@ mod job {
             .ok_or("the Photopea entry starts nothing")?;
         let mut command = Command::new(program);
         command.args(args).arg(&address).stdin(Stdio::null());
+        // As hands.rs opens apps: on the stage, never on the X display the stage itself may
+        // be a window of (Firefox before 121 prefers X11 when both are there).
         if let Some(display) = &studio.wayland_display {
-            command.env("WAYLAND_DISPLAY", display);
+            command
+                .env("WAYLAND_DISPLAY", display)
+                .env("MOZ_ENABLE_WAYLAND", "1")
+                .env("GDK_BACKEND", "wayland");
         }
         match &studio.log {
             Some(path) => {

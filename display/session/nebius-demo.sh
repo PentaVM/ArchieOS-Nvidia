@@ -9,8 +9,8 @@
 #
 # Everything run-archie.sh reads still applies (ASR_MODEL, PIPER_*, HOST_WAYLAND, SCREEN,
 # HEADPHONES, ALWAYS, SESSION_LOG...). Besides:
-#   FIREFOX          the browser                       default: firefox
-#   FIREFOX_APP_ID   the app id its windows report     default: firefox (Debian's ESR: firefox-esr)
+#   FIREFOX          the browser                       default: the first Firefox found, not a snap
+#   FIREFOX_APP_ID   the app id its windows report     default: the build's RemotingName (ESR: firefox-esr)
 #   DRAW_SECONDS     how long a painting is planned    default: 150
 #   ARCHIE_DISPLAY   the shell                         default: the native build, else PATH
 #   WORLD_BIN_DIR    World's daemons and CLI           default: core/target/release, if built
@@ -23,12 +23,60 @@
 # the browser's storage and reopens them, and a first run shows welcome pages. Nothing in
 # it is the person's.
 set -euo pipefail
-HERE=$(cd "$(dirname "$0")" && pwd)
+# The checkout this script is in, also when it is started through a link to it.
+HERE=$(cd "$(dirname "$(readlink -f "$0")")" && pwd)
 REPO=$(cd "$HERE/../.." && pwd)
 export RUN_DIR=${RUN_DIR:-/tmp/archie-demo}
-FIREFOX=${FIREFOX:-firefox}
-FIREFOX_APP_ID=${FIREFOX_APP_ID:-firefox}
-FIREFOX_BIN=$(command -v "$FIREFOX") || { echo "nebius-demo: $FIREFOX is not installed" >&2; exit 1; }
+# The browser: the one named, else the first Firefox found. A snap's cannot reach the stage
+# (its sandbox sees neither this /tmp nor a Wayland socket not named wayland-N), so it is
+# passed over; Mozilla's own build or the distribution's package can.
+find_firefox() {
+    local candidate path
+    for candidate in firefox firefox-esr /opt/firefox/firefox /usr/lib/firefox/firefox \
+        /usr/lib/firefox-esr/firefox-esr "$HOME/.local/opt/firefox/firefox" "$HOME/firefox/firefox"; do
+        path=$(command -v "$candidate" 2>/dev/null) || continue
+        case "$(readlink -f "$path")" in
+            /snap/*|*/snapd/*) continue ;;
+        esac
+        # Ubuntu's firefox package is only a wrapper that runs the snap.
+        grep -qs '/snap/bin/firefox' "$path" && continue
+        echo "$path"
+        return 0
+    done
+    return 1
+}
+if [ -n "${FIREFOX:-}" ]; then
+    FIREFOX_BIN=$(command -v "$FIREFOX") || { echo "nebius-demo: $FIREFOX is not installed" >&2; exit 1; }
+elif ! FIREFOX_BIN=$(find_firefox); then
+    FIREFOX_BIN=
+    if [ "${STAGE_ONLY:-0}" != 1 ]; then
+        echo "nebius-demo: no Firefox that can open on the stage (a snap's cannot). Install Mozilla's" >&2
+        echo "  (https://www.mozilla.org/firefox/linux/) or the distribution's package, or set FIREFOX" >&2
+        exit 1
+    fi
+fi
+# The app id its windows report is the build's remoting name (an ESR's, Debian's or
+# Mozilla's own, is firefox-esr), written beside the binary; a wrapper script is followed to
+# the binary it runs.
+firefox_app_id() {
+    local bin dir
+    bin=$(readlink -f "$1" 2>/dev/null) || return 1
+    if [ ! -f "$(dirname "$bin")/application.ini" ]; then
+        bin=$(grep -o '/[^ "]*/firefox[a-z-]*' "$bin" 2>/dev/null | head -n 1)
+        [ -n "$bin" ] && bin=$(readlink -f "$bin")
+    fi
+    dir=$(dirname "${bin:-/nonexistent}")
+    sed -n 's/^RemotingName=//p' "$dir/application.ini" 2>/dev/null | head -n 1
+}
+if [ -z "${FIREFOX_APP_ID:-}" ]; then
+    FIREFOX_APP_ID=$( [ -n "$FIREFOX_BIN" ] && firefox_app_id "$FIREFOX_BIN" || true)
+    if [ -z "$FIREFOX_APP_ID" ]; then
+        case "$(basename "${FIREFOX_BIN:-firefox}")" in
+            firefox-esr) FIREFOX_APP_ID=firefox-esr ;;
+            *) FIREFOX_APP_ID=firefox ;;
+        esac
+    fi
+fi
 RUN_ARCHIE=${RUN_ARCHIE:-$REPO/display/stage/run-archie.sh}
 [ -x "$RUN_ARCHIE" ] || RUN_ARCHIE=/usr/lib/archie/run-archie.sh
 
@@ -41,7 +89,6 @@ if [ -d /var/lib/archie/models ]; then
     export PIPER_PYTHON=${PIPER_PYTHON:-$voice_venv/bin/python}
     export PIPER_VOICES=${PIPER_VOICES:-/var/lib/archie/models/piper}
 fi
-[ -S /mnt/wslg/runtime-dir/wayland-0 ] && export HOST_WAYLAND=${HOST_WAYLAND:-/mnt/wslg/runtime-dir/wayland-0}
 if [ -z "${NEBIUS_TOKEN_FACTORY_KEY:-}" ] && [ -z "${ARCHIE_VOICE_ENDPOINT:-}" ] \
     && [ -s "$HOME/.config/archie/nebius.key" ]; then
     NEBIUS_TOKEN_FACTORY_KEY=$(cat "$HOME/.config/archie/nebius.key")
@@ -93,7 +140,7 @@ export MOZ_CRASHREPORTER_DISABLE=1
 
 # The policy this take runs with: the demo's, with this machine's browser and profile.
 POLICY=$RUN_DIR/apps.toml
-sed -e "s|@FIREFOX_APP_ID@|$FIREFOX_APP_ID|" -e "s|@FIREFOX@|$FIREFOX_BIN|" -e "s|@PROFILE@|$PROFILE|" \
+sed -e "s|@FIREFOX_APP_ID@|$FIREFOX_APP_ID|" -e "s|@FIREFOX@|${FIREFOX_BIN:-firefox}|" -e "s|@PROFILE@|$PROFILE|" \
     "$HERE/nebius-demo-apps.toml" > "$POLICY"
 export POLICY DESKTOP=1 DRAW_SECONDS=${DRAW_SECONDS:-150}
 # World's console asks Core (archied) for places and OS state when the demo node is there.
@@ -116,6 +163,51 @@ export GROUND_MODEL=${GROUND_MODEL:-moonshotai/Kimi-K3}
 [ -z "${ARCHIE_DISPLAY:-}" ] && [ -x "$REPO/build/display/archie-display" ] && export ARCHIE_DISPLAY=$REPO/build/display/archie-display
 native=${XDG_CACHE_HOME:-$HOME/.cache}/archieos/native-display/archie-display
 [ -z "${ARCHIE_DISPLAY:-}" ] && [ -x "$native" ] && export ARCHIE_DISPLAY=$native
+# A build older than this checkout shows yesterday's desktop (its old bar, its old icons)
+# with nothing saying so. One that CMake made from this checkout is brought up to date
+# first (NO_REBUILD=1 skips it); any other older one is named.
+fresh() {
+    local bin=$1 build newer source
+    shift
+    [ -x "$bin" ] || return 0
+    build=$(dirname "$(readlink -f "$bin")")
+    newer=$(find "$@" -newer "$bin" -type f \( -name '*.qml' -o -name '*.js' -o -name '*.cpp' \
+        -o -name '*.h' -o -name '*.hpp' -o -name '*.png' -o -name CMakeLists.txt \) -print -quit 2>/dev/null)
+    [ -n "$newer" ] || return 0
+    source=$(sed -n 's/^CMAKE_HOME_DIRECTORY:INTERNAL=//p' "$build/CMakeCache.txt" 2>/dev/null)
+    if [ "${NO_REBUILD:-0}" != 1 ] && [ -n "$source" ] && [ "${source#"$REPO"/}" != "$source" ] \
+        && command -v cmake >/dev/null; then
+        echo "nebius-demo: $(basename "$bin") is older than ${newer#"$REPO"/}; rebuilding $build"
+        cmake --build "$build" --target "$(basename "$bin")" >"$RUN_DIR/rebuild.log" 2>&1 || {
+            echo "nebius-demo: the rebuild failed; see $RUN_DIR/rebuild.log" >&2
+            exit 1
+        }
+        # Up to date by CMake's reckoning, also when what was newer is not one of its inputs.
+        touch "$bin"
+    else
+        echo "nebius-demo: warning: $bin is older than ${newer#"$REPO"/}; it shows an earlier desktop" >&2
+    fi
+}
+[ -z "${ARCHIE_DISPLAY:-}" ] && ARCHIE_DISPLAY=$(command -v archie-display) && export ARCHIE_DISPLAY
+[ -z "${STAGE:-}" ] && STAGE=$(command -v archie-stage) && export STAGE
+fresh "${ARCHIE_DISPLAY:-}" "$REPO/display/native" "$REPO/display/shell"
+fresh "${STAGE:-}" "$REPO/display/stage" "$REPO/display/shell/brand" "$REPO/display/shell/prototype/Lang.js"
+# The session's taskbar, window list and title bars find a window's icon through the
+# desktop entry named for its app id: the stage's and the desktop's, with ArchieOS's mark.
+# Hidden entries, for this user only; what the system already has is left as it is.
+data=${XDG_DATA_HOME:-$HOME/.local/share}
+put() {
+    cmp -s "$1" "$2" 2>/dev/null && return 0
+    mkdir -p "$(dirname "$2")" && cp "$1" "$2"
+}
+{
+    put "$REPO/display/shell/brand/archieos-app-512.png" "$data/icons/hicolor/512x512/apps/archieos.png"
+    put "$REPO/display/shell/brand/archieos-icon-256.png" "$data/icons/hicolor/256x256/apps/archieos.png"
+    put "$REPO/distro/display/org.archieos.Stage.desktop" "$data/applications/org.archieos.Stage.desktop"
+    [ -f /usr/share/applications/archie-display.desktop ] \
+        || sed 's/^NoDisplay=false$/NoDisplay=true/' "$REPO/distro/display/archie-display.desktop" \
+            > "$data/applications/archie-display.desktop"
+} 2>/dev/null || echo "nebius-demo: could not install the icon under $data; windows keep a generic one" >&2
 # World's globe streams when its daemons are built here (cargo build --release -p archie-cli
 # -p archie-worldd -p archie-displayd); without them its window opens and says what is missing.
 release=$REPO/core/target/release

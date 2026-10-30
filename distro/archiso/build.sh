@@ -145,6 +145,8 @@ install -Dm644 "${repo_root}/display/shell/brand/archieos-icon-256.png" \
   "${stage}/airootfs/usr/share/icons/hicolor/256x256/apps/archieos.png"
 install -Dm644 "${repo_root}/distro/display/archie-display.desktop" \
   "${stage}/airootfs/usr/share/applications/archie-display.desktop"
+install -Dm644 "${repo_root}/distro/display/org.archieos.Stage.desktop" \
+  "${stage}/airootfs/usr/share/applications/org.archieos.Stage.desktop"
 install -Dm755 "${cortex_build}/archie-cortexd" \
   "${stage}/airootfs/usr/bin/archie-cortexd"
 # The person graph. A tool the owner runs, not a daemon: nothing about the relationship

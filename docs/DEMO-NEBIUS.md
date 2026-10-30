@@ -35,7 +35,7 @@ En la distro WSL (o Linux) donde corre Archie:
 | Voz con oídos y voz | `cd core && NEMO_SPEECH_PREFIX=/opt/archie/nemo-speech cargo build --release -p archie-voice --features speech` |
 | CLI del Stage | `cd core && cargo build --release -p archie-stage` (`archie-stage-cli`) |
 | World con globo en vivo (opcional) | `cd core && cargo build --release -p archie-cli -p archie-worldd -p archie-displayd` |
-| Firefox | el de la distro (`FIREFOX_APP_ID=firefox-esr` si es el ESR de Debian) |
+| Firefox | el de Mozilla o el paquete de la distro; el lanzador lo busca (también el ESR de Debian). El snap de Ubuntu no sirve: su sandbox no ve el Stage. Uno fuera del PATH: `FIREFOX=/ruta/firefox` |
 | Modelo que responde | `NEBIUS_TOKEN_FACTORY_KEY`, o `~/.config/archie/nebius.key` (lo deja `archie-setup`) |
 
 En la imagen ArchieOS-Operator el lanzador toma solo el modelo ASR, las voces Piper y la
@@ -46,6 +46,12 @@ clave de donde `archie-talk` los toma.
 ```sh
 display/session/nebius-demo.sh
 ```
+
+Funciona desde donde se lance: bajo WSLg (con o sin systemd), en un escritorio Wayland
+(GNOME, KDE, Sway), en uno X11, y sin pantalla (ssh, servidor): entonces el Stage abre en
+una pantalla virtual (Xvfb) y el lanzador dice cuál (`DISPLAY=:90`), para grabarla con
+`ffmpeg -f x11grab -i :90`. `HOST_WAYLAND` o `DISPLAY` eligen una a mano. Ctrl+C cierra
+todo lo que abrió: Stage, escritorio, Firefox y la pantalla virtual.
 
 Eso es todo: abre el Stage a pantalla completa con el shell como escritorio (limpio: orbe,
 barra y dock), un Firefox con perfil nuevo (Photopea no reabre documentos viejos, no hay
@@ -106,8 +112,11 @@ aquelarre (imágenes de dominio público en `core/crates/archie-arena/tasks`).
   cierra al empezar (`pkill -f -- --profile /tmp/archie-demo/firefox`).
 - **El dibujo no empieza:** `/tmp/archie-demo/apps.log` (Firefox) y la salida de la voz
   (línea `dibujo …`). Sin la entrada de Photopea en la política, Archie lo dice en voz alta.
+- **"the stage did not start":** el lanzador muestra las últimas líneas de
+  `/tmp/archie-demo/stage.log`. "Could not load the Qt platform plugin" quiere decir que no
+  hay sesión donde abrirlo: revisar `WAYLAND_DISPLAY`/`DISPLAY`, o instalar Xvfb.
 - **No abre Sentry por nombre:** la accesibilidad necesita un bus de sesión; `run-archie.sh`
-  usa `dbus-run-session` y lanza `at-spi-bus-launcher` si existe. Sin él, Archie recurre a
+  usa `dbus-run-session` y lanza `at-spi-bus-launcher` donde la distro lo tenga (`/usr/lib` o `/usr/libexec`). Sin él, Archie recurre a
   mirar la ventana (grounding) si hay modelo de grounding configurado.
 - **Subtítulos:** los escribe la voz en `/tmp/archie-demo/narration.json`; el Stage los lee
   con `--narration-file`.
