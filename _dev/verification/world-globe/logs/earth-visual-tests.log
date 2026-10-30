@@ -1,0 +1,43 @@
+Test project /tmp/archie-world-visual-check
+      Start  1: test_freshness
+ 1/19 Test  #1: test_freshness ...................   Passed    0.00 sec
+      Start  2: test_budget
+ 2/19 Test  #2: test_budget ......................   Passed    0.00 sec
+      Start  3: test_cognition
+ 3/19 Test  #3: test_cognition ...................   Passed    0.00 sec
+      Start  4: test_stage
+ 4/19 Test  #4: test_stage .......................   Passed    0.00 sec
+      Start  5: test_director
+ 5/19 Test  #5: test_director ....................   Passed    0.00 sec
+      Start  6: test_graph
+ 6/19 Test  #6: test_graph .......................   Passed    0.00 sec
+      Start  7: test_camera
+ 7/19 Test  #7: test_camera ......................   Passed    0.00 sec
+      Start  8: test_scene
+ 8/19 Test  #8: test_scene .......................   Passed    0.00 sec
+      Start  9: test_lod
+ 9/19 Test  #9: test_lod .........................   Passed    0.00 sec
+      Start 10: test_events
+10/19 Test #10: test_events ......................   Passed    0.00 sec
+      Start 11: test_ingest
+11/19 Test #11: test_ingest ......................   Passed    0.00 sec
+      Start 12: test_layout
+12/19 Test #12: test_layout ......................   Passed    0.68 sec
+      Start 13: test_observatory
+13/19 Test #13: test_observatory .................   Passed    0.96 sec
+      Start 14: test_palette
+14/19 Test #14: test_palette .....................   Passed    0.00 sec
+      Start 15: test_history
+15/19 Test #15: test_history .....................   Passed    0.00 sec
+      Start 16: test_geo
+16/19 Test #16: test_geo .........................   Passed    0.00 sec
+      Start 17: test_mesh
+17/19 Test #17: test_mesh ........................   Passed    0.00 sec
+      Start 18: test_world
+18/19 Test #18: test_world .......................   Passed    0.00 sec
+      Start 19: test_lumen
+19/19 Test #19: test_lumen .......................   Passed    0.01 sec
+
+100% tests passed out of 19
+
+Total Test time (real) =   1.68 sec

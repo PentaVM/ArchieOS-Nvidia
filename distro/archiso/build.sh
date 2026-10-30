@@ -137,6 +137,14 @@ install -Dm755 "${cargo_target}/release/archie-shell-bridge" \
   "${stage}/airootfs/usr/bin/archie-shell-bridge"
 install -Dm755 "${native_build}/archie-display" \
   "${stage}/airootfs/usr/bin/archie-display"
+# The ArchieOS mark (logo package v3.5, design by Xavi): the program's icon in menus,
+# switchers and the session, under the app id archie-display gives Wayland (the stage policy names it too).
+install -Dm644 "${repo_root}/display/shell/brand/archieos-app-512.png" \
+  "${stage}/airootfs/usr/share/icons/hicolor/512x512/apps/archieos.png"
+install -Dm644 "${repo_root}/display/shell/brand/archieos-icon-256.png" \
+  "${stage}/airootfs/usr/share/icons/hicolor/256x256/apps/archieos.png"
+install -Dm644 "${repo_root}/distro/display/archie-display.desktop" \
+  "${stage}/airootfs/usr/share/applications/archie-display.desktop"
 install -Dm755 "${cortex_build}/archie-cortexd" \
   "${stage}/airootfs/usr/bin/archie-cortexd"
 # The person graph. A tool the owner runs, not a daemon: nothing about the relationship

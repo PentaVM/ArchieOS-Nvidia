@@ -1,5 +1,6 @@
 [Desktop Entry]
 Type=Application
+X-Archie-Internal=true
 Name=Archie Lienzo
 Comment=El lienzo donde Archie pinta trazo a trazo
 Exec=/usr/lib/qt6/bin/qml @ARCHIE_SHARE@/stage/demo/paint.qml

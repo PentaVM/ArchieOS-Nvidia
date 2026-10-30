@@ -22,6 +22,8 @@ archie-vault.workspace = true
 archie-state.workspace = true
 archie-types.workspace = true
 archie-workstation.workspace = true
+archie-geofabric.workspace = true
+archie-worldd = { workspace = true, features = ["provider"] }
 clap.workspace = true
 serde_json.workspace = true
 tokio = { workspace = true, features = ["rt-multi-thread", "macros", "net", "time", "io-util"] }

@@ -1,0 +1,8 @@
+{
+  "real_cli_daemon_native": true,
+  "expiry_seconds": 5,
+  "expiry_renewed": true,
+  "identical_request_and_date": true,
+  "explicit_stop_preserved_after_expiry": true,
+  "viewer_still_running": true
+}

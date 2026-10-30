@@ -21,6 +21,17 @@
 //!              [the stage flags of do]
 //! ```
 //!
+//! `draw` is the drawing on its own, with no model in the loop: Archie opens Photopea on the
+//! stage and draws a painting it knows, telling what it does as it goes (printed, and shown
+//! under the stage when `--subtitles` names the file the stage reads). It is how the demo is
+//! rehearsed, and what `draw_picture` runs when the model proposes it:
+//!
+//! ```text
+//! archie-voice draw "the Mona Lisa" [--language en] --socket … --key-file … --policy …
+//!              [--stage-display <wayland display>] [--pictures <dir>] [--subtitles <file>]
+//!              [--seconds 150] [--pen 4] [--batch 12] [--app-log <file>]
+//! ```
+//!
 //! `live` is `converse` with a browser page for microphone, speaker and camera (loopback;
 //! reach it through an SSH tunnel), IRIS for eyes, and curiosity: it looks closer at what
 //! is in front, finds out what it is and reads about it, and keeps that until asked:
@@ -114,25 +125,31 @@ fn run(mut args: Vec<String>, offset: Option<time::UtcOffset>) -> Result<ExitCod
     const USAGE: &str =
         "usage: archie-voice ask|do \"<what was said>\" --grade public | converse --grade public …";
     let command = match args.first().map(String::as_str) {
-        Some("ask") | Some("do") | Some("converse") | Some("live") => args.remove(0),
+        Some("ask") | Some("do") | Some("converse") | Some("live") | Some("draw") => args.remove(0),
         _ => return Err(USAGE.into()),
     };
-    if command == "live" {
-        let speech = speech_flags(&mut args)?;
-        let flags = live_flags(&mut args)?;
-        let asking = asking(args, offset, false)?;
-        return live(asking, speech, flags);
+    if command == "draw" {
+        return draw(args);
     }
-    if command == "converse" {
+    if command == "live" || command == "converse" {
         // Its own flags first; the stage is optional, since a conversation need not act.
         let speech = speech_flags(&mut args)?;
+        let live_only = if command == "live" {
+            Some(live_flags(&mut args)?)
+        } else {
+            None
+        };
         let stage = if args.iter().any(|arg| arg == "--socket") {
             Some(stage_flags(&mut args)?)
         } else {
             None
         };
+        let draw = draw_flags(&mut args)?;
         let asking = asking(args, offset, false)?;
-        return converse(asking, speech, stage);
+        return match live_only {
+            Some(flags) => live(asking, speech, flags, stage, draw),
+            None => converse(asking, speech, stage, draw),
+        };
     }
     // `do` takes its stage flags out before the shared ones are read.
     let stage = if command == "do" {
@@ -382,6 +399,110 @@ fn listen(cognitive: &mut NemotronCognitive<RoutedSource>, started: Instant) -> 
     }
 }
 
+/// Where paintings are drawn: the stage, and what a drawing needs besides.
+struct DrawFlags {
+    pictures: String,
+    subtitles: Option<String>,
+    seconds: f32,
+    pen: u32,
+    batch: usize,
+}
+
+fn draw_flags(args: &mut Vec<String>) -> Result<DrawFlags, String> {
+    let number = |value: Option<String>,
+                  flag: &str,
+                  low: f32,
+                  high: f32,
+                  default: f32|
+     -> Result<f32, String> {
+        match value {
+            None => Ok(default),
+            Some(text) => text
+                .parse::<f32>()
+                .ok()
+                .filter(|v| (low..=high).contains(v))
+                .ok_or(format!("{flag} is between {low} and {high}")),
+        }
+    };
+    Ok(DrawFlags {
+        // The paintings Archie Arena ships, unless told otherwise.
+        pictures: take(args, "--pictures")
+            .or_else(|| std::env::var("ARCHIE_PICTURES").ok())
+            .unwrap_or_else(|| {
+                concat!(env!("CARGO_MANIFEST_DIR"), "/../archie-arena/tasks").into()
+            }),
+        subtitles: take(args, "--subtitles"),
+        seconds: number(take(args, "--seconds"), "--seconds", 20.0, 900.0, 150.0)?,
+        pen: number(take(args, "--pen"), "--pen", 1.0, 15.0, 4.0)? as u32,
+        batch: number(take(args, "--batch"), "--batch", 1.0, 64.0, 12.0)? as usize,
+    })
+}
+
+#[cfg(unix)]
+fn studio(stage: &StageFlags, draw: &DrawFlags) -> archie_voice::draw::Studio {
+    archie_voice::draw::Studio {
+        socket: stage.socket.clone().into(),
+        key_file: stage.key_file.clone().into(),
+        policy: stage.policy.clone().into(),
+        wayland_display: stage.display.clone(),
+        pictures: draw.pictures.clone().into(),
+        pen: draw.pen,
+        seconds: draw.seconds,
+        batch: draw.batch,
+        log: stage.app_log.clone().map(Into::into),
+    }
+}
+
+#[cfg(not(unix))]
+fn draw(_args: Vec<String>) -> Result<ExitCode, String> {
+    Err("draw works a stage, which listens on a Unix socket; run it where the stage runs".into())
+}
+
+/// `archie-voice draw "<painting>"`: the drawing with nobody in the loop but Archie.
+#[cfg(unix)]
+fn draw(mut args: Vec<String>) -> Result<ExitCode, String> {
+    use archie_voice::draw::{self, Lang, Narrate, NarrateWith};
+    use archie_voice::narration::Narration;
+    let language = Lang::of(&take(&mut args, "--language").unwrap_or_else(|| "es".into()));
+    let flags = draw_flags(&mut args)?;
+    let stage = stage_flags(&mut args)?;
+    if args.len() != 1 {
+        return Err(
+            "usage: archie-voice draw \"<painting>\" --socket … --key-file … --policy …".into(),
+        );
+    }
+    let work = draw::find_work(&args[0])
+        .ok_or_else(|| format!("I can draw {}; not {}", draw::repertoire(language), args[0]))?;
+    let studio = studio(&stage, &flags);
+    let subtitles = Narration::new(flags.subtitles.clone().map(Into::into));
+    let started = Instant::now();
+    let mut narrate = NarrateWith(move |said: draw::Said| {
+        println!("{:>7.1}s  {}", started.elapsed().as_secs_f32(), said.text);
+        subtitles.subtitle(&said.text, said.lang.code());
+    });
+    let runtime = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .map_err(|e| e.to_string())?;
+    let stop = Arc::new(std::sync::atomic::AtomicBool::new(false));
+    narrate.tell(draw::say(work, language, &draw::Beat::Accepted));
+    let summary = runtime.block_on(draw::run(studio, work, language, &mut narrate, stop))?;
+    println!(
+        "{} lines, {} commands, {} refused, {:.1}s ({:.1}s waiting for a person), {:.0} pixels of line a second",
+        summary.lines,
+        summary.commands,
+        summary.refused,
+        summary.seconds,
+        summary.waited_seconds,
+        summary.pixels_per_second()
+    );
+    Ok(if summary.refused == 0 {
+        ExitCode::SUCCESS
+    } else {
+        ExitCode::from(4)
+    })
+}
+
 /// Where the stage is, and how to act on it.
 struct StageFlags {
     socket: String,
@@ -437,6 +558,8 @@ fn connect(
     use archie_types::AgentId;
     use archie_voice::{Grounding, Hands, Launch};
     use std::path::Path;
+    /// How long a click waits to see the window it pressed repaint.
+    const CLICK_REPAINT_TIMEOUT: std::time::Duration = std::time::Duration::from_millis(1500);
     use std::sync::Arc;
     use tokio::net::UnixStream;
 
@@ -462,7 +585,11 @@ fn connect(
         agent: AgentId::new(),
     };
     let operator = Operator::new(key, policy.clone(), PolicyEngine::default());
-    let mut sight = Sight::new(operator, client, world, snapshot_dir, principal.clone());
+    // A window drawn in software inside a nested compositor (the stage's own desktop under
+    // WSLg) repaints well after the 300 ms a GPU-drawn one needs: a click that opened Sentry
+    // was reported as not done, and retried until the dock had toggled it shut and open.
+    let mut sight = Sight::new(operator, client, world, snapshot_dir, principal.clone())
+        .with_timeouts(archie_sight::RECEIPT_TIMEOUT, CLICK_REPAINT_TIMEOUT);
     // What applications declare about their controls is the first way to find one: exact,
     // live, and it needs neither a capture nor a model.
     match asking
@@ -534,6 +661,176 @@ fn openable(policy: &archie_stage::StagePolicy) -> Vec<String> {
         .filter(|app| !app.launch.is_empty())
         .map(|app| app.display_name.clone())
         .collect()
+}
+
+/// What a drawing under way is: the painting, and how to stop it.
+#[cfg(all(unix, any(feature = "speech", feature = "live")))]
+type Drawing = (
+    &'static archie_voice::draw::Work,
+    Arc<std::sync::atomic::AtomicBool>,
+);
+
+/// The stage as a conversation uses it: one pair of hands doing one operation at a time,
+/// and a drawing that runs on a connection of its own, for minutes, while the conversation
+/// goes on and Archie tells what it is doing.
+#[cfg(all(unix, any(feature = "speech", feature = "live")))]
+#[derive(Clone)]
+struct Desk {
+    stage: Arc<tokio::sync::Mutex<Option<(StageHands, archie_stage::StagePolicy)>>>,
+    /// The application in front, as last seen; unknown while an operation holds the stage.
+    front: Arc<std::sync::Mutex<Option<String>>>,
+    openable: Arc<Vec<String>>,
+    /// ArchieOS's shell, when it is the stage's desktop and the policy lets Archie press its
+    /// controls: what the model is told to call it.
+    desktop: Option<String>,
+    studio: archie_voice::draw::Studio,
+    narration: archie_voice::narration::Narration,
+    drawing: Arc<std::sync::Mutex<Option<Drawing>>>,
+    /// What the person said last, for the language a drawing is told in.
+    heard: Arc<std::sync::Mutex<String>>,
+}
+
+#[cfg(all(unix, any(feature = "speech", feature = "live")))]
+impl Desk {
+    fn open(asking: &Asking, stage: &StageFlags, draw: &DrawFlags) -> Result<Self, String> {
+        let connection = connect(asking, stage)?;
+        let openable = openable(&connection.1);
+        let front = connection.0.front();
+        let desktop = connection
+            .1
+            .app("archie-display")
+            .filter(|app| app.allow.contains(&archie_stage::ActionKind::Click))
+            .map(|app| {
+                app.aliases
+                    .first()
+                    .cloned()
+                    .unwrap_or_else(|| app.display_name.clone())
+            });
+        Ok(Self {
+            stage: Arc::new(tokio::sync::Mutex::new(Some(connection))),
+            front: Arc::new(std::sync::Mutex::new(front)),
+            openable: Arc::new(openable),
+            desktop,
+            studio: studio(stage, draw),
+            narration: archie_voice::narration::Narration::new(
+                draw.subtitles.clone().map(Into::into),
+            ),
+            drawing: Arc::default(),
+            heard: Arc::default(),
+        })
+    }
+
+    fn heard(&self, text: &str) {
+        *self.heard.lock().expect("heard lock") = text.to_string();
+    }
+
+    /// What the model is told about the desk this turn, after `clock`.
+    fn context(&self, clock: &str) -> String {
+        let front = self.front.lock().expect("front lock").clone();
+        let mut context = context_for(clock, front, &self.openable);
+        if let Some(name) = &self.desktop {
+            context.push_str(&format!(
+                "\nEl escritorio de ArchieOS está detrás de todo: su dock tiene Orb, Vault, Forge, \
+                 Sentry, World, Stage y Ajustes. Para abrir una de esas, usa click con target \
+                 su nombre y app «{name}»."
+            ));
+        }
+        context.push_str(&match self.drawing.lock().expect("drawing lock").as_ref() {
+            Some((work, _)) => format!(
+                "\nEstás dibujando {} en Photopea y lo vas contando tú solo; no lo empieces de \
+                 nuevo. Si te piden parar, usa stop_drawing.",
+                work.es
+            ),
+            None => format!(
+                "\nPuedes dibujar en Photopea con draw_picture: {}.",
+                archie_voice::draw::repertoire(archie_voice::draw::Lang::Es)
+            ),
+        });
+        context
+    }
+
+    /// Carries out a stage tool, or says in words why not.
+    async fn handle(self, intent: archie_speech::SpeechToolIntentCandidate) -> String {
+        use archie_voice::Plan;
+        // Own the transport while awaiting an operation. Cancellation drops it instead of
+        // reusing a possibly half-read protocol connection.
+        let Some(mut connection) = self.stage.lock().await.take() else {
+            return "No se hizo: el escritorio no está conectado o su operación fue interrumpida. Vuelve a iniciar la sesión de voz para reconectarlo.".into();
+        };
+        *self.front.lock().expect("front lock") = None;
+        let (hands, policy) = &mut connection;
+        let outcome = match archie_voice::decide(&intent, policy, hands.front().as_deref()) {
+            Ok(Plan::Draw { work, lang, .. }) => self.start_drawing(work, lang),
+            Ok(Plan::StopDrawing) => self.stop_drawing(),
+            Ok(plan) => hands.perform(&plan).await.report,
+            Err(refusal) => format!("No se hizo: {}", refusal.spoken),
+        };
+        *self.front.lock().expect("front lock") = hands.front();
+        *self.stage.lock().await = Some(connection);
+        outcome
+    }
+
+    fn start_drawing(&self, id: &str, lang: Option<archie_voice::draw::Lang>) -> String {
+        use archie_voice::draw::{self, Beat, Lang};
+        let Some(work) = draw::find_work(id) else {
+            return "No se hizo: no conozco ese cuadro.".into();
+        };
+        let lang = lang.unwrap_or_else(|| {
+            Lang::of(archie_voice::language::spoken_language(
+                &self.heard.lock().expect("heard lock"),
+            ))
+        });
+        let mut slot = self.drawing.lock().expect("drawing lock");
+        if let Some((under_way, _)) = slot.as_ref() {
+            return format!(
+                "No se hizo: ya estoy dibujando {}; termina en unos minutos o se puede detener.",
+                under_way.es
+            );
+        }
+        if !draw::exists(&self.studio, work) {
+            return format!("No se hizo: no encuentro la imagen de {}.", work.es);
+        }
+        let stop = Arc::new(std::sync::atomic::AtomicBool::new(false));
+        *slot = Some((work, stop.clone()));
+        let (studio, narration, drawing) = (
+            self.studio.clone(),
+            self.narration.clone(),
+            self.drawing.clone(),
+        );
+        tokio::spawn(async move {
+            let mut teller = narration.clone();
+            let outcome = draw::run(studio, work, lang, &mut teller, stop).await;
+            match outcome {
+                Ok(summary) => println!(
+                    "dibujo    {}: {} líneas, {} rechazadas, {:.0} s",
+                    work.id, summary.lines, summary.refused, summary.seconds
+                ),
+                Err(why) => {
+                    eprintln!("archie-voice: the drawing of {} failed: {why}", work.id);
+                    narration.push(draw::say(work, lang, &Beat::Failed { why }));
+                }
+            }
+            *drawing.lock().expect("drawing lock") = None;
+        });
+        format!(
+            "Empecé a dibujar {} en Photopea. Sigue solo unos minutos y yo mismo voy contando \
+             cada paso en voz alta: responde solo con una frase corta.",
+            work.es
+        )
+    }
+
+    fn stop_drawing(&self) -> String {
+        match self.drawing.lock().expect("drawing lock").as_ref() {
+            Some((work, stop)) => {
+                stop.store(true, std::sync::atomic::Ordering::Relaxed);
+                format!(
+                    "Detengo el dibujo de {} después de la tanda de líneas en curso.",
+                    work.es
+                )
+            }
+            None => "No estoy dibujando nada.".into(),
+        }
+    }
 }
 
 #[cfg(unix)]
@@ -718,10 +1015,14 @@ fn speech_flags(args: &mut Vec<String>) -> Result<SpeechFlags, String> {
             })
             .transpose()?
             .unwrap_or(13),
+        // Measured on NVIDIA's GGUF that embeds its tokenizer (the only kind that boosts):
+        // at 5 the recogniser heard the favoured words everywhere ("Photopeaw the
+        // Photopea", "la mona Sentry"), at 3 still sometimes, at 1.5 it named Archie and
+        // the Mona Lisa in both languages and heard "Sentry" where 5 heard "century".
         name_boost: take(args, "--name-boost")
             .map(|n| n.parse::<f32>().map_err(|_| "--name-boost is a number"))
             .transpose()?
-            .unwrap_or(5.0),
+            .unwrap_or(1.5),
         asr_gpu: take(args, "--asr-gpu")
             .map(|n| {
                 n.parse::<i32>()
@@ -736,6 +1037,8 @@ fn speech_flags(args: &mut Vec<String>) -> Result<SpeechFlags, String> {
 // Read only by the live path (unix + `live`); other builds parse and drop them.
 #[cfg_attr(not(all(unix, feature = "live")), allow(dead_code))]
 struct LiveFlags {
+    /// Explicit full context domain for Core-admitted world proposals. No default.
+    world_domain: Option<archie_vault::ContextDomain>,
     port: u16,
     iris: String,
     /// Milliseconds between IRIS's open looks; frames in between follow what it found.
@@ -758,6 +1061,10 @@ struct LiveFlags {
 
 fn live_flags(args: &mut Vec<String>) -> Result<LiveFlags, String> {
     Ok(LiveFlags {
+        world_domain: take(args, "--world-domain")
+            .map(archie_vault::ContextDomain::try_from)
+            .transpose()
+            .map_err(|error| error.to_string())?,
         port: take(args, "--port")
             .map(|n| n.parse::<u16>().map_err(|_| "--port is a port number"))
             .transpose()?
@@ -857,7 +1164,13 @@ fn converted_voice(
 }
 
 #[cfg(not(all(unix, feature = "live")))]
-fn live(_asking: Asking, _speech: SpeechFlags, _flags: LiveFlags) -> Result<ExitCode, String> {
+fn live(
+    _asking: Asking,
+    _speech: SpeechFlags,
+    _flags: LiveFlags,
+    _stage: Option<StageFlags>,
+    _draw: DrawFlags,
+) -> Result<ExitCode, String> {
     Err(
         "this build has no live session: build archie-voice with --features live, where \
          NeMo-Speech.cpp is installed"
@@ -868,7 +1181,13 @@ fn live(_asking: Asking, _speech: SpeechFlags, _flags: LiveFlags) -> Result<Exit
 /// Talks with a person through a browser page: their microphone and camera in, the voice
 /// out, IRIS for eyes, and curiosity keeping what it found out until it is asked.
 #[cfg(all(unix, feature = "live"))]
-fn live(asking: Asking, speech: SpeechFlags, flags: LiveFlags) -> Result<ExitCode, String> {
+fn live(
+    asking: Asking,
+    speech: SpeechFlags,
+    flags: LiveFlags,
+    stage: Option<StageFlags>,
+    draw: DrawFlags,
+) -> Result<ExitCode, String> {
     use archie_speech::{FloorPolicy, SessionPlan, SpeechCapabilities, SpeechSession};
     use archie_voice::conversation::{self, Hearing, Saying, Setup, StreamedVoice};
     use archie_voice::live::{self, curiosity, eyes, language};
@@ -880,6 +1199,11 @@ fn live(asking: Asking, speech: SpeechFlags, flags: LiveFlags) -> Result<ExitCod
     if flags.rvc_voice.is_some() && speech.engine != "magpie" {
         return Err("RVC live conversion currently requires --voice-engine magpie".into());
     }
+    // The stage, when one is named: the same hands, drawing and narration as `converse`.
+    let desk = match &stage {
+        Some(stage) => Some(Desk::open(&asking, stage, &draw)?),
+        None => None,
+    };
     let at = Instant::now();
     let ears = Ears::load_on(
         Path::new(&speech.asr_model),
@@ -967,13 +1291,21 @@ fn live(asking: Asking, speech: SpeechFlags, flags: LiveFlags) -> Result<ExitCod
             "off (no TAVILY_API_KEY)"
         }
     );
-    let senses = live::Senses::new_with_wanda(
+    let world_scope = flags
+        .world_domain
+        .clone()
+        .map(|domain| live::WorldVoiceScope {
+            domain,
+            privacy: asking.grade,
+        });
+    let senses = live::Senses::new_with_world(
         audio_in,
         identifier,
         researcher,
         rate,
         flags.curiosity,
         asking.wanda_access,
+        world_scope,
     );
     let eyes = eyes::IrisEyes::with_timeout(
         &flags.iris,
@@ -1021,33 +1353,50 @@ fn live(asking: Asking, speech: SpeechFlags, flags: LiveFlags) -> Result<ExitCod
     // the display refuses any it does not have.
     let catalog = runtime.block_on(archie_orb::control::catalog()).ok();
     cognitive.add_tools(live::tools(catalog.as_ref()));
+    if desk.is_some() {
+        cognitive.add_tools(tools::drawing());
+    }
     cognitive.put_context_beside_utterance();
     let mut session =
         SpeechSession::new(plan, FloorPolicy::default(), cognitive).map_err(|e| e.to_string())?;
     let tool_senses = senses.clone();
+    let action_desk = desk.clone();
     let mut act = archie_voice::actions::AsyncActions::new(
         runtime.handle().clone(),
         Duration::from_secs(90),
         move |intent: archie_speech::SpeechToolIntentCandidate| {
             let senses = tool_senses.clone();
+            let desk = action_desk.clone();
             async move {
-                senses
+                if let Some(done) = senses
                     .handle_tool(&intent.tool_name, &intent.raw_arguments)
                     .await
-                    .unwrap_or_else(|| {
-                        format!(
-                            "No se hizo: aquí no tengo la herramienta {}.",
-                            intent.tool_name
-                        )
-                    })
+                {
+                    return done;
+                }
+                match desk {
+                    Some(desk) => desk.handle(intent).await,
+                    None => format!(
+                        "No se hizo: aquí no tengo la herramienta {}.",
+                        intent.tool_name
+                    ),
+                }
             }
         },
     );
-    let mut context = || senses.context(&clock);
+    let mut context = || match &desk {
+        // The clock once, then what IRIS sees and what is remembered, then the desk.
+        Some(desk) => format!("{}{}", senses.context(&clock), desk.context("")),
+        None => senses.context(&clock),
+    };
     let started = Instant::now();
+    let heard_desk = desk.clone();
     let mut report = |moment: conversation::Moment| {
         if let conversation::Moment::Heard { text, .. } = &moment {
             senses.heard(text);
+            if let Some(desk) = &heard_desk {
+                desk.heard(text);
+            }
         }
         senses.publish(live::moment_json(&moment));
         let at = started.elapsed().as_millis();
@@ -1080,6 +1429,7 @@ fn live(asking: Asking, speech: SpeechFlags, flags: LiveFlags) -> Result<ExitCod
         phrases: vec!["Archie".into(), "Archi".into()],
         phrase_boost: speech.name_boost,
         notices: speech.notices.clone(),
+        narration: desk.as_ref().map(|desk| desk.narration.clone()),
     };
     println!(
         "{}",
@@ -1112,6 +1462,7 @@ fn converse(
     _asking: Asking,
     _speech: SpeechFlags,
     _stage: Option<StageFlags>,
+    _draw: DrawFlags,
 ) -> Result<ExitCode, String> {
     Err(
         "this build has no ears or voice: build archie-voice with --features speech, \
@@ -1127,6 +1478,7 @@ fn converse(
     asking: Asking,
     speech: SpeechFlags,
     stage: Option<StageFlags>,
+    draw: DrawFlags,
 ) -> Result<ExitCode, String> {
     use archie_speech::{
         FloorPolicy, SessionPlan, SpeechCapabilities, SpeechSession, SpeechToolIntentCandidate,
@@ -1139,14 +1491,10 @@ fn converse(
     use std::sync::Arc;
 
     let steps = stage.as_ref().map_or(6, |flags| flags.steps);
-    let stage = match &stage {
-        Some(flags) => Some(connect(&asking, flags)?),
+    let desk = match &stage {
+        Some(flags) => Some(Desk::open(&asking, flags, &draw)?),
         None => None,
     };
-    let openable = stage
-        .as_ref()
-        .map(|(_, policy)| openable(policy))
-        .unwrap_or_default();
 
     let at = Instant::now();
     let ears = Ears::load(Path::new(&speech.asr_model), Some(speech.lookahead))
@@ -1235,55 +1583,51 @@ fn converse(
     };
     let Asking {
         runtime,
-        cognitive,
+        mut cognitive,
         clock,
         ..
     } = asking;
+    if desk.is_some() {
+        cognitive.add_tools(tools::drawing());
+    }
     let mut session =
         SpeechSession::new(plan, FloorPolicy::default(), cognitive).map_err(|e| e.to_string())?;
 
-    // Context never waits on a tool holding the Stage across an await. Mark cached
-    // focus unknown during an operation; the next action still checks Stage policy.
-    let front = Arc::new(std::sync::Mutex::new(
-        stage.as_ref().and_then(|(hands, _)| hands.front()),
-    ));
-    let stage = Arc::new(tokio::sync::Mutex::new(stage));
-    let action_front = front.clone();
+    // Context never waits on a tool holding the Stage across an await: the desk marks the
+    // application in front unknown during an operation, and the next action still checks
+    // the Stage policy.
+    let action_desk = desk.clone();
     let mut act = archie_voice::actions::AsyncActions::new(
         runtime.handle().clone(),
         Duration::from_secs(90),
         move |intent: SpeechToolIntentCandidate| {
-            let stage = stage.clone();
-            let front = action_front.clone();
+            let desk = action_desk.clone();
             async move {
-                // Own the transport while awaiting an operation. Cancellation drops
-                // it instead of reusing a possibly half-read protocol connection.
-                let Some(mut connection) = stage.lock().await.take() else {
-                    return "No se hizo: el escritorio no está conectado o su operación fue interrumpida. Vuelve a iniciar la sesión de voz para reconectarlo.".into();
-                };
-                *front.lock().expect("front lock") = None;
-                let (hands, policy) = &mut connection;
-                let outcome = match archie_voice::decide(&intent, policy, hands.front().as_deref())
-                {
-                    Ok(plan) => hands.perform(&plan).await.report,
-                    Err(refusal) => format!("No se hizo: {}", refusal.spoken),
-                };
-                *front.lock().expect("front lock") = hands.front();
-                *stage.lock().await = Some(connection);
-                outcome
+                match desk {
+                    Some(desk) => desk.handle(intent).await,
+                    None => {
+                        "No se hizo: esta conversación no tiene el escritorio conectado.".into()
+                    }
+                }
             }
         },
     );
-    let mut context = || {
-        let front = front.lock().expect("front lock").clone();
-        context_for(&clock, front, &openable)
+    let mut context = || match &desk {
+        Some(desk) => desk.context(&clock),
+        None => context_for(&clock, None, &[]),
     };
     let started = Instant::now();
+    let heard_desk = desk.clone();
     let mut report = |moment: Moment| {
         let at = started.elapsed().as_millis();
         match moment {
             Moment::Timing { turn_id, phase, elapsed_ms, queued_segments } => println!("{at:>7} ms  timing   {turn_id} {phase} +{elapsed_ms} ms queue={queued_segments}"),
-            Moment::Heard { text, .. } => println!("{at:>7} ms  oí       {text}"),
+            Moment::Heard { text, .. } => {
+                if let Some(desk) = &heard_desk {
+                    desk.heard(&text);
+                }
+                println!("{at:>7} ms  oí       {text}")
+            }
             Moment::Floor {
                 action,
                 reason,
@@ -1315,9 +1659,21 @@ fn converse(
         end_after: Duration::from_millis(speech.end_after_ms),
         follow_up: archie_voice::listen::FOLLOW_UP_WINDOW,
         steps,
-        phrases: vec!["Archie".into()],
+        // The name, and with a desk the names its requests carry, which the recogniser
+        // otherwise writes as other words ("moaner lea" for "Mona Lisa", "century" for
+        // "Sentry"). Only words a person says: favouring "Photopea", "World" or "Forge"
+        // made the recogniser hear them in everything. Boosting needs a GGUF that embeds
+        // its tokenizer; without one the recogniser says so and hears the words unbiased.
+        phrases: if desk.is_some() {
+            ["Archie", "Mona Lisa", "Sentry", "Nebius"]
+                .map(String::from)
+                .to_vec()
+        } else {
+            vec!["Archie".into()]
+        },
         phrase_boost: speech.name_boost,
         notices: speech.notices.clone(),
+        narration: desk.as_ref().map(|desk| desk.narration.clone()),
     };
     println!(
         "escuchando ({}{}){}",
@@ -1357,6 +1713,8 @@ fn plan_name(plan: &archie_voice::Plan) -> String {
         Plan::Click { app_id, target } => format!("click {target:?} in {app_id}"),
         Plan::Type { app_id, text } => format!("type {} chars in {app_id}", text.chars().count()),
         Plan::Keys { app_id, chord } => format!("keys {} in {app_id}", chord.key.name()),
+        Plan::Draw { app_id, work, .. } => format!("draw {work} in {app_id}"),
+        Plan::StopDrawing => "stop drawing".into(),
         Plan::Scroll {
             app_id,
             down,

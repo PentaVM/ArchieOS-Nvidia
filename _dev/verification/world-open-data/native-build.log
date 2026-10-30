@@ -1,0 +1,75 @@
+[  1%] Building the Rust Lumenfield design library
+[ 13%] Built target archie-visual
+[ 14%] Copying archie-display qml sources into build dir
+[ 14%] Built target archie-display_copy_qml
+[ 14%] Built target archie-display_copy_res
+[ 14%] Built target generate_qmlls_build_ini_file
+[ 15%] Running qmlimportscanner for archie-display
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 15%] Built target archie-display_qmlimportscan
+[ 16%] Built target test_native_qmlimportscan
+[ 16%] Built target test_shell_runtime_autogen_timestamp_deps
+[ 16%] Built target test_exploration_preview_autogen_timestamp_deps
+[ 16%] Built target test_world_visuals_autogen_timestamp_deps
+[ 16%] Built target test_world_texture_qmlimportscan
+[ 16%] Built target test_exploration_credential_autogen_timestamp_deps
+[ 17%] Built target test_world_hud_qmlimportscan
+[ 17%] Built target test_display_control_qmlimportscan
+[ 20%] Built target archie-osm
+[ 21%] Generating qt.conf part for archie-display
+[ 22%] Generating qt.conf file
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 22%] Built target generate_finalqtconf_archie-display
+[ 23%] Built target test_shell_runtime_autogen
+[ 23%] Built target test_exploration_preview_autogen
+[ 24%] Built target test_world_visuals_autogen
+[ 24%] Built target test_world_texture_autogen_timestamp_deps
+[ 24%] Built target test_exploration_credential_autogen
+[ 24%] Built target test_world_hud_autogen_timestamp_deps
+[ 26%] Built target test_shell_runtime
+[ 30%] Built target test_exploration_preview
+[ 33%] Built target test_world_visuals
+[ 34%] Built target test_world_texture_autogen
+[ 37%] Built target test_exploration_credential
+[ 38%] Built target test_world_hud_autogen
+[ 42%] Built target test_world_texture
+    Finished `release` profile [optimized] target(s) in 1.07s
+[ 42%] Built target archie-lumen-design-build
+[ 42%] Built target archie-display_autogen_timestamp_deps
+[ 42%] Built target test_native_autogen_timestamp_deps
+[ 42%] Built target test_display_control_autogen_timestamp_deps
+[ 42%] Running rcc for resource world-hud-component
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 43%] Building CXX object CMakeFiles/test_world_hud.dir/.qt/rcc/qrc_world-hud-component.cpp.o
+[ 43%] Built target archie-display_autogen
+[ 43%] Built target test_native_autogen
+[ 43%] Linking CXX executable test_world_hud
+[ 44%] Built target test_display_control_autogen
+[ 44%] Running AUTOMOC file extraction for target archie-display
+[ 44%] Running rcc for resource archie-display_raw_qml_0
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 45%] Generating .rcc/qmlcache/archie-display_qml_WorldBeacons_qml.cpp, .rcc/qmlcache/archie-display_qml_WorldBeacons_qml.cpp.aotstats
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 48%] Built target test_world_hud
+[ 57%] Built target test_native
+[ 57%] Building CXX object CMakeFiles/archie-display.dir/.qt/rcc/qrc_archie-display_raw_qml_0.cpp.o
+[ 64%] Built target test_display_control
+[ 64%] Running AUTOMOC file extraction for target archie-display
+[ 64%] Building CXX object CMakeFiles/archie-display.dir/.rcc/qmlcache/archie-display_qml_WorldBeacons_qml.cpp.o
+[ 65%] Linking CXX executable archie-display
+[100%] Built target archie-display

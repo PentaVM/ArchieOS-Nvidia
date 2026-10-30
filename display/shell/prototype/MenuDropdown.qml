@@ -1,5 +1,6 @@
 import QtQuick
 import "ActionRules.js" as ActionRules
+import "Lang.js" as Tr
 
 // Drop-down of the top-bar menus (Archivo, Editar, Vista, Ir, Ventana). Each entry runs an
 // action by id in Main.run(). An entry with no contract on this host is not listed at all;
@@ -7,7 +8,7 @@ import "ActionRules.js" as ActionRules
 Panel {
     id: md
     kind: "panel"
-    property string name: "Archivo"
+    property string name: Tr.t("Archivo")
     property var actionContext: ({})
     property var vault
     signal activated(string id)
@@ -17,50 +18,50 @@ Panel {
     readonly property var items: {
         var v = vault
         var m = {
-            "Archivo": [
-                { l: "Nueva pestaña", id: "vault.newTab", k: "Ctrl T" },
-                { l: "Cerrar pestaña", id: "vault.closeTab" },
-                { l: "Abrir seleccionado", id: "vault.open", k: "↵", dis: !v || v.selected < 0 },
-                { l: "Subir un nivel", id: "vault.up", k: "⌫" },
+            [Tr.t("Archivo")]: [
+                { l: Tr.t("Nueva pestaña"), id: "vault.newTab", k: "Ctrl T" },
+                { l: Tr.t("Cerrar pestaña"), id: "vault.closeTab" },
+                { l: Tr.t("Abrir seleccionado"), id: "vault.open", k: "↵", dis: !v || v.selected < 0 },
+                { l: Tr.t("Subir un nivel"), id: "vault.up", k: "⌫" },
                 { sep: true },
-                { l: "Buscar…", id: "overlay.search", k: "/" },
-                { l: "Paleta de comandos", id: "overlay.palette", k: "Ctrl K" } ],
-            "Editar": [
-                { l: "Orden: " + (!v ? "nombre" : ["nombre A→Z", "nombre Z→A", "más recientes"][v.sortMode]), id: "vault.sort" } ],
-            "Vista": [
-                { l: "Lista", id: "vault.list", k: "G", on: !!v && !v.gridView },
-                { l: "Cuadrícula", id: "vault.grid", k: "G", on: !!v && v.gridView },
+                { l: Tr.t("Buscar…"), id: "overlay.search", k: "/" },
+                { l: Tr.t("Paleta de comandos"), id: "overlay.palette", k: "Ctrl K" } ],
+            [Tr.t("Editar")]: [
+                { l: Tr.t("Orden: ") + (!v ? Tr.t("nombre") : [Tr.t("nombre A→Z"), Tr.t("nombre Z→A"), Tr.t("más recientes")][v.sortMode]), id: "vault.sort" } ],
+            [Tr.t("Vista")]: [
+                { l: Tr.t("Lista"), id: "vault.list", k: "G", on: !!v && !v.gridView },
+                { l: Tr.t("Cuadrícula"), id: "vault.grid", k: "G", on: !!v && v.gridView },
                 { sep: true },
-                { l: "Movimiento reducido", id: "theme.motion", k: "M", on: Theme.reducedMotion },
-                { l: "Superficies opacas", id: "theme.opaque", k: "O", on: Theme.opaque },
-                { l: "Cristal con desenfoque", id: "theme.blur", k: "B", on: Theme.blur },
+                { l: Tr.t("Movimiento reducido"), id: "theme.motion", k: "M", on: Theme.reducedMotion },
+                { l: Tr.t("Superficies opacas"), id: "theme.opaque", k: "O", on: Theme.opaque },
+                { l: Tr.t("Cristal con desenfoque"), id: "theme.blur", k: "B", on: Theme.blur },
                 { sep: true },
-                { l: "Navegar la esfera en 3D", id: "orb.nav", k: "Ctrl Espacio", on: Demo.orbNav },
-                { l: "Escritorio vacío", id: "desk.toggle", k: "H", on: Demo.bare } ],
+                { l: Tr.t("Navegar la esfera en 3D"), id: "orb.nav", k: Tr.t("Ctrl Espacio"), on: Demo.orbNav },
+                { l: Tr.t("Escritorio vacío"), id: "desk.toggle", k: "H", on: Demo.bare } ],
             // Vault's own places, so the menu and the sidebar never disagree.
-            "Ir": (v ? v.places : []).map(function(p, i) {
+            [Tr.t("Ir")]: (v ? v.places : []).map(function(p, i) {
                 return { l: p.name, id: "go:" + i, on: !!v && v.place === i } }),
-            "Ventana": [
-                { l: "Minimizar", id: "win.min", k: "Ctrl M", dis: Wm.front() === "" },
+            [Tr.t("Ventana")]: [
+                { l: Tr.t("Minimizar"), id: "win.min", k: "Ctrl M", dis: Wm.front() === "" },
                 { l: "Zoom", id: "win.zoom", dis: Wm.front() === "" },
-                { l: "Cerrar ventana", id: "win.close", k: "Ctrl W", dis: Wm.front() === "" },
+                { l: Tr.t("Cerrar ventana"), id: "win.close", k: "Ctrl W", dis: Wm.front() === "" },
                 { sep: true },
-                { l: "Minimizar todas", id: "win.minAll", k: "Ctrl ⇧ M", dis: Wm.shownCount() === 0 },
-                { l: "Mostrar todas", id: "win.showAll", dis: Wm.openCount() === 0 },
-                { l: "Cerrar todas", id: "win.closeAll", k: "Ctrl ⇧ W", dis: Wm.openCount() === 0 },
-                { l: "Mostrar el escritorio", id: "win.desktop", k: "D", on: Demo.bare },
+                { l: Tr.t("Minimizar todas"), id: "win.minAll", k: "Ctrl ⇧ M", dis: Wm.shownCount() === 0 },
+                { l: Tr.t("Mostrar todas"), id: "win.showAll", dis: Wm.openCount() === 0 },
+                { l: Tr.t("Cerrar todas"), id: "win.closeAll", k: "Ctrl ⇧ W", dis: Wm.openCount() === 0 },
+                { l: Tr.t("Mostrar el escritorio"), id: "win.desktop", k: "D", on: Demo.bare },
                 { sep: true },
                 { l: "Vault", id: "app.vault", on: Wm.isShown("vault") },
                 { l: "Forge", id: "app.forge", k: "F", on: Wm.isShown("forge") },
                 { l: "Sentry", id: "app.sentry", k: "S", on: Wm.isShown("sentry") },
-                { l: "Stage · vista local", id: "window.stage", on: Wm.isShown("stage") },
-                { l: "Iniciar aplicación Stage", id: "app.stage" },
-                { l: "Ajustes", id: "app.set", k: ",", on: Wm.isShown("set") },
+                { l: Tr.t("Stage · vista local"), id: "window.stage", on: Wm.isShown("stage") },
+                { l: Tr.t("Iniciar aplicación Stage"), id: "app.stage" },
+                { l: Tr.t("Ajustes"), id: "app.set", k: ",", on: Wm.isShown("set") },
                 { sep: true },
-                { l: "Cambiar de ventana", id: "overlay.switcher", k: "W" },
-                { l: "Notificaciones", id: "overlay.notif", k: "N" },
-                { l: "Actividad", id: "overlay.activity", k: "A" },
-                { l: "Centro de control", id: "overlay.control", k: "C" },
+                { l: Tr.t("Cambiar de ventana"), id: "overlay.switcher", k: "W" },
+                { l: Tr.t("Notificaciones"), id: "overlay.notif", k: "N" },
+                { l: Tr.t("Actividad"), id: "overlay.activity", k: "A" },
+                { l: Tr.t("Centro de control"), id: "overlay.control", k: "C" },
                 { l: "Inspector", id: "overlay.inspector", k: "I" } ]
         }
         // Hide what has no contract here, then the separators left at an edge or doubled.

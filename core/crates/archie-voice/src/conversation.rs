@@ -282,6 +282,9 @@ pub struct Setup {
     /// Where Sentry's owner notice board (`notices.json`) lives, if the voice should
     /// speak pending unspoken notices when the room is quiet.
     pub notices: Option<PathBuf>,
+    /// What Archie tells on its own while it works (a drawing under way), said when the
+    /// room is quiet, before any notice.
+    pub narration: Option<crate::narration::Narration>,
 }
 
 impl Default for Setup {
@@ -294,8 +297,10 @@ impl Default for Setup {
             follow_up: crate::listen::FOLLOW_UP_WINDOW,
             steps: 6,
             phrases: vec!["Archie".into()],
-            phrase_boost: 5.0,
+            // As `--name-boost`: more than ~2 makes a boosting GGUF hear the phrases anywhere.
+            phrase_boost: 1.5,
             notices: None,
+            narration: None,
         }
     }
 }
@@ -473,6 +478,7 @@ pub fn converse_with_actions<S: TurnSource>(
     // came before the first word (the streaming ears are late to notice it), then all of it.
     let mut utterance: Vec<f32> = Vec::new();
     let mut notice_alerted = false;
+    let mut narrated = 0_u64;
 
     let result = (|| -> Result<(), String> {
         while !stop.load(Ordering::Relaxed) {
@@ -496,7 +502,13 @@ pub fn converse_with_actions<S: TurnSource>(
                         && deferred.is_none()
                         && activity.quiet_ms() as u64 >= setup.end_after.as_millis() as u64
                     {
-                        speak_next_notice(
+                        let _ = speak_next_narration(
+                            setup.narration.as_ref(),
+                            &to_voice,
+                            &generation,
+                            &mut speaking,
+                            &mut narrated,
+                        ) || speak_next_notice(
                             setup.notices.as_deref(),
                             &to_voice,
                             &generation,
@@ -547,7 +559,13 @@ pub fn converse_with_actions<S: TurnSource>(
                     && deferred.is_none()
                     && activity.quiet_ms() as u64 >= setup.end_after.as_millis() as u64
                 {
-                    speak_next_notice(
+                    let _ = speak_next_narration(
+                        setup.narration.as_ref(),
+                        &to_voice,
+                        &generation,
+                        &mut speaking,
+                        &mut narrated,
+                    ) || speak_next_notice(
                         setup.notices.as_deref(),
                         &to_voice,
                         &generation,
@@ -755,7 +773,13 @@ pub fn converse_with_actions<S: TurnSource>(
                 && deferred.is_none()
                 && activity.quiet_ms() as u64 >= setup.end_after.as_millis() as u64
             {
-                speak_next_notice(
+                let _ = speak_next_narration(
+                    setup.narration.as_ref(),
+                    &to_voice,
+                    &generation,
+                    &mut speaking,
+                    &mut narrated,
+                ) || speak_next_notice(
                     setup.notices.as_deref(),
                     &to_voice,
                     &generation,
@@ -1065,6 +1089,35 @@ fn finish_thinking(turn_id: &str) {
         trace_id: turn_id.to_string(),
         working_set: BTreeMap::new(),
     }));
+}
+
+/// If the room is quiet and nothing is under way, says the next line Archie tells on its
+/// own about what it is doing — its own words, never what anyone said — and shows it as a
+/// subtitle while it is said.
+fn speak_next_narration(
+    narration: Option<&crate::narration::Narration>,
+    to_voice: &Sender<ToVoice>,
+    generation: &AtomicU64,
+    speaking: &mut usize,
+    told: &mut u64,
+) -> bool {
+    let Some(said) = narration.and_then(|narration| narration.next()) else {
+        return false;
+    };
+    if let Some(narration) = narration {
+        narration.subtitle(&said.text, said.lang.code());
+    }
+    *told += 1;
+    let features = semantic_features(&said.text);
+    *speaking += 1;
+    let _ = to_voice.send(ToVoice::Say {
+        generation: generation.load(Ordering::SeqCst),
+        turn_id: format!("narration:{told}"),
+        sequence: 0,
+        text: said.text,
+        semantic_features: features,
+    });
+    true
 }
 
 /// If the room is quiet and nothing is under way, reads the next unspoken Sentry notice

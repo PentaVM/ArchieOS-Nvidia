@@ -1,0 +1,11 @@
+warning: in the working copy of 'display/native/CMakeLists.txt', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'display/native/qml/Exploration.js', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'display/native/qml/Main.qml', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'display/native/qml/WorldHud.qml', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'display/native/src/ArchieBridge.cpp', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'display/native/src/ArchieBridge.h', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'display/native/src/MeshGeometry.cpp', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'display/native/src/MeshGeometry.h', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'display/native/src/main.cpp', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'display/native/tests/test_exploration.js', CRLF will be replaced by LF the next time Git touches it
+warning: in the working copy of 'display/native/tests/test_world_hud.cpp', CRLF will be replaced by LF the next time Git touches it

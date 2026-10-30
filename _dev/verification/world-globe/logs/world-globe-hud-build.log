@@ -1,0 +1,11 @@
+[  0%] Built target test_world_hud_qmlimportscan
+[  0%] Built target test_world_hud_autogen_timestamp_deps
+[ 20%] Built target test_world_hud_autogen
+[ 20%] Running rcc for resource world-hud-component
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 40%] Building CXX object CMakeFiles/test_world_hud.dir/.qt/rcc/qrc_world-hud-component.cpp.o
+[ 40%] Linking CXX executable test_world_hud
+[100%] Built target test_world_hud

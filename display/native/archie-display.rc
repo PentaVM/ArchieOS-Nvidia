@@ -1,0 +1,2 @@
+// The Windows executable carries the ArchieOS icon.
+IDI_ICON1 ICON "../shell/brand/archieos.ico"

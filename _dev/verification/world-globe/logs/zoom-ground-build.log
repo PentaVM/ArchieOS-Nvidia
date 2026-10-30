@@ -1,0 +1,60 @@
+-- Could NOT find WrapVulkanHeaders (missing: Vulkan_INCLUDE_DIR)
+-- Could NOT find WrapVulkanHeaders (missing: Vulkan_INCLUDE_DIR)
+CMake Warning (author) at /usr/lib/cmake/Qt6Core/Qt6CoreMacros.cmake:3637 (message):
+  Qt policy QTP0004 is not set: You need qmldir files for each extra
+  directory that contains .qml files for your module.  Check
+  https://doc.qt.io/qt-6/qt-cmake-policy-qtp0004.html for policy details.
+  Use the qt_policy command to set the policy and suppress this warning.
+
+Call Stack (most recent call first):
+  /usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake:4126 (__qt_internal_setup_policy)
+  /usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake:1039 (qt6_target_qml_sources)
+  /usr/lib/cmake/Qt6Qml/Qt6QmlMacros.cmake:1492 (qt6_add_qml_module)
+  CMakeLists.txt:80 (qt_add_qml_module)
+This warning is for project developers.  Use -Wno-author to suppress it.
+
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+-- Configuring done (8.5s)
+-- Generating done (6.9s)
+-- Build files have been written to: /tmp/archie-world-native-check
+[ 20%] Running qmlimportscanner for test_world_texture
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 20%] Built target test_world_texture_qmlimportscan
+[ 20%] Built target test_world_texture_autogen_timestamp_deps
+[ 20%] Automatic MOC and UIC for target test_world_texture
+[ 20%] Built target test_world_texture_autogen
+[ 40%] Running rcc for resource world-texture-material
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+[ 60%] Building CXX object CMakeFiles/test_world_texture.dir/.qt/rcc/qrc_world-texture-material.cpp.o
+[ 80%] Building CXX object CMakeFiles/test_world_texture.dir/tests/test_world_texture.cpp.o
+[100%] Linking CXX executable test_world_texture
+[100%] Built target test_world_texture

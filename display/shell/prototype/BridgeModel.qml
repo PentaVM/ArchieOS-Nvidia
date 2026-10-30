@@ -1,4 +1,5 @@
 import QtQuick
+import "Lang.js" as Tr
 
 // The shell's view of the node, fed by `archie-shell-bridge watch` (one JSON line per poll,
 // schema 1; core/crates/archie-shell-bridge/src/protocol.rs). Pure QML: it neither reads
@@ -27,7 +28,7 @@ QtObject {
 
     // waiting | live | fixture | daemon_unreachable | displayd_offline | invalid | bridge_silent
     readonly property string link: !received ? "waiting" : (silent ? "bridge_silent" : frame.link.state)
-    readonly property string reason: silent ? "El bridge no ha enviado una trama reciente" : (received && frame.link.reason ? frame.link.reason : "")
+    readonly property string reason: silent ? Tr.t("El bridge no ha enviado una trama reciente") : (received && frame.link.reason ? frame.link.reason : "")
     readonly property real staleMs: ageMs + (received && frame.link.stale_ms !== undefined ? frame.link.stale_ms : 0)
 
     readonly property var system: received && !silent ? frame.system : null
@@ -52,7 +53,7 @@ QtObject {
     }
     function projection(name, defaults) {
         var raw = received && frame[name] ? frame[name] : null
-        var value = Object.assign({ state: "unavailable", source: "unavailable", reason: "Sin lectura del backend", generated_at_ms: 0 }, defaults, raw || {})
+        var value = Object.assign({ state: "unavailable", source: "unavailable", reason: Tr.t("Sin lectura del backend"), generated_at_ms: 0 }, defaults, raw || {})
         if (name === "catalog" && raw) value.state = raw.daemon_reachable ? "ready" : "stale"
         if (silent && raw) { value.state = "stale"; value.reason = reason }
         return value

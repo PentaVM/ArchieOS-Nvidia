@@ -1,0 +1,6 @@
+[  0%] Built target test_globe_tiles_autogen_timestamp_deps
+[  0%] Automatic MOC and UIC for target test_globe_tiles
+[  0%] Built target test_globe_tiles_autogen
+[ 50%] Building CXX object CMakeFiles/test_globe_tiles.dir/tests/test_globe_tiles.cpp.o
+[100%] Linking CXX executable test_globe_tiles
+[100%] Built target test_globe_tiles

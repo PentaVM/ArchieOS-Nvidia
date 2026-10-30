@@ -1,0 +1,19 @@
+qrc:/qt/qml/Archie/Observatory/qml/OrbViewport.qml:42:5: QML View3D: Cannot resolve view position without a camera assigned!
+qrc:/qt/qml/Archie/Observatory/qml/OrbViewport.qml:42:5: QML View3D: Cannot resolve view position without a camera assigned!
+setGeometry: Unable to set geometry 1920x1080+8+31 (frame: 1936x1119+0+0) on ShellWindow_QMLTYPE_85/"" on "S24R35A". Resulting geometry: 1920x1061+8+31 (frame: 1936x1100+0+0) margins: 8, 31, 8, 8)
+archie-display ui-walk: step 0 {"run":"win.closeAll"}
+archie-display ui-walk: step 1 {"shot":"01-orbe"}
+archie-display ui-walk: step 2 {"run":"app.world"}
+qrc:/qt/qml/Archie/Observatory/qml/ObservatoryContent.qml:450:17: QML View3D: Cannot resolve view position without a camera assigned!
+archie-display ui-walk: step 3 {"wait":2500}
+archie-display ui-walk: step 4 {"state":"world"}
+archie-display ui-walk: step 5 {"shot":"02-world"}
+archie-display ui-walk: step 6 {"click":"dock.forge"}
+archie-display ui-walk: step 7 {"wait":500}
+archie-display ui-walk: step 8 {"state":"forge-over-world"}
+archie-display ui-walk: step 9 {"shot":"03-forge"}
+archie-display ui-walk: step 10 {"run":"app.orb"}
+qrc:/qt/qml/Archie/Observatory/qml/OrbViewport.qml:42:5: QML View3D: Cannot resolve view position without a camera assigned!
+archie-display ui-walk: step 11 {"wait":500}
+archie-display ui-walk: step 12 {"state":"orb-return"}
+archie-display ui-walk: 1 clicks, 0 without effect; report D:/ArchieOS-Orbe-Review-20261026/walk-final/report.jsonl

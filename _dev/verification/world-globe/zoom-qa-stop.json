@@ -1,0 +1,36 @@
+{
+  "navigation": {
+    "bytes_received": 1613359,
+    "cache_hits": 1,
+    "cached_tiles": 0,
+    "created_at_ms": 1792953240990,
+    "desired_tiles": 16,
+    "domain": "personal",
+    "expires_at_ms": 1792956840990,
+    "generation": 1792953250817029,
+    "id": "d4bd7af5520b6c27baab6176629de4eb",
+    "request": {
+      "domain": "personal",
+      "duration_seconds": 3600,
+      "imagery_date": "2026-10-22",
+      "max_bytes": 268435456,
+      "max_requests": 1800,
+      "max_visible_tiles": 64,
+      "max_zoom": 19,
+      "signals": true,
+      "sources": [
+        "google_satellite",
+        "blue_marble",
+        "sentinel2",
+        "landsat",
+        "natural_color",
+        "infrared",
+        "night_lights",
+        "thermal"
+      ]
+    },
+    "requests_sent": 108,
+    "state": "stopped",
+    "updated_at_ms": 1792953435323
+  }
+}

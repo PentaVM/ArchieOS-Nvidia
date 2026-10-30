@@ -135,6 +135,7 @@ public:
     Q_INVOKABLE void collapse(const QString &id);
     Q_INVOKABLE void toggleCategory(const QString &key);
     Q_INVOKABLE void select(const QString &id);
+    Q_INVOKABLE bool containsNode(const QString &id) const { return indexOf(id)>=0; }
     Q_INVOKABLE void clearSelection();
     /// Everything the view shows under `id`, with it at the centre ("Explorar").
     Q_INVOKABLE void explore(const QString &id);

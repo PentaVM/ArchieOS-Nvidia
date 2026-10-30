@@ -73,7 +73,19 @@ private slots:
         }
         LumenField field(nullptr, QUrl(QStringLiteral("http://127.0.0.1:9/api/orb/lumen")));
         field.setContentRoot(dir.path());
+        // The `holograma` preset now names the neural sphere; the content source this test covers
+        // is still the renderer's, so its old look is set key by key.
         QVERIFY(field.applyProfile(QStringLiteral("holograma")));
+        QCOMPARE(field.settings().value(QStringLiteral("fieldSource")).toString(), QStringLiteral("neural"));
+        const QVariantMap content{{QStringLiteral("fieldSource"), QStringLiteral("content")}, {QStringLiteral("contentLimit"), 2500},
+            {QStringLiteral("contentFiles"), 30}, {QStringLiteral("linkBudget"), 1100}, {QStringLiteral("linkSegments"), 18},
+            {QStringLiteral("linkOpacity"), 0.16}, {QStringLiteral("holoFrame"), true}, {QStringLiteral("holoOpacity"), 0.4},
+            {QStringLiteral("coreGlow"), 1.2}, {QStringLiteral("nodeSize"), 0.4}, {QStringLiteral("ambient"), false},
+            {QStringLiteral("shell"), false}, {QStringLiteral("rotationSpeed"), 0.3}, {QStringLiteral("gradeHue"), 168},
+            {QStringLiteral("gradeSaturate"), 1.7}, {QStringLiteral("gradeContrast"), 1.15}, {QStringLiteral("gradeBrightness"), 1.05},
+            {QStringLiteral("gradeScanlines"), 0.35}, {QStringLiteral("gradeSplit"), 1.0}, {QStringLiteral("gradeGlow"), 2.0}};
+        for (auto it = content.cbegin(); it != content.cend(); ++it)
+            field.setSetting(it.key(), it.value());
         QCOMPARE(field.settings().value(QStringLiteral("fieldSource")).toString(), QStringLiteral("content"));
         QVERIFY(field.look().value(QStringLiteral("graded")).toBool());
         field.setActive(true);
@@ -104,24 +116,21 @@ private slots:
                 return port == original;
             return port.canConvert<double>() && port.toDouble() == original.toDouble();
         };
+        // visibleLimit is the OS's density ceiling (12..420, source-port.md), not a look: the
+        // original's 2400 is never applied, so it is checked against that ceiling instead.
         const auto check = [&](const QString &label, const QVariantMap &port, const QVariantMap &original) {
             QStringList wrong;
-            for (auto it = original.begin(); it != original.end(); ++it) {
-                // The one deliberate difference: the original draws 2400 nodes; the OS keeps
-                // the port inside its own density budget (12..420, see
-                // deliveredPresetsShareValidatedCatalogAndKeepOsDensity), whatever a profile says.
-                if (it.key() == QLatin1String("visibleLimit")) {
-                    const int limit = port.value(it.key()).toInt();
-                    if (limit < 12 || limit > 420)
-                        wrong.push_back(label + QStringLiteral(".visibleLimit: port ") + QString::number(limit)
-                                        + QStringLiteral(", outside the OS budget 12..420"));
+            const int limit = port.value(QStringLiteral("visibleLimit")).toInt();
+            if (limit < 12 || limit > 420)
+                wrong.push_back(label + QStringLiteral(".visibleLimit: port ") + QString::number(limit)
+                                + QStringLiteral(", outside the OS ceiling 12..420"));
+            for (auto it = original.begin(); it != original.end(); ++it)
+                if (it.key() == QLatin1String("visibleLimit"))
                     continue;
-                }
-                if (!port.contains(it.key()) || !same(port.value(it.key()), it.value()))
+                else if (!port.contains(it.key()) || !same(port.value(it.key()), it.value()))
                     wrong.push_back(label + QLatin1Char('.') + it.key() + QStringLiteral(": port ")
                                     + port.value(it.key()).toString() + QStringLiteral(", original ")
                                     + it.value().toString());
-            }
             return wrong;
         };
         LumenField field;

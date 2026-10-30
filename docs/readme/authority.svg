@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 250" width="960" height="250" role="img" aria-label="The model proposes, Cerebra decides, Policy grants a one-operation lease, the Stage checks it again and acts on the application, and a receipt comes back. Touch the mouse and the person takes control.">
+  <title>The model proposes. The OS decides.</title>
+  <style>
+    .t { font-family: Inter, "Segoe UI", Helvetica, Arial, sans-serif; fill: #f2f7ff; }
+    .name { font-size: 17px; font-weight: 700; letter-spacing: .6px; }
+    .role { font-size: 12.5px; fill: #9fb3cc; }
+    .head { font-size: 13px; fill: #9fb3cc; letter-spacing: 1.8px; }
+    .box { fill: #12213c; stroke-width: 1.6; }
+    .wire { stroke: #2a4468; stroke-width: 2; stroke-dasharray: 4 6; }
+  </style>
+  <rect x="0" y="0" width="960" height="250" rx="22" fill="#071021"/>
+  <rect x="1" y="1" width="958" height="248" rx="21" fill="none" stroke="#1e3a5f" stroke-width="1.5"/>
+  <text class="t head" x="40" y="42">THE MODEL PROPOSES. THE OS DECIDES.</text>
+
+  <!-- Wires between the five stages. -->
+  <line class="wire" x1="190" y1="130" x2="214" y2="130"/>
+  <line class="wire" x1="364" y1="130" x2="388" y2="130"/>
+  <line class="wire" x1="538" y1="130" x2="562" y2="130"/>
+  <line class="wire" x1="712" y1="130" x2="736" y2="130"/>
+
+  <g>
+    <rect class="box" x="40" y="88" width="150" height="84" rx="14" stroke="#9a75ff"/>
+    <text class="t name" x="60" y="122">MODEL</text>
+    <text class="t role" x="60" y="146">Nemotron · Bonsai</text>
+    <text class="t role" x="60" y="162">proposes an action</text>
+  </g>
+  <g>
+    <rect class="box" x="214" y="88" width="150" height="84" rx="14" stroke="#9a75ff"/>
+    <text class="t name" x="234" y="122">CEREBRA</text>
+    <text class="t role" x="234" y="146">decides whether</text>
+    <text class="t role" x="234" y="162">anything happens</text>
+  </g>
+  <g>
+    <rect class="box" x="388" y="88" width="150" height="84" rx="14" stroke="#ffca70"/>
+    <text class="t name" x="408" y="122">POLICY</text>
+    <text class="t role" x="408" y="146">grants one sealed</text>
+    <text class="t role" x="408" y="162">lease, or refuses</text>
+  </g>
+  <g>
+    <rect class="box" x="562" y="88" width="150" height="84" rx="14" stroke="#45e3f5"/>
+    <text class="t name" x="582" y="122">STAGE</text>
+    <text class="t role" x="582" y="146">checks the window</text>
+    <text class="t role" x="582" y="162">again, then acts</text>
+  </g>
+  <g>
+    <rect class="box" x="736" y="88" width="184" height="84" rx="14" stroke="#68f1ac"/>
+    <text class="t name" x="756" y="122">YOUR APPS</text>
+    <text class="t role" x="756" y="146">Photopea · Firefox ·</text>
+    <text class="t role" x="756" y="162">Sentry · World</text>
+  </g>
+
+  <!-- The lease travels right along its own track, clear of the labels; the receipt comes back. -->
+  <line x1="115" y1="72" x2="828" y2="72" stroke="#1e3a5f" stroke-width="2" stroke-linecap="round"/>
+  <circle r="7" cy="72" fill="#ffca70">
+    <animate attributeName="cx" values="115;289;463;637;828;828" keyTimes="0;.18;.36;.54;.72;1" dur="6s" repeatCount="indefinite"/>
+    <animate attributeName="fill" values="#9a75ff;#9a75ff;#ffca70;#45e3f5;#68f1ac;#68f1ac" keyTimes="0;.18;.36;.54;.72;1" dur="6s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="1;1;1;1;1;0" keyTimes="0;.18;.36;.54;.72;.8" dur="6s" repeatCount="indefinite"/>
+  </circle>
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.74;.78;.96;1" dur="6s" repeatCount="indefinite"/>
+    <rect x="736" y="186" width="184" height="28" rx="14" fill="#0f2b22" stroke="#68f1ac"/>
+    <text class="t" x="752" y="205" font-size="13" fill="#68f1ac">✓ receipt: executed</text>
+  </g>
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.80;.84;.96;1" dur="6s" repeatCount="indefinite"/>
+    <rect x="40" y="186" width="312" height="28" rx="14" fill="#2a1420" stroke="#ff7eaa"/>
+    <text class="t" x="56" y="205" font-size="13" fill="#ff7eaa">touch the mouse → HUMAN TAKES CONTROL</text>
+  </g>
+</svg>

@@ -5,7 +5,7 @@ import "."
 Item {
     width: 1920; height: 1080
     Component { id: modelComponent; BridgeModel {} }
-    Component { id: vaultComponent; VaultWindow { width: 1060; height: 720 } }
+    Component { id: vaultComponent; VaultWindow { width: 1060; height: 720; tabsModel:[{url:String(Qt.resolvedUrl(".")).replace(/\/$/, "")}] } }
     Component { id: searchComponent; SearchPanel {} }
     Component { id: workspaceComponent; WorkspaceMenu {} }
     Component { id: panelComponent; Panel { width: 100; height: 100 } }
@@ -99,9 +99,16 @@ Item {
                 for (var i = 0; i < v.count; i++) if (v.entry(i).name === leaf) at = i
                 return at >= 0 }, 5000, "the folder just left is listed in its parent")
             verify(v.openItem(at))
-            compare(v.folder, dir)
-            v.setFolder("file:///"); compare(v.up(), false)
+            wait(50) // Allow the queued folder reset before another navigation.
+            compare(v.folder.replace(/^file:\/\/\/[A-Z]:/, function(v){return v.toLowerCase()}), dir.replace(/^file:\/\/\/[A-Z]:/, function(v){return v.toLowerCase()}))
+            tryVerify(function() { return v.ready }, 5000)
+            // Windows has drive roots; file:/// is the Unix system root.
+            if (Qt.platform.os !== "windows") { v.setFolder("file:///"); compare(v.up(), false); wait(50) }
+            tryVerify(function() { return v.ready }, 5000)
             v.newTab(); compare(v.tabsModel.length, 2); compare(v.selected, -1)
+            // FolderListModel queues its reset; let it start before testing Ready/teardown.
+            wait(50)
+            tryVerify(function() { return v.ready }, 5000)
         }
         function test_hidden_search_capability_cannot_be_activated_by_enter() {
             var s = make(searchComponent); var count = 0

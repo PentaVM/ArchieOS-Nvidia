@@ -1,5 +1,6 @@
 [Desktop Entry]
 Type=Application
+X-Archie-Internal=true
 Name=Archie Voz
 Comment=Habla con Archie: escucha, piensa con Nemotron y actúa en el Stage
 Exec=run-archie.sh public

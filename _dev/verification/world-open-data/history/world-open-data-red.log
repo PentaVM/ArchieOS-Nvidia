@@ -1,0 +1,47 @@
+error[E0432]: unresolved import `archie_geofabric::exploration::ImagerySource`
+ --> crates/archie-worldd/src/imagery.rs:4:61
+  |
+4 | ...t, ImagerySource};
+  |       ^^^^^^^^^^^^^ no `ImagerySource` in `exploration`
+
+warning: unused import: `super::*`
+ --> crates/archie-worldd/src/imagery.rs:3:9
+  |
+3 | ...se super::*;
+  |       ^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0425]: cannot find function `source_tiles` in this scope
+  --> crates/archie-worldd/src/imagery.rs:11:25
+   |
+11 | ... = source_tiles(&r...
+   |       ^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `effective_date` in this scope
+  --> crates/archie-worldd/src/imagery.rs:21:20
+   |
+21 | ...q!(effec..._date(No...
+   |       ^^^^^...^^^^^ not found in this scope
+
+error[E0425]: cannot find function `effective_date` in this scope
+  --> crates/archie-worldd/src/imagery.rs:22:20
+   |
+22 | ...q!(effec..._date(So...
+   |       ^^^^^...^^^^^ not found in this scope
+
+error[E0425]: cannot find function `effective_date` in this scope
+  --> crates/archie-worldd/src/imagery.rs:23:17
+   |
+23 | ...t!(effec..._date(So...
+   |       ^^^^^...^^^^^ not found in this scope
+
+error[E0425]: cannot find function `strip_online_pixels` in this scope
+  --> crates/archie-worldd/src/imagery.rs:32:9
+   |
+32 | ...   strip...ixels(&m...
+   |       ^^^^^...^^^^^ not found in this scope
+
+Some errors have detailed explanations: E0425, E0432.
+For more information about an error, try `rustc --explain E0425`.
+error: could not compile `archie-worldd` (lib test) due to 6 previous errors; 1 warning emitted

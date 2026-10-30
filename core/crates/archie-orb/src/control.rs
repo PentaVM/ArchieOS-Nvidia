@@ -134,6 +134,104 @@ pub async fn send(action: &str, value: &str, enabled: Option<bool>) -> Result<()
     outcome(&exchange(&request).await?)
 }
 
+/// Camera moves the display accepts.
+pub const CAMERA_MOVES: [&str; 7] = ["home", "closer", "farther", "left", "right", "up", "down"];
+/// Window states the display accepts.
+pub const WINDOW_STATES: [&str; 3] = ["windowed", "fullscreen", "maximized"];
+/// The longest popup text the display shows.
+pub const POPUP_LENGTH: usize = 200;
+
+fn invalid(action: &str, value: &str) -> ControlError {
+    ControlError::Invalid {
+        action: action.chars().take(64).collect(),
+        value: value.chars().take(64).collect(),
+    }
+}
+
+/// A node id as the display reads one: up to `longest` characters, none of them control characters.
+fn plain(text: &str, longest: usize) -> bool {
+    text.chars().count() <= longest && !text.chars().any(char::is_control)
+}
+
+/// Whether a pointer coordinate is in the range the display accepts.
+pub fn valid_unit(value: f64) -> bool {
+    (0.0..=1.0).contains(&value)
+}
+
+/// Each of the verbs below is checked here first and again by the display, which is the one
+/// that knows what it can show.
+async fn command(request: Value) -> Result<(), ControlError> {
+    outcome(&exchange(&request).await?)
+}
+
+/// Focus a node by id; an empty id lets go.
+pub async fn focus(id: &str) -> Result<(), ControlError> {
+    if !plain(id, 256) {
+        return Err(invalid("focus", id));
+    }
+    command(json!({"action": "focus", "value": id})).await
+}
+
+/// Move the camera.
+pub async fn camera(movement: &str) -> Result<(), ControlError> {
+    if !CAMERA_MOVES.contains(&movement) {
+        return Err(invalid("camera", movement));
+    }
+    command(json!({"action": "camera", "value": movement})).await
+}
+
+/// Change the window's state.
+pub async fn window(state: &str) -> Result<(), ControlError> {
+    if !WINDOW_STATES.contains(&state) {
+        return Err(invalid("window", state));
+    }
+    command(json!({"action": "window", "value": state})).await
+}
+
+/// Show a pointer at a place of the view (0..1 on each axis), and click there when asked.
+pub async fn pointer(x: f64, y: f64, click: bool) -> Result<(), ControlError> {
+    if !valid_unit(x) || !valid_unit(y) {
+        return Err(invalid("pointer", &format!("{x},{y}")));
+    }
+    command(json!({"action": "pointer", "x": x, "y": y, "click": click})).await
+}
+
+/// Light a node, or put it out again.
+pub async fn highlight(id: &str, enabled: bool) -> Result<(), ControlError> {
+    if id.is_empty() || !plain(id, 256) {
+        return Err(invalid("highlight", id));
+    }
+    command(json!({"action": "highlight", "value": id, "enabled": enabled})).await
+}
+
+/// Put a short message on the screen for a few seconds (1..30).
+pub async fn popup(text: &str, seconds: f64) -> Result<(), ControlError> {
+    if text.trim().is_empty() || !plain(text, POPUP_LENGTH) || !(1.0..=30.0).contains(&seconds) {
+        return Err(invalid("popup", text));
+    }
+    command(json!({"action": "popup", "value": text, "seconds": seconds})).await
+}
+
+/// Stop the sphere's clock, or start it again (for tests that need the same frame twice).
+pub async fn freeze(enabled: bool) -> Result<(), ControlError> {
+    command(json!({"action": "freeze", "enabled": enabled})).await
+}
+
+/// Write the window as drawn now to a PNG in the display's own folder; returns its path.
+pub async fn capture() -> Result<String, ControlError> {
+    capture_path(&exchange(&json!({"action": "capture"})).await?)
+}
+
+/// `ok <path>` is a capture; `error: <reason>` a refusal; anything else a protocol fault.
+fn capture_path(reply: &str) -> Result<String, ControlError> {
+    match reply.strip_prefix("ok ") {
+        Some(path) if !path.trim().is_empty() => Ok(path.trim().to_owned()),
+        _ => outcome(reply).and(Err(ControlError::Malformed(
+            reply.chars().take(200).collect(),
+        ))),
+    }
+}
+
 /// The scenes and presets the running display accepts.
 pub async fn catalog() -> Result<Catalog, ControlError> {
     parse_catalog(&exchange(&json!({"action": "list"})).await?)
@@ -180,6 +278,46 @@ mod tests {
         assert!(matches!(
             send("overlay", "hud", None).await,
             Err(ControlError::Invalid { .. })
+        ));
+    }
+
+    #[tokio::test]
+    async fn the_new_verbs_are_checked_before_connecting() {
+        for result in [
+            camera("sideways").await,
+            window("minimized").await,
+            pointer(1.5, 0.5, false).await,
+            pointer(0.5, f64::NAN, false).await,
+            highlight("", true).await,
+            highlight("a\nb", true).await,
+            popup("   ", 4.0).await,
+            popup("hola", 0.5).await,
+            popup("hola", 31.0).await,
+            popup(&"x".repeat(POPUP_LENGTH + 1), 4.0).await,
+            focus("a\u{7}").await,
+        ] {
+            assert!(matches!(result, Err(ControlError::Invalid { .. })));
+        }
+    }
+
+    #[test]
+    fn a_capture_reply_carries_its_path() {
+        assert_eq!(
+            capture_path("ok /run/user/1000/archie-display/capture-1.png"),
+            Ok("/run/user/1000/archie-display/capture-1.png".to_owned())
+        );
+        assert_eq!(
+            capture_path("error: the capture failed"),
+            Err(ControlError::Refused("the capture failed".into()))
+        );
+        // A bare `ok` carries no path: that is not a capture.
+        assert!(matches!(
+            capture_path("ok"),
+            Err(ControlError::Malformed(_))
+        ));
+        assert!(matches!(
+            capture_path("fine"),
+            Err(ControlError::Malformed(_))
         ));
     }
 

@@ -1,0 +1,6 @@
+[  0%] Built target test_earth_meshes_autogen_timestamp_deps
+[ 33%] Automatic MOC and UIC for target test_earth_meshes
+[ 33%] Built target test_earth_meshes_autogen
+[ 33%] Building CXX object CMakeFiles/test_earth_meshes.dir/tests/test_earth_meshes.cpp.o
+[ 33%] Linking CXX executable test_earth_meshes
+[100%] Built target test_earth_meshes

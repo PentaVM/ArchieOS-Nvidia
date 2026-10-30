@@ -1,0 +1,215 @@
+[
+  {
+    "label": "planet",
+    "earth": {
+      "active_meshes": 0,
+      "attribution": "\u00a9 Google \u00b7 Earth Web experimental online 3D",
+      "cache_bytes": 15773697,
+      "error": "",
+      "loaded_nodes": 48,
+      "loading": false,
+      "maximum_level": 21,
+      "mode": "online_preview_only",
+      "more_meshes": false,
+      "provider": {
+        "bytes_received": 17769970,
+        "id": "google_earth",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 253,
+        "retry_at_ms": null,
+        "state": "ready"
+      },
+      "selected_nodes": 48,
+      "source_id": "google_earth",
+      "state": "orbit",
+      "texture_dimensions": [
+        [
+          256,
+          256
+        ],
+        [
+          256,
+          512
+        ],
+        [
+          512,
+          512
+        ],
+        [
+          512,
+          1024
+        ]
+      ]
+    },
+    "latitude": null,
+    "longitude": 0.0,
+    "altitude_m": 24272231.9818945,
+    "loaded_meshes": 0,
+    "triangles": 0,
+    "decoded_mesh_bytes": 0,
+    "usage": {
+      "bytes_received": 22946955,
+      "cache_bytes": 2979136,
+      "cache_tiles": 192,
+      "expires_at_ms": 1792965365788,
+      "max_bytes": 268435456,
+      "max_requests": 1800,
+      "requests_sent": 528
+    },
+    "renderer": {
+      "center_surface": "satellite",
+      "draw_calls": 0,
+      "draw_vertices": 0,
+      "earth_center_hits": 0,
+      "fps": 17,
+      "graphics_api": "OpenGL"
+    },
+    "selected_area": ""
+  },
+  {
+    "label": "street-rendered",
+    "earth": {
+      "active_meshes": 64,
+      "attribution": "\u00a9 Google \u00b7 Earth Web experimental online 3D",
+      "cache_bytes": 16528775,
+      "error": "",
+      "loaded_nodes": 48,
+      "loading": false,
+      "maximum_level": 21,
+      "mode": "online_preview_only",
+      "more_meshes": false,
+      "provider": {
+        "bytes_received": 20445717,
+        "id": "google_earth",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 288,
+        "retry_at_ms": null,
+        "state": "ready"
+      },
+      "selected_nodes": 48,
+      "source_id": "google_earth",
+      "state": "ready",
+      "texture_dimensions": [
+        [
+          256,
+          256
+        ],
+        [
+          256,
+          512
+        ],
+        [
+          512,
+          512
+        ],
+        [
+          512,
+          1024
+        ]
+      ]
+    },
+    "latitude": 40.71279935838972,
+    "longitude": -74.00600244744811,
+    "altitude_m": 182.33566702118617,
+    "loaded_meshes": 64,
+    "triangles": 113205,
+    "decoded_mesh_bytes": 47291292,
+    "usage": {
+      "bytes_received": 25726870,
+      "cache_bytes": 2959188,
+      "cache_tiles": 192,
+      "expires_at_ms": 1792965365788,
+      "max_bytes": 268435456,
+      "max_requests": 1800,
+      "requests_sent": 572
+    },
+    "renderer": {
+      "center_surface": "satellite",
+      "draw_calls": 93,
+      "draw_vertices": 439614,
+      "earth_center_hits": 0,
+      "fps": 6,
+      "graphics_api": "OpenGL"
+    },
+    "selected_area": ""
+  },
+  {
+    "label": "panned-rendered",
+    "earth": {
+      "active_meshes": 64,
+      "attribution": "\u00a9 Google \u00b7 Earth Web experimental online 3D",
+      "cache_bytes": 15773697,
+      "error": "",
+      "loaded_nodes": 48,
+      "loading": false,
+      "maximum_level": 21,
+      "mode": "online_preview_only",
+      "more_meshes": false,
+      "provider": {
+        "bytes_received": 22988288,
+        "id": "google_earth",
+        "in_flight": 0,
+        "max_in_flight": 4,
+        "quota_source": "local",
+        "remaining_requests": null,
+        "requests_per_minute": 180,
+        "requests_sent": 323,
+        "retry_at_ms": null,
+        "state": "ready"
+      },
+      "selected_nodes": 48,
+      "source_id": "google_earth",
+      "state": "ready",
+      "texture_dimensions": [
+        [
+          256,
+          256
+        ],
+        [
+          256,
+          512
+        ],
+        [
+          512,
+          512
+        ],
+        [
+          512,
+          1024
+        ]
+      ]
+    },
+    "latitude": 40.712938480117934,
+    "longitude": -74.00507997555594,
+    "altitude_m": 182.52260119095052,
+    "loaded_meshes": 64,
+    "triangles": 105261,
+    "decoded_mesh_bytes": 47394108,
+    "usage": {
+      "bytes_received": 28408028,
+      "cache_bytes": 2959188,
+      "cache_tiles": 192,
+      "expires_at_ms": 1792965365788,
+      "max_bytes": 268435456,
+      "max_requests": 1800,
+      "requests_sent": 610
+    },
+    "renderer": {
+      "center_surface": "satellite",
+      "draw_calls": 93,
+      "draw_vertices": 420177,
+      "earth_center_hits": 0,
+      "fps": 5,
+      "graphics_api": "OpenGL"
+    },
+    "selected_area": ""
+  }
+]

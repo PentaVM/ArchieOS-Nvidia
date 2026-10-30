@@ -1,0 +1,30 @@
+    Checking zerovec v0.11.8
+    Checking tokio v1.53.1
+    Checking tinystr v0.8.4
+    Checking icu_locale_core v2.3.0
+    Checking potential_utf v0.1.6
+    Checking icu_collections v2.3.0
+    Checking serde v1.0.229
+    Checking icu_provider v2.3.1
+    Checking hyper v1.11.1
+    Checking icu_normalizer v2.3.0
+    Checking icu_properties v2.3.0
+    Checking tower v0.5.3
+    Checking hyper-util v0.1.20
+    Checking idna_adapter v1.2.2
+    Checking idna v1.1.0
+    Checking url v2.5.8
+    Checking tokio-rustls v0.26.4
+    Checking tracing-serde v0.2.0
+    Checking serde_urlencoded v0.7.1
+    Checking tracing-subscriber v0.3.23
+    Checking archie-types v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-types)
+    Checking tokio-util v0.7.19
+    Checking hyper-rustls v0.27.9
+    Checking tower-http v0.6.11
+    Checking archie-observability v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-observability)
+    Checking reqwest v0.12.28
+    Checking clap v4.6.6
+    Checking archie-geofabric v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-geofabric)
+    Checking archie-worldd v0.1.0 (/mnt/c/Users/Penta/.codex/worktrees/archieos-nvidia-latest/ArchieOS/core/crates/archie-worldd)
+    Finished `dev` profile [unoptimized] target(s) in 30.84s

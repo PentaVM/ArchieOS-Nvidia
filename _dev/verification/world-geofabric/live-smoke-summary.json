@@ -1,0 +1,17 @@
+{
+  "anonymous_projection_status": 403,
+  "authorized_projection_status": 200,
+  "source": "AWS Terrain Tiles · public Rome AOI",
+  "job_state": "complete",
+  "downloaded_payload_bytes": 594915,
+  "stored_bytes": 840254,
+  "tiles_done": 1,
+  "tiles_total": 1,
+  "artifacts": [
+    "geotiff",
+    "geojson",
+    "glb"
+  ],
+  "geocoder_exit": 0,
+  "hardware_or_gpu_verified": false
+}

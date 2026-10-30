@@ -1,0 +1,13 @@
+    0.0s  Sure. I'll draw the Mona Lisa for you, with my own hand on the screen.
+    0.4s  First I'm opening Photopea, an image editor that runs in the browser, with a blank sheet the shape of the painting.
+   19.5s  Photopea draws its whole interface on one canvas and tells the accessibility system nothing, so I find what I need by looking at the window.
+   28.6s  There's the paper: 429 by 640 pixels. Now I pick up the brush.
+   30.5s  Brush in hand, thinned to 4 pixels, with sepia ink loaded.
+   30.7s  I've turned the painting into 463 lines that follow her face, her hands and the landscape behind her, in two inks, sepia and red chalk, the way Leonardo drew. It should take about 2 minutes.
+   30.7s  Every batch of strokes goes through the Stage's gate: a permission for one operation, sealed, and checked against the window as it is right now. If you touch the mouse, control is yours and I wait.
+  112.4s  A quarter done. The darkest shapes go first, so the picture shows up early.
+  193.0s  Halfway: 241 lines so far, at about 173 pixels of line a second.
+  261.3s  Now the second ink, red chalk, for the lighter tones.
+  269.8s  Three quarters. Now the softer tones.
+  351.8s  Done. 463 lines in 321 seconds, every one drawn by my own pointer, through the Stage's gate.
+463 lines, 41 commands, 0 refused, 321.0s (0.0s waiting for a person), 193 pixels of line a second

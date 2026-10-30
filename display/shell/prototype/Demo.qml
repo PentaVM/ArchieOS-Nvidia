@@ -1,5 +1,6 @@
 pragma Singleton
 import QtQuick
+import "Lang.js" as Tr
 
 // Which of the six states the DESIGN-SAMPLE surfaces (Alt-Tab, notifications, Forge, inspector,
 // settings, lock, workspace menu, search) show. These surfaces have no data behind them yet, so
@@ -20,7 +21,7 @@ QtObject {
         var result=["holograma", "holograma-calido", "sphere", "orb", "field", "neural", "crown", "atlas", "dense"]
         for (var i=0;i<nativeProfiles.length;i++)
             if (result.indexOf(nativeProfiles[i])<0) result.push(nativeProfiles[i])
-        return result
+        return nativeProfiles.length ? result.filter(function(p) { return nativeProfiles.indexOf(p)>=0 }) : result
     }
     // The local control server has already validated/applied this profile atomically.
     property string orbAcceptedProfile: ""
@@ -45,14 +46,23 @@ QtObject {
 
     // The real time, to the minute, for the top bar and the lock screen.
     property date now: new Date()
-    readonly property var dayShort: ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"]
-    readonly property var dayLong: ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"]
-    readonly property var monthShort: ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
-    readonly property var monthLong: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
+    readonly property bool english: Tr.english()
+    readonly property var dayShort: english ? ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+                                            : ["dom", "lun", "mar", "mié", "jue", "vie", "sáb"]
+    readonly property var dayLong: english ? ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+                                           : ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"]
+    readonly property var monthShort: english ? ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+                                              : ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
+    readonly property var monthLong: english ? ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+                                             : ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"]
     function two(n) { return (n < 10 ? "0" : "") + n }
     readonly property string time: two(now.getHours()) + ":" + two(now.getMinutes())
-    readonly property string barClock: dayShort[now.getDay()] + " " + now.getDate() + " " + monthShort[now.getMonth()] + "  " + time
-    readonly property string longDate: dayLong[now.getDay()] + " " + now.getDate() + " de " + monthLong[now.getMonth()]
+    readonly property string barClock: english
+        ? dayShort[now.getDay()] + " " + monthShort[now.getMonth()] + " " + now.getDate() + "  " + time
+        : dayShort[now.getDay()] + " " + now.getDate() + " " + monthShort[now.getMonth()] + "  " + time
+    readonly property string longDate: english
+        ? dayLong[now.getDay()] + ", " + monthLong[now.getMonth()] + " " + now.getDate()
+        : dayLong[now.getDay()] + " " + now.getDate() + " de " + monthLong[now.getMonth()]
     property Timer tick: Timer { interval: 5000; running: true; repeat: true; onTriggered: Demo.now = new Date() }
 
     function next() { state = states[(states.indexOf(state) + 1) % states.length] }

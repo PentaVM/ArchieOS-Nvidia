@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import "Lang.js" as Tr
 
 // Core supplies minimized trajectory DTOs; the Orb supplies observed workflow signals.
 Panel {
@@ -28,23 +29,23 @@ Panel {
             Text { text:"IRIS · Cortex"; color:Theme.t1; font.family:Theme.disp; font.pixelSize:22 }
             SourceChip { bridge:ip.bridge; projection:ip.inspection }
         }
-        NoteBox { text:"Proyección de lectura. No expone contenido de contexto, pensamiento interno ni credenciales." }
-        Eyebrow { text:"Trayectorias de Cortex" }
+        NoteBox { text:Tr.t("Proyección de lectura. No expone contenido de contexto, pensamiento interno ni credenciales.") }
+        Eyebrow { text:Tr.t("Trayectorias de Cortex") }
         VoidBox { visible:ip.trajectories.length===0; icon:"trace"
-            title:ip.half.state==="ready" ? "Sin trayectorias registradas" : "Trayectorias sin lectura"
-            text:ip.half.reason || "Sólo aparecen registros emitidos por Core." }
+            title:ip.half.state==="ready" ? Tr.t("Sin trayectorias registradas") : Tr.t("Trayectorias sin lectura")
+            text:ip.half.reason || Tr.t("Sólo aparecen registros emitidos por Core.") }
         Repeater { model:ip.trajectories
             delegate: ListRow { glyph:"trace"; mono:true; title:String(modelData.trajectory_id)
-                sub:String(modelData.correction_kind) + " · modelo " + modelData.model_id
-                    + " · contexto " + modelData.selected_context_count + ", omitidos " + modelData.omitted_candidate_count
-                Chip { small:true; text:"minimizada"; tone:"neutral" }
+                sub:String(modelData.correction_kind) + Tr.t(" · modelo ") + modelData.model_id
+                    + Tr.t(" · contexto ") + modelData.selected_context_count + Tr.t(", omitidos ") + modelData.omitted_candidate_count
+                Chip { small:true; text:Tr.t("minimizada"); tone:"neutral" }
             }
         }
-        Row { spacing:12; Eyebrow { text:"Señales de IRIS, Cortex, voz y Stage" }
+        Row { spacing:12; Eyebrow { text:Tr.t("Señales de IRIS, Cortex, voz y Stage") }
             SourceChip { bridge:ip.bridge; projection:ip.flow }
         }
-        VoidBox { visible:ip.observations.length===0; icon:"unknown"; title:"Sin señales recibidas"
-            text:"La ausencia de eventos no indica que un componente esté desactivado." }
+        VoidBox { visible:ip.observations.length===0; icon:"unknown"; title:Tr.t("Sin señales recibidas")
+            text:Tr.t("La ausencia de eventos no indica que un componente esté desactivado.") }
         WorkflowList { records:ip.observations }
     }
     }

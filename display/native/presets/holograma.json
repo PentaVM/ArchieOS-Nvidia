@@ -1,14 +1,8 @@
 {
   "name": "holograma",
-  "label": "Holograma frío (diseño de Xavi)",
+  "label": "Esfera neuronal con holograma (diseño de Xavi)",
   "settings": {
-    "fieldSource": "content", "contentLimit": 2500, "contentFiles": 30,
-    "linkBudget": 1100, "linkSegments": 18, "linkOpacity": 0.16,
-    "holoFrame": true, "holoOpacity": 0.4, "coreGlow": 1.2,
-    "background": "#000000", "exposure": 1.0, "nodeSize": 0.4,
-    "ambient": false, "shell": false, "rotationSpeed": 0.3,
-    "bloomStrength": 0.9, "bloomRadius": 0.5, "bloomThreshold": 0.5,
-    "gradeHue": 168, "gradeSaturate": 1.7, "gradeContrast": 1.15, "gradeBrightness": 1.05,
-    "gradeScanlines": 0.35, "gradeSplit": 1.0, "gradeGlow": 2.0
+    "fieldSource": "neural", "contentLimit": 2500, "contentFiles": 30,
+    "background": "#000000"
   }
 }

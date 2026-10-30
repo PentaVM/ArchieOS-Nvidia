@@ -1,4 +1,5 @@
 import QtQuick
+import "Lang.js" as Tr
 
 // Searches local views through one eligible list for keyboard and mouse. It neither searches
 // the web while typing nor claims a permission to operate files or change policy.
@@ -16,8 +17,8 @@ Panel {
     signal activated(string act)
     function m(a, b) { var q = query.trim().toLowerCase(); return q === "" || (a + " " + b).toLowerCase().indexOf(q) >= 0 }
     readonly property var acts: [
-        { t: "Mostrar actividad de Archie", s: "Abre la vista local de trabajos", a: "overlay.activity", icon: "activity", requiresLive: false },
-        { t: "Abrir la vista general de ventanas", s: "Ventanas locales de esta shell", a: "overlay.switcher", icon: "windows", requiresLive: false } ]
+        { t: Tr.t("Mostrar actividad de Archie"), s: Tr.t("Abre la vista local de trabajos"), a: "overlay.activity", icon: "activity", requiresLive: false },
+        { t: Tr.t("Abrir la vista general de ventanas"), s: Tr.t("Ventanas locales de esta shell"), a: "overlay.switcher", icon: "windows", requiresLive: false } ]
     readonly property var eligibleRows: acts.filter(function(r) {
         return shown && st !== "error" && st !== "vacio" && r.a !== "" && m(r.t, r.s)
             && (!r.requiresLive || (st !== "offline" && st !== "degraded" && st !== "stale"))
@@ -69,31 +70,31 @@ Panel {
                             if (e.key === Qt.Key_Return || e.key === Qt.Key_Enter) { sp.activateCurrent(); e.accepted = true }
                             else if (e.key === Qt.Key_Down) { sp.current = Math.min(sp.eligibleRows.length - 1, sp.current + 1); e.accepted = true }
                             else if (e.key === Qt.Key_Up) { sp.current = Math.max(0, sp.current - 1); e.accepted = true } } }
-                    Text { visible: inp.text === ""; text: "Buscar acciones y capacidades"; color: Theme.tdis; font.family: Theme.font; font.pixelSize: 14; anchors.verticalCenter: parent.verticalCenter } } }
+                    Text { visible: inp.text === ""; text: Tr.t("Buscar acciones y capacidades"); color: Theme.tdis; font.family: Theme.font; font.pixelSize: 14; anchors.verticalCenter: parent.verticalCenter } } }
             Row { anchors.right: parent.right; anchors.rightMargin: 12; anchors.verticalCenter: parent.verticalCenter; spacing: 10
                 Chip { visible: sp.st !== "normal" || Demo.focusRing; anchors.verticalCenter: parent.verticalCenter
-                    text: sp.st === "vacio" ? "0 resultados" : (sp.st === "error" ? "error de lectura" : (sp.st === "offline" ? "archied no responde" : (sp.st === "degraded" ? "datos parciales" : (sp.st === "stale" ? "desactualizado" : "actualizado"))))
-                    sub: sp.bridge ? "hace " + Math.floor(sp.bridge.ageMs / 1000) + " s" : "vista local"
+                    text: sp.st === "vacio" ? Tr.t("0 resultados") : (sp.st === "error" ? Tr.t("error de lectura") : (sp.st === "offline" ? Tr.t("archied no responde") : (sp.st === "degraded" ? Tr.t("datos parciales") : (sp.st === "stale" ? "desactualizado" : "actualizado"))))
+                    sub: sp.bridge ? Tr.t("hace ") + Math.floor(sp.bridge.ageMs / 1000) + " s" : Tr.t("vista local")
                     icon: sp.st === "vacio" ? "recents" : (sp.st === "error" || sp.st === "offline" ? "bad" : (sp.st === "degraded" ? "warn" : (sp.st === "stale" ? "recents" : "done")))
                     tone: sp.st === "vacio" ? "neutral" : (sp.st === "error" || sp.st === "offline" ? "bad" : (sp.st === "degraded" || sp.st === "stale" ? "warn" : "ok")) }
                 Kbd { label: "Esc"; anchors.verticalCenter: parent.verticalCenter } } }
         Item { width: 1; height: 4 }
 
-        ErrBox { visible: sp.st === "error"; text: "No se pudo consultar el catálogo: respuesta no válida del bridge." }
-        VoidBox { visible: sp.st === "vacio" || sp.noMatch; icon: "search"; title: sp.query === "" ? "Sin resultados" : "Sin resultados para «" + sp.query + "»"; text: "No hay acciones ni capacidades que coincidan y estén permitidas para ti." }
+        ErrBox { visible: sp.st === "error"; text: Tr.t("No se pudo consultar el catálogo: respuesta no válida del bridge.") }
+        VoidBox { visible: sp.st === "vacio" || sp.noMatch; icon: "search"; title: sp.query === "" ? Tr.t("Sin resultados") : Tr.t("Sin resultados para «") + sp.query + "»"; text: Tr.t("No hay acciones ni capacidades que coincidan y estén permitidas para ti.") }
 
         Column { visible: !sp.noMatch; width: parent.width
-            Eyebrow { text: "Vistas locales"; leftPadding: 12; topPadding: 12; bottomPadding: 4 }
+            Eyebrow { text: Tr.t("Vistas locales"); leftPadding: 12; topPadding: 12; bottomPadding: 4 }
             Repeater { model: sp.eligibleRows
-                delegate: Result { rowIndex: index; act: modelData.a; glyph: modelData.icon; title: modelData.t; sub: modelData.s; kind: "Vista"; on: index === sp.current } }
+                delegate: Result { rowIndex: index; act: modelData.a; glyph: modelData.icon; title: modelData.t; sub: modelData.s; kind: Tr.t("Vista"); on: index === sp.current } }
         }
         Item { width: 1; height: 8 }
-        NoteBox { text: "Leer o escribir archivos y cambiar permisos no está disponible: no hay un contrato de ejecución desde esta búsqueda." }
+        NoteBox { text: Tr.t("Leer o escribir archivos y cambiar permisos no está disponible: no hay un contrato de ejecución desde esta búsqueda.") }
         Item { visible: sp.st === "offline" || sp.st === "stale"; width: 1; height: 10 }
-        NoteBox { visible: sp.st === "offline"; text: "El catálogo de capacidades no se puede filtrar por permisos sin archied." }
-        NoteBox { visible: sp.st === "stale"; icon: "recents"; text: "Sin lectura actual del catálogo." }
+        NoteBox { visible: sp.st === "offline"; text: Tr.t("El catálogo de capacidades no se puede filtrar por permisos sin archied.") }
+        NoteBox { visible: sp.st === "stale"; icon: "recents"; text: Tr.t("Sin lectura actual del catálogo.") }
         Item { width: 1; height: 8 }
     }
     FootHints { id: foot; y: col.y + col.implicitHeight + 4; x: 0; width: sp.width
-        hints: [["↑↓", "elegir"], ["↵", "abrir"], ["Esc", "cerrar"]]; note: "sin autoridad de ejecución" }
+        hints: [["↑↓", "elegir"], ["↵", "abrir"], ["Esc", "cerrar"]]; note: Tr.t("sin autoridad de ejecución") }
 }

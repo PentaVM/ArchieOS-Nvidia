@@ -19,7 +19,9 @@ pub fn os_control() -> Vec<ToolDefinition> {
         ToolDefinition {
             name: "open_app".into(),
             description: "Abre una aplicación del sistema por su nombre, por ejemplo \
-                          firefox, terminal o el editor de texto."
+                          firefox, terminal o el editor de texto. Las apps del escritorio de \
+                          ArchieOS también: Orb, World (el globo terráqueo de ArchieOS, no un \
+                          sitio web), Vault, Forge, Sentry, Stage y Ajustes."
                 .into(),
             parameters: json!({
                 "type": "object",
@@ -65,6 +67,21 @@ pub fn os_control() -> Vec<ToolDefinition> {
             }),
         },
         ToolDefinition {
+            name: "open_website".into(),
+            description: "Abre una página web en el navegador (open a website, browse the web): \
+                          una dirección como wikipedia.org, o una búsqueda en internet. Da url o \
+                          search, uno de los dos."
+                .into(),
+            parameters: json!({
+                "type": "object",
+                "properties": {
+                    "url": {"type": "string", "description": "La dirección, por ejemplo es.wikipedia.org/wiki/Gioconda."},
+                    "search": {"type": "string", "description": "Qué buscar en internet, si no hay una dirección."}
+                },
+                "required": []
+            }),
+        },
+        ToolDefinition {
             name: "scroll".into(),
             description: "Desplaza la vista hacia arriba o hacia abajo.".into(),
             parameters: json!({
@@ -79,26 +96,63 @@ pub fn os_control() -> Vec<ToolDefinition> {
     ]
 }
 
+/// The tools for drawing a painting in Photopea, by Archie's own hand on the stage.
+pub fn drawing() -> Vec<ToolDefinition> {
+    vec![
+        ToolDefinition {
+            name: "draw_picture".into(),
+            description: format!(
+                "Dibuja un cuadro famoso en Photopea con tu propia mano en la pantalla (draw \
+                 a painting): abre Photopea, toma el pincel y lo dibuja línea a línea mientras \
+                 cuentas en voz alta lo que haces. Tarda unos minutos y sigue solo; la \
+                 conversación continúa. Sabes dibujar {}. El reconocimiento de voz deforma \
+                 estos nombres (oye «moaner lisa», «owner leaser», «minner leaser» o «the moon \
+                 or Lisa» por «Mona Lisa»): si lo que se oyó suena como uno de ellos, dibújalo \
+                 sin preguntar y pásalo con su nombre correcto. Pedir dibujar algo con «Lisa» \
+                 es pedir la Mona Lisa.",
+                crate::draw::repertoire(crate::draw::Lang::Es)
+            ),
+            parameters: json!({
+                "type": "object",
+                "properties": {
+                    "picture": {"type": "string", "description": "El cuadro, como lo dijo la persona: «la Mona Lisa»."},
+                    "language": {"type": "string", "enum": ["es", "en"], "description": "El idioma en que habló la persona."}
+                },
+                "required": ["picture", "language"]
+            }),
+        },
+        ToolDefinition {
+            name: "stop_drawing".into(),
+            description: "Detiene el dibujo que estás haciendo (stop drawing), entre una tanda \
+                          de líneas y la siguiente."
+                .into(),
+            parameters: json!({"type": "object", "properties": {}, "required": []}),
+        },
+    ]
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn every_tool_is_a_named_object_with_its_requirements_stated() {
-        let tools = os_control();
+        let tools: Vec<ToolDefinition> = os_control().into_iter().chain(drawing()).collect();
         let mut names: Vec<&str> = tools.iter().map(|tool| tool.name.as_str()).collect();
         names.sort_unstable();
         names.dedup();
         assert_eq!(names.len(), tools.len(), "no two tools share a name");
         for tool in &tools {
             assert_eq!(tool.parameters["type"], "object", "{}", tool.name);
-            assert!(
-                tool.parameters["required"]
-                    .as_array()
-                    .is_some_and(|r| !r.is_empty()),
-                "{} says what it needs",
-                tool.name
-            );
+            // What a tool needs is stated, and only of what it takes.
+            let required = tool.parameters["required"].as_array().expect("required");
+            for name in required {
+                assert!(
+                    tool.parameters["properties"][name.as_str().unwrap()].is_object(),
+                    "{} needs {name}, which it does not take",
+                    tool.name
+                );
+            }
             assert!(
                 tool.description.len() > 20,
                 "{} says what it does",

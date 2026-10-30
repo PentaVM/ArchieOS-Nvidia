@@ -154,6 +154,11 @@ impl<R: AsyncRead + Unpin, W: AsyncWrite + Unpin> Hands<R, W> {
                 };
                 self.act(app_id, action, done).await
             }
+            // A drawing runs for minutes on a connection of its own, beside the
+            // conversation; one pair of hands doing one operation at a time is not where.
+            Plan::Draw { .. } | Plan::StopDrawing => Performed::not_done(
+                "Dibujar se hace desde una conversación con el Stage, no desde aquí.",
+            ),
         }
     }
 

@@ -5,6 +5,7 @@
 #   archie-operate "explore the menus of the editor" --app photopea --seconds 60
 #   archie-operate "scroll to the bottom of the page" --url https://example.org
 #   archie-operate "add the first clip of the bin to the timeline" --app kdenlive
+#   archie-operate "open Firefox and play the latest MrBeast video" --app firefox
 #
 # The reasoning model (through Nebius) plans the steps before the clock starts. IRIS then
 # watches the Stage and works the mouse and keyboard, a step at a time, for --seconds.
@@ -18,7 +19,7 @@ if [ -z "$goal" ]; then
   exit 64
 fi
 shift
-seconds=60 url='' app='' settle=20 app_id=firefox reset=''
+seconds=60 url='' app='' settle=20 app_id=firefox reset='' judge=gui about=''
 while [ $# -gt 0 ]; do
   case $1 in
     --seconds) seconds=${2:-}; shift 2 ;;
@@ -30,6 +31,7 @@ done
 case "$app" in
   car-soccer)
     url=https://car-soccer.com/
+    judge=none
     # The game loads 216 files and warms its effects; software rendering makes that slow.
     settle=60
     about='car-soccer.com is open in free play: a car and a ball in an empty arena. Driving is W A S D, boost is the left mouse button, jump is the right mouse button, air roll left and right are Q and E.'
@@ -44,11 +46,17 @@ case "$app" in
     reset='archie-session run kdenlive'
     about='Kdenlive, a video editor, is open: the project bin on the left, the monitors above, the timeline below.'
     ;;
+  firefox)
+    [ -z "$url" ] || { echo 'archie-operate: --app firefox starts the browser without a supplied URL; use --url by itself for a page' >&2; exit 64; }
+    # Harness setup uses the existing dedicated profile, never the person's Firefox.
+    # This opens an empty browser; it is not an IRIS-produced opening action.
+    reset='archie-session open about:blank'
+    ;;
   '')
-    [ -n "$url" ] || { echo 'archie-operate: say where, with --app car-soccer|photopea|kdenlive or --url URL' >&2; exit 64; }
+    [ -n "$url" ] || { echo 'archie-operate: say where, with --app firefox|car-soccer|photopea|kdenlive or --url URL' >&2; exit 64; }
     about="The page $url is open in the browser."
     ;;
-  *) echo "archie-operate: no such app: $app (car-soccer, photopea, kdenlive, or --url)" >&2; exit 64 ;;
+  *) echo "archie-operate: no such app: $app (firefox, car-soccer, photopea, kdenlive, or --url)" >&2; exit 64 ;;
 esac
 case "$seconds" in '' | *[!0-9]*) echo 'archie-operate: --seconds is a whole number' >&2; exit 64 ;; esac
 if [ -z "$reset" ]; then
@@ -63,12 +71,16 @@ if [ -z "${NEBIUS_TOKEN_FACTORY_KEY:-}" ]; then
 fi
 export NEBIUS_TOKEN_FACTORY_KEY
 
+echo 'archie-operate: IRIS can move, click and hold keys/buttons; this actor cannot type arbitrary text. The existing operator policy does not grant text or scroll. The recorded attempt may fail; it does not certify task completion.' >&2
+[ "$app" != firefox ] || echo 'archie-operate: harness setup opens an isolated blank Firefox; opening the browser is not an IRIS-produced action.' >&2
+prompt=$goal
+[ -z "$about" ] || prompt="$about $goal"
 archie-session up
 # A JSON string is a valid TOML basic string, so the words are quoted by jq.
 {
-  printf 'id = "operate"\napp_id = "%s"\njudge = "none"\nends_early = false\ntiers = [%s]\n' "$app_id" "$seconds"
+  printf 'id = "operate"\napp_id = "%s"\njudge = "%s"\nends_early = false\ntiers = [%s]\n' "$app_id" "$judge" "$seconds"
   printf 'reset = %s\n' "$(jq -Rn --arg v "$reset" '$v')"
-  printf 'prompt = %s\n' "$(jq -Rn --arg v "$about $goal" '$v')"
+  printf 'prompt = %s\n' "$(jq -Rn --arg v "$prompt" '$v')"
 } > "$RUN/task.toml"
 mkdir -p "$HOME/archie-runs"
 archie-arena-live --task "$RUN/task.toml" --tier "$seconds" \

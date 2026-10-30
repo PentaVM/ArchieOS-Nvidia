@@ -25,6 +25,13 @@ Panel {
         Lights { x: 16; anchors.verticalCenter: parent.verticalCenter; wid: w.wid; visible: w.wid !== "" }
         Text { anchors.centerIn: parent; text: w.title; color: Theme.t1; font.family: Theme.disp; font.pixelSize: 17; font.weight: Font.DemiBold; font.letterSpacing: -0.17 }
         Row { id: trail; anchors.right: parent.right; anchors.rightMargin: 16; anchors.verticalCenter: parent.verticalCenter; spacing: 8 } }
+    // Dense content resolves the glass over our canvas so overlapping windows
+    // cannot contribute a second table or graph behind the text. Chrome stays glass.
+    Rectangle {
+        x: 1; y: tbar.height; width: parent.width - 2; height: Math.max(0,parent.height-y-1)
+        bottomLeftRadius: Theme.rWindow - 1; bottomRightRadius: Theme.rWindow - 1
+        color: Theme.reading
+    }
     Rectangle { id: side; y: tbar.height; width: 200; height: parent.height - tbar.height - 1; color: Theme.side
         Rectangle { anchors.right: parent.right; width: 1; height: parent.height; color: Theme.hair }
         Column { id: sideCol; x: 10; y: 14; width: parent.width - 20; spacing: 2 } }

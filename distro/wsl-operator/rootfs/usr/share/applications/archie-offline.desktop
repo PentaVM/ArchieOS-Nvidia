@@ -3,6 +3,6 @@ Type=Application
 Name=ArchieOS
 Comment=Bonsai local y escritorio Archie
 Exec=archie-offline --background
-Icon=applications-system
+Icon=archieos
 Terminal=false
 Categories=System;

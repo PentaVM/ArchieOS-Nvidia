@@ -776,3 +776,705 @@ mod golden {
         assert!(wrong.is_empty(), "{}", wrong.join("\n"));
     }
 }
+
+/// The neural sphere against Lumenfield's own module: fixtures/golden-neural.mjs ran
+/// web/src/neural-sphere (API 2) with node on its sample index cut to depth 5.
+mod neural_golden {
+    use crate::neural::collate::locale_compare;
+    use crate::neural::links::{
+        nearest_pairs, pick_budget, structural_links, LinkPoint, KIND_WEIGHT,
+    };
+    use crate::neural::model::{category_of, hash, Processes, SphereModel, SphereNode, CATEGORIES};
+    use crate::neural::motion::{
+        birth_schedule, born_progress, smooth_factor, step_capped, MAX_SPEED, SETTLE_DISTANCE,
+    };
+    use crate::neural::settings::Settings;
+    use crate::neural::sphere::{
+        format_count, format_size, linear_colour, Rng, Sphere, CATEGORY_HEX, CREAM_HEX, FOLDER_HEX,
+        HOT_HEX,
+    };
+    use serde_json::Value;
+    use std::cmp::Ordering;
+
+    const GOLDEN: &str = include_str!("../fixtures/neural.golden.json");
+    const INDEX: &str = include_str!("../fixtures/neural-index.json");
+
+    fn golden() -> Value {
+        serde_json::from_str(GOLDEN).unwrap()
+    }
+    fn index() -> Vec<SphereNode> {
+        let list: Value = serde_json::from_str(INDEX).unwrap();
+        list.as_array()
+            .unwrap()
+            .iter()
+            .map(|n| SphereNode {
+                id: n["id"].as_str().unwrap().into(),
+                p: n["p"].as_str().map(Into::into),
+                k: n["k"].as_u64().unwrap() == 1,
+                d: n["d"].as_u64().unwrap() as u32,
+                s: n["s"].as_f64().unwrap(),
+                m: n["m"].as_f64().unwrap(),
+                n: n["n"].as_str().unwrap().into(),
+            })
+            .collect()
+    }
+    fn f(v: &Value) -> f64 {
+        v.as_f64().unwrap()
+    }
+    fn close(a: f64, b: f64, label: &str) {
+        assert!(
+            (a - b).abs() <= 1e-9 * (1.0 + b.abs()),
+            "{label}: port {a}, original {b}"
+        );
+    }
+    /// Equal but for the last bits: serde_json (without float_roundtrip) may read the golden's
+    /// shortest decimal one ulp off.
+    fn same(a: f64, b: f64, label: &str) {
+        assert!(
+            (a - b).abs() <= 2.0 * f64::EPSILON * a.abs().max(b.abs()),
+            "{label}: port {a}, original {b}"
+        );
+    }
+    fn model() -> SphereModel {
+        SphereModel::new(&index(), true, Processes::Example, &[]).unwrap()
+    }
+
+    #[test]
+    fn collation_is_icu_root_order_as_node_sorts() {
+        let g = golden();
+        let list: Vec<&str> = g["collation"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|v| v.as_str().unwrap())
+            .collect();
+        let wrong: Vec<String> = list
+            .windows(2)
+            .filter(|w| locale_compare(w[0], w[1]) == Ordering::Greater)
+            .map(|w| format!("{:?} > {:?}", w[0], w[1]))
+            .collect();
+        assert!(wrong.is_empty(), "{}", wrong.join("\n"));
+    }
+
+    #[test]
+    fn hash_and_categories_match() {
+        let g = golden();
+        for row in g["hash"].as_array().unwrap() {
+            same(
+                hash(row[0].as_str().unwrap()),
+                f(&row[1]),
+                row[0].as_str().unwrap(),
+            );
+        }
+        let by_id: std::collections::HashMap<String, SphereNode> =
+            index().into_iter().map(|n| (n.id.clone(), n)).collect();
+        for row in g["categories"].as_array().unwrap() {
+            let n = &by_id[row[0].as_str().unwrap()];
+            let cat = category_of(n.k, &n.n);
+            let name = if cat == 7 {
+                "folders"
+            } else {
+                CATEGORIES[cat].0
+            };
+            assert_eq!(name, row[1].as_str().unwrap(), "{}", n.id);
+        }
+    }
+
+    #[test]
+    fn model_shows_folds_and_places_everything_as_the_original() {
+        let g = golden();
+        let m = model();
+        let o = &g["model"];
+        let vis: Vec<&str> = m.vis.iter().map(|&i| m.id(i)).collect();
+        let expected: Vec<&str> = o["vis"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|v| v.as_str().unwrap())
+            .collect();
+        assert_eq!(vis, expected);
+        for row in o["folded"].as_array().unwrap() {
+            let n = &m.nodes[m.by_id[row[0].as_str().unwrap()]];
+            assert!(n.folded, "{}", n.node.id);
+            assert_eq!(
+                u64::from(n.hidden),
+                row[1].as_u64().unwrap(),
+                "{}",
+                n.node.id
+            );
+        }
+        for row in o["vw"].as_array().unwrap() {
+            assert_eq!(
+                u64::from(m.nodes[m.by_id[row[0].as_str().unwrap()]].vw),
+                row[1].as_u64().unwrap()
+            );
+        }
+        assert_eq!(u64::from(m.max_vd), o["maxVD"].as_u64().unwrap());
+        let targets = o["target"].as_array().unwrap();
+        assert_eq!(m.target.len(), targets.len());
+        let order: Vec<&str> = targets.iter().map(|r| r[0].as_str().unwrap()).collect();
+        assert_eq!(
+            m.target_order
+                .iter()
+                .map(String::as_str)
+                .collect::<Vec<_>>(),
+            order
+        );
+        for row in targets {
+            let id = row[0].as_str().unwrap();
+            let at = m.target[id];
+            for a in 0..3 {
+                close(at[a], f(&row[a + 1]), &format!("target {id}[{a}]"));
+            }
+        }
+        for row in o["dir"].as_array().unwrap() {
+            let id = row[0].as_str().unwrap();
+            let dir = m.nodes[m.by_id[id]].dir.unwrap();
+            for a in 0..3 {
+                close(dir[a], f(&row[a + 1]), &format!("dir {id}[{a}]"));
+            }
+        }
+        let processes = o["processes"].as_array().unwrap();
+        assert_eq!(m.processes.len(), processes.len());
+        for (p, row) in m.processes.iter().zip(processes) {
+            assert_eq!(p.id, row[0].as_str().unwrap());
+            assert_eq!(m.id(p.host), row[1].as_str().unwrap());
+            assert_eq!(p.name, row[2].as_str().unwrap());
+        }
+        let c = m.counts();
+        assert_eq!(
+            (c.0 as u64, u64::from(c.1), c.2 as u64, c.3 as u64),
+            (
+                o["counts"]["visible"].as_u64().unwrap(),
+                o["counts"]["folded"].as_u64().unwrap(),
+                o["counts"]["foldedPrograms"].as_u64().unwrap(),
+                o["counts"]["total"].as_u64().unwrap()
+            )
+        );
+    }
+
+    #[test]
+    fn unfolding_a_program_and_folding_off_match() {
+        let g = golden();
+        let mut m = model();
+        m.toggle_fold(g["unfolded"]["id"].as_str().unwrap());
+        assert_eq!(m.vis.len() as u64, g["unfolded"]["vis"].as_u64().unwrap());
+        assert_eq!(
+            m.counts().1 as u64,
+            g["unfolded"]["counts"]["folded"].as_u64().unwrap()
+        );
+        m.set_fold(false);
+        assert_eq!(m.vis.len() as u64, g["unfoldAll"]["vis"].as_u64().unwrap());
+        assert_eq!(
+            m.counts().1 as u64,
+            g["unfoldAll"]["counts"]["folded"].as_u64().unwrap()
+        );
+    }
+
+    #[test]
+    fn mesh_bridge_links_and_budget_match() {
+        let g = golden();
+        let m = model();
+        let points: Vec<LinkPoint> = m
+            .vis
+            .iter()
+            .map(|&i| {
+                let n = &m.nodes[i];
+                LinkPoint {
+                    id: n.node.id.clone(),
+                    parent: n.node.p.clone().unwrap_or_default(),
+                    dir: n.node.k,
+                    p: m.target[&n.node.id],
+                    category: n.cat,
+                }
+            })
+            .collect();
+        let links = structural_links(&points);
+        let expected = g["links"].as_array().unwrap();
+        assert_eq!(links.len(), expected.len());
+        for (l, row) in links.iter().zip(expected) {
+            assert_eq!(
+                (l.a.as_str(), l.b.as_str(), l.kind as u64, l.weight),
+                (
+                    row[0].as_str().unwrap(),
+                    row[1].as_str().unwrap(),
+                    row[2].as_u64().unwrap(),
+                    f(&row[3])
+                )
+            );
+        }
+        let half = pick_budget(&links, 0.5);
+        let expected = g["budgetHalf"].as_array().unwrap();
+        assert_eq!(half.len(), expected.len());
+        for (l, row) in half.iter().zip(expected) {
+            assert_eq!(
+                (l.a.as_str(), l.b.as_str()),
+                (row[0].as_str().unwrap(), row[1].as_str().unwrap())
+            );
+        }
+        let coords: Vec<[f64; 3]> = points.iter().take(30).map(|p| p.p).collect();
+        let pairs: Vec<Value> = nearest_pairs(&coords, 2)
+            .into_iter()
+            .map(|(a, b)| serde_json::json!([a, b]))
+            .collect();
+        assert_eq!(Value::Array(pairs), g["nearestPairs"]);
+        for (k, w) in KIND_WEIGHT.iter().enumerate() {
+            assert_eq!(*w, f(&g["kindWeight"][k.to_string()]));
+        }
+    }
+
+    #[test]
+    fn tree_and_bridge_curves_match() {
+        let g = golden();
+        let m = model();
+        for row in g["curves"].as_array().unwrap() {
+            let id = row[0].as_str().unwrap();
+            let n = &m.nodes[m.by_id[id]];
+            let parent = n.node.p.clone().unwrap();
+            let (p, c) = (m.target[&parent], m.target[id]);
+            let cdir = crate::neural::v3::normalize(c);
+            let pdir = m.nodes[m.by_id[&parent]].dir.unwrap_or(cdir);
+            let pts = Sphere::curve(p, pdir, c, cdir, parent == ".");
+            let flat: Vec<f64> = pts.iter().flat_map(|v| v.iter().copied()).collect();
+            let expected = row[1].as_array().unwrap();
+            assert_eq!(flat.len(), expected.len());
+            for (a, b) in flat.iter().zip(expected) {
+                close(*a, f(b), &format!("curve {id}"));
+            }
+        }
+        for row in g["sinks"].as_array().unwrap() {
+            let (a, b) = (row[0].as_str().unwrap(), row[1].as_str().unwrap());
+            let pts = Sphere::link_points(m.target[a], m.target[b], 3);
+            let flat: Vec<f64> = pts.iter().flat_map(|v| v.iter().copied()).collect();
+            for (x, y) in flat.iter().zip(row[2].as_array().unwrap()) {
+                close(*x, f(y), &format!("sink {a}-{b}"));
+            }
+        }
+    }
+
+    #[test]
+    fn palette_rng_build_and_motion_match() {
+        let g = golden();
+        let p = &g["palette"];
+        let named = [
+            ("code", CATEGORY_HEX[0]),
+            ("documents", CATEGORY_HEX[1]),
+            ("media", CATEGORY_HEX[2]),
+            ("data", CATEGORY_HEX[3]),
+            ("archive", CATEGORY_HEX[4]),
+            ("executable", CATEGORY_HEX[5]),
+            ("other", CATEGORY_HEX[6]),
+            ("folders", FOLDER_HEX),
+            ("cream", CREAM_HEX),
+            ("hot", HOT_HEX),
+            ("holo", 0x5fd4ff),
+            ("background", 0x01060b),
+        ];
+        for (name, hex) in named {
+            let c = linear_colour(hex);
+            for (a, value) in c.iter().enumerate() {
+                close(*value, f(&p[name][a]), name);
+            }
+        }
+        let mut rng = Rng::new(7);
+        for v in g["rng"].as_array().unwrap() {
+            same(rng.float(), f(v), "rng");
+        }
+        let m = model();
+        let list: Vec<(String, Option<String>, u32)> = m
+            .vis
+            .iter()
+            .map(|&i| {
+                (
+                    m.id(i).to_string(),
+                    m.nodes[i].node.p.clone(),
+                    m.nodes[i].node.d,
+                )
+            })
+            .collect();
+        let birth = birth_schedule(&list, 6.0);
+        for row in g["birth"].as_array().unwrap() {
+            close(birth[row[0].as_str().unwrap()], f(&row[1]), "birth");
+        }
+        let progress: Vec<f64> = [(0.0, 1.0), (1.0, 1.0), (1.25, 1.0), (1.5, 1.0), (9.0, 1.0)]
+            .iter()
+            .map(|&(now, at)| born_progress(now, at))
+            .collect();
+        for (a, b) in progress.iter().zip(g["bornProgress"].as_array().unwrap()) {
+            close(*a, f(b), "bornProgress");
+        }
+        for ((dt, r), b) in [
+            (1.0 / 60.0, 0.18),
+            (0.05, 0.18),
+            (0.0, 0.18),
+            (1.0 / 30.0, 1.0),
+        ]
+        .iter()
+        .zip(g["smooth"].as_array().unwrap())
+        {
+            close(smooth_factor(*dt, *r), f(b), "smooth");
+        }
+        let mut cur = [0.0; 3];
+        for row in g["steps"].as_array().unwrap() {
+            let d = step_capped(
+                &mut cur,
+                [100.0, -40.0, 20.0],
+                smooth_factor(1.0 / 60.0, 0.18),
+                MAX_SPEED * 100.0 / 60.0,
+                SETTLE_DISTANCE * 100.0,
+            );
+            close(d, f(&row[0]), "step");
+            for a in 0..3 {
+                close(cur[a], f(&row[a + 1]), "step position");
+            }
+        }
+    }
+
+    /// settings.ts `normalizeSettings` through the per-key setters the host uses.
+    fn apply(settings: &mut Settings, patch: &Value) {
+        let o = patch.as_object().unwrap();
+        for key in [
+            "brightness",
+            "nodeSize",
+            "glow",
+            "holo",
+            "rotationSpeed",
+            "pulses",
+            "pulseSpeed",
+            "ghostOpacity",
+            "linkOpacity",
+            "linkBudget",
+        ] {
+            if let Some(v) = o.get(key).and_then(Value::as_f64) {
+                settings.set_number(key, v);
+            }
+        }
+        for key in ["ghosts", "base"] {
+            if let Some(v) = o.get(key).and_then(Value::as_bool) {
+                settings.set_flag(key, v);
+            }
+        }
+        if let Some(v) = o.get("background").and_then(Value::as_str) {
+            settings.set_background(v);
+        }
+        if let Some(links) = o.get("links").and_then(Value::as_object) {
+            for (k, entry) in links {
+                let Ok(kind) = k.parse::<usize>() else {
+                    continue;
+                };
+                settings.set_link(
+                    kind,
+                    entry.get("on").and_then(Value::as_bool),
+                    entry.get("opacity").and_then(Value::as_f64),
+                );
+            }
+        }
+        if let Some(v) = o
+            .get("motion")
+            .and_then(|m| m.get("response"))
+            .and_then(Value::as_f64)
+        {
+            settings.set_number("motion.response", v);
+        }
+    }
+
+    #[test]
+    fn settings_take_changes_and_limits_as_the_original() {
+        let g = golden();
+        let check = |s: &Settings, r: &Value| {
+            let pairs = [
+                ("brightness", s.brightness),
+                ("nodeSize", s.node_size),
+                ("glow", s.glow),
+                ("holo", s.holo),
+                ("rotationSpeed", s.rotation_speed),
+                ("pulses", s.pulses),
+                ("pulseSpeed", s.pulse_speed),
+                ("ghostOpacity", s.ghost_opacity),
+                ("linkOpacity", s.link_opacity),
+                ("linkBudget", s.link_budget),
+            ];
+            for (k, v) in pairs {
+                assert_eq!(v, f(&r[k]), "{k}");
+            }
+            assert_eq!(s.ghosts, r["ghosts"].as_bool().unwrap());
+            assert_eq!(s.base, r["base"].as_bool().unwrap());
+            assert_eq!(s.background, r["background"].as_str().unwrap());
+            for k in 0..7 {
+                assert_eq!(
+                    s.links[k].on,
+                    r["links"][k.to_string()]["on"].as_bool().unwrap(),
+                    "links.{k}.on"
+                );
+                assert_eq!(
+                    s.links[k].opacity,
+                    f(&r["links"][k.to_string()]["opacity"]),
+                    "links.{k}.opacity"
+                );
+            }
+            assert_eq!(s.motion_response, f(&r["motion"]["response"]));
+        };
+        check(&Settings::default(), &g["settings"]["defaults"]);
+        for case in g["settings"]["cases"].as_array().unwrap() {
+            let mut s = Settings::default();
+            apply(&mut s, &case["patch"]);
+            check(&s, &case["result"]);
+        }
+    }
+
+    #[test]
+    fn hud_numbers_read_as_in_spanish() {
+        assert_eq!(format_count(1234), "1234");
+        assert_eq!(format_count(12_345), "12.345");
+        assert_eq!(format_count(1_234_567), "1.234.567");
+        assert_eq!(format_size(0.0), "0 B");
+        assert_eq!(format_size(1536.0), "1,5 KB");
+        assert_eq!(format_size(769_126.4), "751,1 KB");
+        assert_eq!(format_size(3.0 * 1024.0 * 1024.0 * 1024.0), "3 GB");
+    }
+
+    #[test]
+    fn the_scene_builds_grows_and_settles_without_jumps() {
+        let mut s = Sphere::new(&index(), Processes::Off, 7, None, false).unwrap();
+        let tree_segments = s.lines[0].len() / 2;
+        assert_eq!(
+            tree_segments,
+            (s.model.vis.len() - 1) * crate::neural::sphere::SEG
+        );
+        assert_eq!(s.points.len(), s.model.vis.len());
+        assert!(s.points.iter().all(|p| p.born == 1.0));
+        // The root's selection lights everything under it.
+        assert_eq!(s.lines[7].len(), s.lines[0].len());
+        s.begin_grow(6.0);
+        assert!(s.points.iter().all(|p| p.position == [0.0; 3]));
+        let mut steps = 0;
+        let mut max_step = 0.0_f64;
+        while s.building() && steps < 2000 {
+            s.step(1.0 / 60.0);
+            max_step = max_step.max(s.stats().max_step);
+            steps += 1;
+        }
+        let stats = s.stats();
+        assert_eq!(
+            (stats.born, stats.moving, stats.leaving),
+            (stats.total, 0, 0)
+        );
+        // Never more than 3 R/s: 0.05 R per frame of 1/60 s.
+        assert!(max_step <= 0.05 + 1e-9, "max step {max_step}");
+        assert!(stats.sparks > 0);
+        for p in &s.points {
+            assert!(p.position.iter().all(|v| v.is_finite()));
+        }
+    }
+
+    #[test]
+    fn folding_and_another_graph_move_instead_of_jumping() {
+        let mut s = Sphere::new(&index(), Processes::Off, 7, None, false).unwrap();
+        let folded = s
+            .model
+            .vis
+            .iter()
+            .map(|&i| s.model.id(i).to_string())
+            .find(|id| {
+                s.model.nodes[s.model.by_id[id]].folded && s.model.nodes[s.model.by_id[id]].node.k
+            })
+            .unwrap();
+        let before = s.model.vis.len();
+        assert!(s.activate(&folded));
+        assert!(s.model.vis.len() > before);
+        assert_eq!(s.selected(), folded);
+        for _ in 0..600 {
+            s.step(1.0 / 60.0);
+            assert!(s.stats().max_step <= 0.05 + 1e-9);
+        }
+        assert_eq!(s.stats().moving, 0);
+        // Half the index: what goes folds back into its parent, the selection survives or falls to the root.
+        let half: Vec<SphereNode> = index().into_iter().filter(|n| n.d <= 3).collect();
+        assert!(s.set_nodes(&half, true));
+        assert!(s.stats().leaving > 0 || s.model.vis.len() < before);
+        for _ in 0..900 {
+            s.step(1.0 / 60.0);
+        }
+        assert_eq!(s.stats().leaving, 0);
+        assert!(s.model.by_id.contains_key(s.selected()));
+        assert!(
+            !s.set_nodes(&[], true),
+            "an index without a root changes nothing"
+        );
+    }
+
+    #[test]
+    fn settings_rebuild_only_what_needs_geometry() {
+        let mut s = Sphere::new(&index(), Processes::Off, 7, None, false).unwrap();
+        let rebuilds = s.stats().rebuilds;
+        assert!(s.configure(|c| c.set_number("brightness", 2.0)));
+        assert!(s.configure(|c| c.set_number("glow", 0.5)));
+        assert_eq!(s.stats().rebuilds, rebuilds, "appearance is uniforms only");
+        assert!(s.configure(|c| c.set_link(2, Some(true), None)));
+        assert!(s.stats().rebuilds > rebuilds);
+        assert!(!s.lines[2].is_empty(), "mesh links drawn");
+        let counts = s.link_counts();
+        assert!(counts[2] > 0 && counts[0] > 0 && counts[1] > 0);
+        assert!(!s.configure(|c| c.set_number("brightness", f64::NAN)));
+        assert_eq!(s.settings.brightness, 2.0);
+    }
+
+    #[test]
+    fn c_abi_lists_draws_and_rejects_without_unwinding() {
+        use crate::neural::ffi::*;
+        use crate::neural::sphere::{NeuralPoint, NeuralSpark, NeuralVertex};
+        use std::ffi::CString;
+        let root = std::env::temp_dir().join(format!("archie-neural-ffi-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&root);
+        std::fs::create_dir_all(root.join("src/ui")).unwrap();
+        std::fs::create_dir_all(root.join(".hidden")).unwrap();
+        for (path, bytes) in [
+            ("src/main.rs", 120),
+            ("src/ui/app.ts", 40),
+            ("README.md", 9),
+            (".hidden/x", 1),
+        ] {
+            std::fs::write(root.join(path), vec![b'x'; bytes]).unwrap();
+        }
+        let path = root.to_string_lossy().into_owned();
+        unsafe {
+            assert!(neural_scan(std::ptr::null(), 0, 100, 10).is_null());
+            assert!(neural_scan(b"/no/such/folder".as_ptr(), 15, 100, 10).is_null());
+            let index = neural_scan(path.as_ptr(), path.len(), 100, 10);
+            assert!(!index.is_null());
+            // ., src, src/ui, README.md, src/main.rs, src/ui/app.ts: hidden entries are not listed.
+            assert_eq!(neural_index_count(index), 6);
+            let h = neural_new(index, 7, false);
+            assert!(!h.is_null());
+            let n = neural_points(h, std::ptr::null_mut(), 0);
+            assert_eq!(n, 6);
+            let mut points = vec![NeuralPoint::default(); n];
+            assert_eq!(
+                neural_points(h, points.as_mut_ptr(), n - 1),
+                0,
+                "a short buffer is refused"
+            );
+            assert_eq!(neural_points(h, points.as_mut_ptr(), n), n);
+            let tree = neural_lines(h, 0, std::ptr::null_mut(), 0);
+            assert_eq!(tree, 5 * 10 * 2);
+            let mut lines = vec![NeuralVertex::default(); tree];
+            assert_eq!(neural_lines(h, 0, lines.as_mut_ptr(), tree), tree);
+            assert_eq!(
+                neural_lines(h, 1, std::ptr::null_mut(), 0),
+                0,
+                "layer 1 shares layer 0"
+            );
+            assert_eq!(neural_lines(h, 99, std::ptr::null_mut(), 0), 0);
+            let mut sparks = vec![NeuralSpark::default(); 350];
+            assert_eq!(neural_sparks(h, sparks.as_mut_ptr(), 350), 350);
+            assert_eq!(neural_decor(0, std::ptr::null_mut(), 0), 1600 * 3);
+            assert_eq!(neural_decor(4, std::ptr::null_mut(), 0), 64 * 6 * 4);
+            assert_eq!(neural_decor(9, std::ptr::null_mut(), 0), 0);
+            let key = CString::new("glow").unwrap();
+            assert!(neural_set_number(h, key.as_ptr(), 2.5));
+            assert!(!neural_set_number(h, key.as_ptr(), f64::NAN));
+            let bad = CString::new("nope").unwrap();
+            assert!(!neural_set_number(h, bad.as_ptr(), 1.0));
+            assert!(!neural_set_number(h, std::ptr::null(), 1.0));
+            let red = CString::new("#AA0011").unwrap();
+            assert!(neural_set_background(h, red.as_ptr()));
+            assert!(neural_set_link(h, 2, 1, f64::NAN));
+            let len = neural_settings_json(h, std::ptr::null_mut(), 0);
+            let mut json = vec![0 as std::ffi::c_char; len + 1];
+            assert_eq!(neural_settings_json(h, json.as_mut_ptr(), len + 1), len);
+            let settings: serde_json::Value =
+                serde_json::from_str(std::ffi::CStr::from_ptr(json.as_ptr()).to_str().unwrap())
+                    .unwrap();
+            assert_eq!(settings["glow"], 2.5);
+            assert_eq!(settings["background"], "#aa0011");
+            assert_eq!(settings["links"]["2"]["on"], true);
+            let id = CString::new("src/main.rs").unwrap();
+            assert!(neural_select(h, id.as_ptr()));
+            let len = neural_selection(h, std::ptr::null(), std::ptr::null_mut(), 0);
+            let mut text = vec![0 as std::ffi::c_char; len + 1];
+            assert_eq!(
+                neural_selection(h, std::ptr::null(), text.as_mut_ptr(), len + 1),
+                len
+            );
+            let text = std::ffi::CStr::from_ptr(text.as_ptr())
+                .to_str()
+                .unwrap()
+                .to_string();
+            assert_eq!(
+                text.lines().take(3).collect::<Vec<_>>(),
+                ["src/main.rs", "MAIN.RS", "120 B"]
+            );
+            let len = neural_labels(h, std::ptr::null_mut(), 0);
+            let mut labels = vec![0 as std::ffi::c_char; len + 1];
+            assert_eq!(neural_labels(h, labels.as_mut_ptr(), len + 1), len);
+            assert!(std::ffi::CStr::from_ptr(labels.as_ptr())
+                .to_str()
+                .unwrap()
+                .contains("\tsrc\tSRC\n"));
+            let mut at = [0.0_f32; 3];
+            assert!(neural_position(h, id.as_ptr(), at.as_mut_ptr()));
+            let origin = [at[0] * 4.0, at[1] * 4.0, at[2] * 4.0];
+            let direction = [at[0] - origin[0], at[1] - origin[1], at[2] - origin[2]];
+            let mut picked = vec![0 as std::ffi::c_char; 64];
+            assert_eq!(
+                neural_pick(
+                    h,
+                    origin.as_ptr(),
+                    direction.as_ptr(),
+                    2.2,
+                    picked.as_mut_ptr(),
+                    64
+                ),
+                11
+            );
+            assert_eq!(
+                std::ffi::CStr::from_ptr(picked.as_ptr()).to_str().unwrap(),
+                "src/main.rs"
+            );
+            neural_grow(h, 1.0);
+            assert!(neural_building(h));
+            for _ in 0..240 {
+                neural_step(h, 1.0 / 60.0);
+            }
+            assert!(!neural_building(h));
+            let mut stats = NeuralStats::default();
+            assert!(neural_stats(h, &mut stats));
+            assert_eq!((stats.visible, stats.born, stats.moving), (6, 6, 0));
+            let mut counts = [0_u32; 7];
+            assert!(neural_link_counts(h, counts.as_mut_ptr()));
+            assert_eq!((counts[0], counts[1]), (2, 3));
+            assert!(!neural_set_index(h, std::ptr::null(), true));
+            assert!(neural_set_index(h, index, false));
+            neural_free(h);
+            neural_index_free(index);
+            // Null handles are inert.
+            neural_step(std::ptr::null_mut(), 0.1);
+            assert_eq!(neural_points(std::ptr::null(), std::ptr::null_mut(), 0), 0);
+            assert!(!neural_select(std::ptr::null_mut(), id.as_ptr()));
+            neural_free(std::ptr::null_mut());
+        }
+        let _ = std::fs::remove_dir_all(root);
+    }
+
+    #[test]
+    fn picking_selects_the_nearest_node_along_the_ray() {
+        let mut s = Sphere::new(&index(), Processes::Off, 7, None, false).unwrap();
+        let id = s
+            .model
+            .vis
+            .iter()
+            .map(|&i| s.model.id(i).to_string())
+            .find(|id| !s.model.nodes[s.model.by_id[id]].node.k)
+            .unwrap();
+        let at = s.position_of(&id).unwrap();
+        let origin = [at[0] * 4.0, at[1] * 4.0, at[2] * 4.0];
+        let direction = [at[0] - origin[0], at[1] - origin[1], at[2] - origin[2]];
+        assert_eq!(s.pick(origin, direction, 2.2).as_deref(), Some(id.as_str()));
+        assert!(s.activate(&id));
+        assert_eq!(
+            s.selection_text(None)[0],
+            s.model.nodes[s.model.by_id[&id]].node.n.to_uppercase()
+        );
+        assert_eq!(s.pick([1e6, 1e6, 1e6], [1.0, 0.0, 0.0], 2.2), None);
+    }
+}

@@ -455,6 +455,7 @@ pub async fn serve_operator_connection(
     use tokio::io::{AsyncBufReadExt, AsyncReadExt, AsyncWriteExt, BufReader};
     let peer = KernelOperator::from_stream(&stream, &core.config.sentry.operator_uids).ok();
     let ai_peer = crate::ai_control::AiOperator::from_stream(&stream);
+    let world_peer = crate::world_control::WorldOperator::from_stream(&stream);
     let mut session = OperatorSession {
         core,
         peer,
@@ -486,6 +487,12 @@ pub async fn serve_operator_connection(
             continue;
         }
         let response = match decode::<ControlRequest>(&line) {
+            Ok(request) if request.is_world() => {
+                tokio::select! { biased;
+                    _ = reader.fill_buf() => { return Ok(()); }
+                    response = session.core.handle_operator_world(world_peer.as_ref(), request) => response,
+                }
+            }
             Ok(request) if request.is_ai() => {
                 // EOF or pipelined input cancels this exact inference. Give the
                 // attributed service a bounded chance to persist cancellation;

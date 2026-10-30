@@ -633,3 +633,96 @@ fn failed_synthesis_leaves_a_notice_unspoken() {
     );
     let _ = std::fs::remove_dir_all(&dir);
 }
+
+#[test]
+fn a_drawings_narration_is_said_in_the_quiet_shown_as_it_is_said_and_never_sent_to_the_model() {
+    use archie_voice::draw::{Lang, Said as Line};
+    use archie_voice::narration::Narration;
+
+    let dir = std::env::temp_dir().join(format!("archie-voice-narration-{}", std::process::id()));
+    let _ = std::fs::remove_dir_all(&dir);
+    std::fs::create_dir_all(&dir).unwrap();
+    let subtitles = dir.join("narration.json");
+    let narration = Narration::new(Some(subtitles.clone()));
+    let line = |text: &str, progress: bool| Line {
+        text: text.into(),
+        progress,
+        lang: Lang::En,
+    };
+    narration.push(line("Opening Photopea.", false));
+    narration.push(line("A quarter done.", true));
+    narration.push(line("Halfway.", true));
+
+    let plan = SessionPlan {
+        language: "en".into(),
+        listener: SpeechCapabilities {
+            partial_transcript: true,
+            languages: vec!["en".into()],
+            ..Default::default()
+        },
+        voice: SpeechCapabilities {
+            accepts_external_response_text: true,
+            renders_external_response_verbatim: true,
+            languages: vec!["en".into()],
+            ..Default::default()
+        },
+    };
+    let mut session = SpeechSession::new(
+        plan,
+        FloorPolicy::default(),
+        NemotronCognitive::new(SilentModel, "replay", vec!["en".into()], vec![]),
+    )
+    .unwrap();
+    let wav_path = dir.join("said.wav");
+    let mut moments = Vec::new();
+    converse(
+        &Setup {
+            narration: Some(narration.clone()),
+            ..Setup::default()
+        },
+        &Recognizer(vec![]),
+        None,
+        Box::new(Voice),
+        Hearing::Recording {
+            samples: vec![0.0; 16_000],
+            rate: 16_000,
+            at: 0,
+            silence_left: 16_000,
+        },
+        Saying::Recording {
+            path: wav_path,
+            samples: vec![],
+            rate: 16_000,
+        },
+        &mut session,
+        &mut |_| panic!("no tool was proposed"),
+        &mut String::new,
+        Arc::new(AtomicBool::new(false)),
+        &mut |moment| moments.push(moment),
+    )
+    .unwrap();
+    let said: Vec<String> = moments
+        .iter()
+        .filter_map(|moment| match moment {
+            Moment::Said {
+                text,
+                stopped: false,
+                ..
+            } => Some(text.clone()),
+            _ => None,
+        })
+        .collect();
+    assert_eq!(
+        said,
+        ["Opening Photopea.", "Halfway."],
+        "every milestone, and only the progress that is still true"
+    );
+    assert!(narration.is_empty());
+    let shown: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(&subtitles).unwrap()).unwrap();
+    assert_eq!(
+        shown["text"], "Halfway.",
+        "the subtitle is the line said last"
+    );
+    let _ = std::fs::remove_dir_all(&dir);
+}

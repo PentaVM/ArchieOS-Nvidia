@@ -1,6 +1,12 @@
 #include "ArchieBridge.h"
+#include "UiText.h"
 
 #include "Payload.h"
+#include "ExplorationPreview.h"
+#include "ExplorationSelection.h"
+#include "ExplorationCredential.h"
+#include "WorldVisuals.h"
+#include "WorldImageProvider.h"
 
 #include "archie/osm/building.hpp"
 #include "archie/visual/mesh.hpp"
@@ -29,6 +35,7 @@
 
 namespace {
 constexpr auto snapshotUrl = "http://127.0.0.1:7666/api/snapshot";
+constexpr auto explorationUrl = "http://127.0.0.1:7666/api/exploration";
 constexpr auto worldUrl = "http://127.0.0.1:7666/api/world";
 constexpr auto kernelUrl = "http://127.0.0.1:7666/api/kernel";
 constexpr auto orbUrl = "http://127.0.0.1:7666/api/orb";
@@ -371,8 +378,8 @@ QVariantMap makeEdge(const QVector3D &from, const QVector3D &to, const QColor &c
 }
 }
 
-ArchieBridge::ArchieBridge(QObject *parent, bool shellMode)
-    : QObject(parent), m_observatory(scenePolicy())
+ArchieBridge::ArchieBridge(QObject *parent, bool shellMode, quint16 projectionPort)
+    : QObject(parent), m_observatory(scenePolicy()), m_projectionPort(projectionPort)
 {
     // Advancing is not the same as a payload arriving. Freshness decays, entries and
     // departures play out, and the camera moves between snapshots, so the model has to
@@ -386,6 +393,8 @@ ArchieBridge::ArchieBridge(QObject *parent, bool shellMode)
     m_snapshotTimer.setTimerType(Qt::CoarseTimer);
     connect(&m_snapshotTimer, &QTimer::timeout, this, &ArchieBridge::refreshSnapshot);
 
+    m_explorationTimer.setInterval(1000);
+    connect(&m_explorationTimer, &QTimer::timeout, this, &ArchieBridge::refreshExploration);
     m_worldTimer.setInterval(15000);
     m_worldTimer.setTimerType(Qt::VeryCoarseTimer);
     connect(&m_worldTimer, &QTimer::timeout, this, &ArchieBridge::refreshWorld);
@@ -413,6 +422,7 @@ ArchieBridge::ArchieBridge(QObject *parent, bool shellMode)
     if (!shellMode) {
         m_snapshotTimer.start();
         m_worldTimer.start();
+        m_explorationTimer.start();
         m_orbTimer.start();
         m_clockTimer.start();
     }
@@ -426,6 +436,7 @@ ArchieBridge::ArchieBridge(QObject *parent, bool shellMode)
     if (!shellMode) {
         refreshSnapshot();
         refreshWorld();
+        refreshExploration();
         refreshOrb();
         // World is opt-in: a shell rendering Orb does not fetch its globe assets.
         refreshGeoFabric();
@@ -453,6 +464,60 @@ void ArchieBridge::refreshSnapshot()
 void ArchieBridge::refreshWorld()
 {
     request(Projection::World, QUrl(QString::fromLatin1(worldUrl)));
+}
+
+void ArchieBridge::enableWorld()
+{
+    if (!m_worldTimer.isActive()) {
+        m_worldTimer.start();m_snapshotTimer.start();m_explorationTimer.start();
+        refreshWorld();refreshSnapshot();refreshExploration();refreshGeoFabric();loadBuildings();
+    }
+}
+
+void ArchieBridge::clearExplorationVisuals()
+{
+    m_explorationMeshes.clear();m_explorationGeometryDigest.clear();m_imageryMeshes.clear();m_imagerySources.clear();m_worldPoints.clear();m_signalSources.clear();
+    if(m_imageProvider)m_imageProvider->replace({});
+}
+void ArchieBridge::setSelectedImagery(const QString &id)
+{
+    if(id==m_selectedImagery)return;
+    if(m_imagerySources.isEmpty()){m_selectedImagery=id;m_imageryPreference=id;emit selectedImageryChanged();return;}
+    for(const auto &entry:m_imageryMeshes) if(entry.toMap().value(QStringLiteral("source_id")).toString()==id){m_selectedImagery=id;m_imageryPreference=id;emit selectedImageryChanged();return;}
+}
+
+void ArchieBridge::refreshExploration()
+{
+    if (m_explorationPending) return;
+    m_explorationPending=true;
+    const auto path=QString::fromLatin1(explorationUrl)+(m_selectedExplorationJob.isEmpty()?QString():QStringLiteral("/jobs/")+m_selectedExplorationJob);
+    request(Projection::Exploration,QUrl(path));
+}
+
+bool ArchieBridge::selectExplorationJob(const QString &id)
+{
+    if(id.size()!=32 || !std::all_of(id.cbegin(),id.cend(),[](QChar c){return (c>=QLatin1Char('0')&&c<=QLatin1Char('9'))||(c>=QLatin1Char('a')&&c<=QLatin1Char('f'));}))return false;
+    bool known=false;for(const auto &entry:m_exploration.value(QStringLiteral("jobs")).toList())if(entry.toMap().value(QStringLiteral("id")).toString()==id)known=true;
+    if(!known)return false;
+    if(id==m_selectedExplorationJob){refreshExploration();return true;}
+    m_selectedExplorationJob=id;++m_explorationSelectionRevision;clearExplorationVisuals();
+    m_exploration.insert(QStringLiteral("selected_job_id"),id);m_exploration.insert(QStringLiteral("source"),QStringLiteral("unavailable"));m_exploration.insert(QStringLiteral("error"),uiText(QStringLiteral("Cargando captura guardada del área seleccionada"), QStringLiteral("Loading the saved capture of the selected area")));
+    emit explorationSelectionChanged();emit explorationChanged();refreshExploration();return true;
+}
+
+void ArchieBridge::latestExplorationJob()
+{
+    if(m_selectedExplorationJob.isEmpty())return;
+    m_selectedExplorationJob.clear();++m_explorationSelectionRevision;clearExplorationVisuals();
+    m_exploration.remove(QStringLiteral("selected_job_id"));m_exploration.insert(QStringLiteral("source"),QStringLiteral("unavailable"));m_exploration.insert(QStringLiteral("error"),uiText(QStringLiteral("Cargando captura de la última área"), QStringLiteral("Loading the last area's capture")));
+    emit explorationSelectionChanged();emit explorationChanged();refreshExploration();
+}
+
+bool ArchieBridge::frameExploration(double latitude,double longitude,double radiusM,double elevationM,bool animate)
+{
+    const bool accepted=m_observatory.frame_globe(latitude,longitude,radiusM,elevationM,animate);
+    if(accepted)tick();
+    return accepted;
 }
 
 void ArchieBridge::refreshKernel()
@@ -513,24 +578,44 @@ void ArchieBridge::loadBuildings()
 
 void ArchieBridge::request(Projection projection, const QUrl &url)
 {
-    QNetworkRequest request(url);
+    QUrl endpoint=url;endpoint.setPort(m_projectionPort);
+    QNetworkRequest request(endpoint);
+    if(projection==Projection::Exploration) {
+        const auto token=explorationProjectionToken(explorationRuntimeDirectory());
+        if(token.isEmpty()) {
+            m_explorationPending=false;
+            m_exploration={{QStringLiteral("source"),QStringLiteral("unavailable")},
+                           {QStringLiteral("error"),QStringLiteral("Private World projection credential unavailable")}};
+            clearExplorationVisuals();emit explorationChanged();return;
+        }
+        request.setRawHeader(QByteArrayLiteral("Authorization"),QByteArrayLiteral("Bearer ")+token);
+        request.setAttribute(QNetworkRequest::RedirectPolicyAttribute,QNetworkRequest::ManualRedirectPolicy);
+    }
     request.setTransferTimeout(1500);
     request.setRawHeader(QByteArrayLiteral("Accept"), QByteArrayLiteral("application/json"));
     request.setAttribute(QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::AlwaysNetwork);
     auto *reply = m_network.get(request);
+    const auto selectionRevision=m_explorationSelectionRevision;
     ++m_pendingRequests;
     emit busyChanged();
 
-    connect(reply, &QNetworkReply::finished, this, [this, reply, projection] {
+    connect(reply, &QNetworkReply::finished, this, [this, reply, projection,selectionRevision] {
         const auto body = reply->isOpen() ? reply->readAll() : QByteArray{};
         const auto failure = reply->error();
         const auto message = reply->errorString();
         reply->deleteLater();
         if (projection == Projection::Orb)
             m_orbRequestPending = false;
+        if (projection == Projection::Exploration) m_explorationPending=false;
         m_pendingRequests = std::max(0, m_pendingRequests - 1);
         emit busyChanged();
+        if(projection==Projection::Exploration && selectionRevision!=m_explorationSelectionRevision){refreshExploration();return;}
 
+        if (failure != QNetworkReply::NoError && projection==Projection::Exploration) {
+            m_exploration={{QStringLiteral("schema_version"),1},{QStringLiteral("source"),QStringLiteral("unavailable")},
+                           {QStringLiteral("error"),message.left(240)}};
+            clearExplorationVisuals();emit explorationChanged();return;
+        }
         if (failure != QNetworkReply::NoError) {
             fail(message);
             return;
@@ -539,6 +624,11 @@ void ArchieBridge::request(Projection projection, const QUrl &url)
                                            ? maximumOrbProjectionBytes
                                            : maximumProjectionBytes;
         if (body.size() > maximumBytes) {
+            if(projection==Projection::Exploration) {
+                m_exploration={{QStringLiteral("source"),QStringLiteral("unavailable")},
+                               {QStringLiteral("error"),QStringLiteral("Exploration projection exceeded 2 MiB")}};
+                clearExplorationVisuals();emit explorationChanged();return;
+            }
             fail(projection == Projection::Orb
                      ? QStringLiteral("orb projection exceeded the 8 MiB safety limit")
                      : QStringLiteral("projection exceeded the 2 MiB safety limit"));
@@ -553,7 +643,48 @@ void ArchieBridge::accept(Projection projection, const QByteArray &body)
     QJsonParseError parseError;
     const auto document = QJsonDocument::fromJson(body, &parseError);
     if (parseError.error != QJsonParseError::NoError || !document.isObject()) {
+        if(projection==Projection::Exploration) {
+            m_exploration={{QStringLiteral("source"),QStringLiteral("unavailable")},
+                           {QStringLiteral("error"),QStringLiteral("Invalid exploration JSON")}};
+            clearExplorationVisuals();emit explorationChanged();return;
+        }
         fail(QStringLiteral("invalid typed projection"));
+        return;
+    }
+    if (projection==Projection::Exploration) {
+        const auto object=document.object();
+        const auto source=object.value(QStringLiteral("source")).toString();
+        if(object.value(QStringLiteral("schema_version")).toInt()!=1 ||
+           (source!=QStringLiteral("live")&&source!=QStringLiteral("fixture")&&source!=QStringLiteral("unavailable"))) {
+            m_exploration={{QStringLiteral("source"),QStringLiteral("unavailable")},{QStringLiteral("error"),QStringLiteral("Unsupported exploration schema")}};
+            clearExplorationVisuals();emit explorationChanged();return;
+        }
+        const auto next=object.toVariantMap();
+        if(!m_selectedExplorationJob.isEmpty() && object.value(QStringLiteral("selected_job_id")).toString()!=m_selectedExplorationJob) {
+            m_exploration={{QStringLiteral("source"),QStringLiteral("unavailable")},{QStringLiteral("selected_job_id"),m_selectedExplorationJob},{QStringLiteral("error"),QStringLiteral("Selected capture is unavailable")}};
+            clearExplorationVisuals();emit explorationChanged();return;
+        }
+        // Counters change each poll. Decode geometry only when the actual last AOI changes.
+        const auto jobs=object.value(QStringLiteral("jobs")).toArray();
+        QJsonObject geometry;
+        geometry.insert(QStringLiteral("selected_job_id"),object.value(QStringLiteral("selected_job_id")));
+        QJsonArray ids;for(const auto &entry:jobs)ids.append(entry.toObject().value(QStringLiteral("id")));geometry.insert(QStringLiteral("job_ids"),ids);
+        if(!jobs.isEmpty()) {
+            const auto last=QJsonObject::fromVariantMap(selectedExplorationJob(next));
+            geometry.insert(QStringLiteral("preview"),last.value(QStringLiteral("preview")));
+            geometry.insert(QStringLiteral("camera"),last.value(QStringLiteral("camera")));
+        }
+        const auto digest=QCryptographicHash::hash(QJsonDocument(geometry).toJson(QJsonDocument::Compact),QCryptographicHash::Sha256);
+        if(digest!=m_explorationGeometryDigest) {
+            m_explorationMeshes=explorationPreviewMeshes(next);m_explorationGeometryDigest=digest;
+            const auto visual=buildWorldVisuals(next);m_imageryMeshes=visual.imageryMeshes;m_imagerySources=visual.imagerySources;m_worldPoints=visual.points;m_signalSources=visual.signalSources;
+            if(m_imageProvider)m_imageProvider->replace(visual.images);
+            bool current=false,preferred=false;
+            for(const auto &entry:m_imageryMeshes){const auto id=entry.toMap().value(QStringLiteral("source_id")).toString();current=current||id==m_selectedImagery;preferred=preferred||id==m_imageryPreference;}
+            const auto selected=preferred?m_imageryPreference:current?m_selectedImagery:m_imageryMeshes.isEmpty()?QString():m_imageryMeshes.first().toMap().value(QStringLiteral("source_id")).toString();
+            if(selected!=m_selectedImagery){m_selectedImagery=selected;emit selectedImageryChanged();}
+        }
+        if(next!=m_exploration) {m_exploration=next;emit explorationChanged();}
         return;
     }
     setConnected(true);
@@ -797,6 +928,7 @@ void ArchieBridge::tick()
              QVector3D(frame.camera.target.x, frame.camera.target.y, frame.camera.target.z))},
         {QStringLiteral("cameraFov"), frame.camera.fov_degrees},
         {QStringLiteral("cameraState"), cameraStateName(frame.camera_state)},
+        {QStringLiteral("explorationCamera"), m_observatory.exploration_camera_active()},
     };
 
     // Only publish a frame that differs from the one already on screen.
@@ -851,5 +983,11 @@ void ArchieBridge::releaseFocus()
 void ArchieBridge::orbitGlobe(float longitudeDelta, float latitudeDelta, float zoomSteps)
 {
     m_observatory.orbit_globe(longitudeDelta, latitudeDelta, zoomSteps);
+    tick();
+}
+
+void ArchieBridge::tiltGlobe(float deltaDegrees)
+{
+    m_observatory.tilt_globe(deltaDegrees);
     tick();
 }

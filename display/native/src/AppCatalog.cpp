@@ -1,4 +1,5 @@
 #include "AppCatalog.h"
+#include "UiText.h"
 
 #include <QDir>
 #include <QDirIterator>
@@ -41,7 +42,8 @@ QHash<QString, QString> readEntry(const QString &path)
             continue;
         const QString key = line.left(equals).trimmed();
         const QString value = line.mid(equals + 1).trimmed();
-        if (key.endsWith(QLatin1String("[es]")))
+        // Spanish names and comments, when the shell is read in Spanish.
+        if (key.endsWith(QLatin1String("[es]")) && !uiEnglish())
             localized.insert(key.left(key.size() - 4), value);
         else if (!key.contains(QLatin1Char('[')))
             values.insert(key, value);
@@ -56,16 +58,16 @@ QString groupOf(const QString &categories)
     const QStringList list = categories.split(QLatin1Char(';'), Qt::SkipEmptyParts);
     const auto has = [&list](const char *name) { return list.contains(QLatin1String(name)); };
     if (has("X-Archie")) return QStringLiteral("Archie");
-    if (has("Electronics") || has("Engineering") || has("Science")) return QStringLiteral("Ingeniería");
-    if (has("Development") || has("IDE")) return QStringLiteral("Desarrollo");
-    if (has("Graphics") || has("3DGraphics")) return QStringLiteral("Gráficos");
+    if (has("Electronics") || has("Engineering") || has("Science")) return uiText(QStringLiteral("Ingeniería"), QStringLiteral("Engineering"));
+    if (has("Development") || has("IDE")) return uiText(QStringLiteral("Desarrollo"), QStringLiteral("Development"));
+    if (has("Graphics") || has("3DGraphics")) return uiText(QStringLiteral("Gráficos"), QStringLiteral("Graphics"));
     if (has("AudioVideo") || has("Video") || has("Audio")) return QStringLiteral("Multimedia");
     if (has("Network") || has("WebBrowser")) return QStringLiteral("Internet");
-    if (has("Office")) return QStringLiteral("Oficina");
-    if (has("Game")) return QStringLiteral("Juegos");
-    if (has("System") || has("Settings") || has("TerminalEmulator")) return QStringLiteral("Sistema");
-    if (has("Utility")) return QStringLiteral("Utilidades");
-    return QStringLiteral("Otras");
+    if (has("Office")) return uiText(QStringLiteral("Oficina"), QStringLiteral("Office"));
+    if (has("Game")) return uiText(QStringLiteral("Juegos"), QStringLiteral("Games"));
+    if (has("System") || has("Settings") || has("TerminalEmulator")) return uiText(QStringLiteral("Sistema"), QStringLiteral("System"));
+    if (has("Utility")) return uiText(QStringLiteral("Utilidades"), QStringLiteral("Utilities"));
+    return uiText(QStringLiteral("Otras"), QStringLiteral("Other"));
 }
 
 /// Exec without its field codes, split into a program and arguments.
@@ -102,36 +104,58 @@ struct Suggestion {
     const char *id;
     const char *name;
     const char *comment;
-    const char *group;
+    const char *commentEn;
+    const char *category;  // freedesktop main category; groupOf names it
     const char *package;
     const char *glyph;
+    const char *iconName;
+    const char *iconFile;
 };
 
 // Tools an operator of this machine is likely to want, shown when they are missing so the
 // gap is visible. Installing is the operator's call and needs root; this only names the
 // package.
 constexpr Suggestion suggestions[] = {
-    {"org.kicad.kicad", "KiCad", "Diseño de circuitos y placas", "Ingeniería", "kicad", "K"},
-    {"firefox", "Firefox", "Navegador web", "Internet", "firefox", "F"},
-    {"org.kde.kdenlive", "Kdenlive", "Edición de video (el motor de Archie Cut)", "Multimedia", "kdenlive", "V"},
-    {"org.freecad.FreeCAD", "FreeCAD", "Modelado CAD paramétrico", "Ingeniería", "freecad", "C"},
-    {"blender", "Blender", "Modelado, animación y render 3D", "Gráficos", "blender", "B"},
-    {"org.inkscape.Inkscape", "Inkscape", "Gráficos vectoriales", "Gráficos", "inkscape", "I"},
-    {"gimp", "GIMP", "Edición de imágenes", "Gráficos", "gimp", "G"},
-    {"com.obsproject.Studio", "OBS Studio", "Grabar y transmitir la pantalla", "Multimedia", "obs-studio", "O"},
-    {"libreoffice-startcenter", "LibreOffice", "Documentos, hojas y presentaciones", "Oficina", "libreoffice-fresh", "L"},
+    {"org.kicad.kicad", "KiCad", "Diseño de circuitos y placas", "Circuit and board design", "Engineering", "kicad", "K", "kicad", "kicad.png"},
+    {"firefox", "Firefox", "Navegador web", "Web browser", "Network", "firefox", "F", "firefox", "firefox.svg"},
+    {"org.kde.kdenlive", "Kdenlive", "Edición de video (el motor de Archie Cut)", "Video editing (Archie Cut's engine)", "AudioVideo", "kdenlive", "V", "kdenlive", "kdenlive.png"},
+    {"org.freecad.FreeCAD", "FreeCAD", "Modelado CAD paramétrico", "Parametric CAD modeling", "Engineering", "freecad", "C", "org.freecad.FreeCAD", "freecad.svg"},
+    {"blender", "Blender", "Modelado, animación y render 3D", "3D modeling, animation and rendering", "Graphics", "blender", "B", "blender", "blender.svg"},
+    {"org.inkscape.Inkscape", "Inkscape", "Gráficos vectoriales", "Vector graphics", "Graphics", "inkscape", "I", "org.inkscape.Inkscape", "inkscape.svg"},
+    {"gimp", "GIMP", "Edición de imágenes", "Image editing", "Graphics", "gimp", "G", "gimp", "gimp.svg"},
+    {"com.obsproject.Studio", "OBS Studio", "Grabar y transmitir la pantalla", "Record and stream the screen", "AudioVideo", "obs-studio", "O", "com.obsproject.Studio", "obs-studio.png"},
+    {"libreoffice-startcenter", "LibreOffice", "Documentos, hojas y presentaciones", "Documents, spreadsheets and presentations", "Office", "libreoffice-fresh", "L", "libreoffice-startcenter", "libreoffice.png"},
 };
+
+QString bundledIcon(const QString &id)
+{
+    for (const auto &suggestion : suggestions) {
+        if (id != QLatin1String(suggestion.id)) continue;
+        const QString path = QStringLiteral("/archie/assets/app-icons/") + QLatin1String(suggestion.iconFile);
+        return QFile::exists(QLatin1Char(':') + path) ? QStringLiteral("qrc:") + path : QString();
+    }
+    return {};
+}
 
 }  // namespace
 
-AppCatalog::AppCatalog(QObject *parent) : QObject(parent)
+AppCatalog::AppCatalog(QObject *parent)
+    : AppCatalog(QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation), parent)
+{
+}
+
+AppCatalog::AppCatalog(const QStringList &applicationRoots, QObject *parent)
+    : QObject(parent), m_applicationRoots(applicationRoots)
 {
     const QString platform = QGuiApplication::platformName();
     m_canLaunch = platform == QLatin1String("wayland") || platform == QLatin1String("xcb");
     m_launchNote = m_canLaunch
-                       ? QStringLiteral("Se abren en esta sesión, como el usuario que corre el observatorio.")
-                       : QStringLiteral("El observatorio corre sin escritorio (%1): aquí no hay dónde abrir una ventana. "
-                                        "En la imagen, las aplicaciones se abren en el Stage.")
+                       ? uiText(QStringLiteral("Se abren en esta sesión, como el usuario que corre el observatorio."),
+                                QStringLiteral("They open in this session, as the user running the observatory."))
+                       : uiText(QStringLiteral("El observatorio corre sin escritorio (%1): aquí no hay dónde abrir una ventana. "
+                                               "En la imagen, las aplicaciones se abren en el Stage."),
+                                QStringLiteral("The observatory runs without a desktop (%1): there is nowhere to open a window here. "
+                                               "In the image, applications open in the Stage."))
                              .arg(platform);
     m_runningTimer.setInterval(3000);
     m_runningTimer.setTimerType(Qt::CoarseTimer);
@@ -207,9 +231,11 @@ void AppCatalog::scan()
         app.comment = entry.value(QStringLiteral("Comment"), entry.value(QStringLiteral("GenericName")));
         app.exec = expandShare(entry.value(QStringLiteral("Exec")));
         app.terminal = entry.value(QStringLiteral("Terminal")) == QLatin1String("true");
+        app.internal = entry.value(QStringLiteral("X-Archie-Internal")) == QLatin1String("true");
         app.binary = binaryOf(commandOf(app.exec));
         app.group = groupOf(entry.value(QStringLiteral("Categories")));
         app.icon = resolveIcon(entry.value(QStringLiteral("Icon")));
+        if (app.icon.isEmpty()) app.icon = bundledIcon(id);
         app.glyph = entry.value(QStringLiteral("X-Archie-Glyph"), app.name.left(1).toUpper());
         app.appId = entry.value(QStringLiteral("X-Archie-App-Id"), id);
         app.wmClass = entry.value(QStringLiteral("StartupWMClass"));
@@ -221,10 +247,11 @@ void AppCatalog::scan()
             app.missing = QStringLiteral("falta ") + (tryExec.isEmpty() ? QStringLiteral("el ejecutable") : tryExec);
         const QString needsFile = expandShare(entry.value(QStringLiteral("X-Archie-Requires-File")));
         if (app.missing.isEmpty() && !needsFile.isEmpty() && !QFileInfo::exists(needsFile))
-            app.missing = QStringLiteral("falta ") + needsFile;
+            app.missing = uiText(QStringLiteral("falta "), QStringLiteral("missing ")) + needsFile;
         const QString needsEnv = entry.value(QStringLiteral("X-Archie-Requires-Env"));
         if (app.missing.isEmpty() && !needsEnv.isEmpty() && qEnvironmentVariableIsEmpty(needsEnv.toLatin1().constData()))
-            app.missing = QStringLiteral("necesita ") + needsEnv + QStringLiteral(" en el entorno");
+            app.missing = uiText(QStringLiteral("necesita "), QStringLiteral("needs ")) + needsEnv
+                + uiText(QStringLiteral(" en el entorno"), QStringLiteral(" in the environment"));
         app.available = app.missing.isEmpty();
         for (const auto &s : suggestions)
             if (id == QLatin1String(s.id))
@@ -241,8 +268,7 @@ void AppCatalog::scan()
     }
     // Everything installed, as any application menu lists it. Earlier directories win,
     // as the XDG specification orders them.
-    const QStringList roots = QStandardPaths::standardLocations(QStandardPaths::ApplicationsLocation);
-    for (const QString &root : roots) {
+    for (const QString &root : std::as_const(m_applicationRoots)) {
         QDirIterator it(root, {QStringLiteral("*.desktop")}, QDir::Files, QDirIterator::Subdirectories);
         int budget = 4000;
         while (it.hasNext() && budget-- > 0) {
@@ -260,13 +286,15 @@ void AppCatalog::scan()
         App app;
         app.id = id;
         app.name = QString::fromUtf8(s.name);
-        app.comment = QString::fromUtf8(s.comment);
-        app.group = QString::fromUtf8(s.group);
+        app.comment = QString::fromUtf8(uiEnglish() ? s.commentEn : s.comment);
+        app.group = groupOf(QString::fromLatin1(s.category));
         app.package = QString::fromLatin1(s.package);
         app.glyph = QString::fromUtf8(s.glyph);
         app.section = QStringLiteral("suggested");
-        app.missing = QStringLiteral("no instalada · pacman -S ") + app.package;
+        app.missing = uiText(QStringLiteral("no instalada · pacman -S "), QStringLiteral("not installed · pacman -S ")) + app.package;
         app.appId = id;
+        app.icon = resolveIcon(QString::fromLatin1(s.iconName));
+        if (app.icon.isEmpty()) app.icon = bundledIcon(id);
         m_apps.push_back(app);
     }
 }
@@ -335,14 +363,17 @@ void AppCatalog::publish()
         return a.name.localeAwareCompare(b.name) < 0;
     });
     QVariantList rows;
+    QVariantList forgeRows;
     for (const App &app : std::as_const(m_apps)) {
-        rows.push_back(QVariantMap{
+        const QVariantMap row{
             {QStringLiteral("id"), app.id},
             {QStringLiteral("name"), app.name},
             {QStringLiteral("comment"), app.comment},
             {QStringLiteral("group"), app.group},
             {QStringLiteral("section"), app.section},
             {QStringLiteral("icon"), app.icon},
+            {QStringLiteral("iconSource"), app.icon.startsWith(QLatin1String("qrc:/archie/assets/app-icons/"))
+                ? QStringLiteral("official_bundle") : app.icon.isEmpty() ? QString() : QStringLiteral("installed")},
             {QStringLiteral("glyph"), app.glyph},
             {QStringLiteral("available"), app.available},
             {QStringLiteral("missing"), app.missing},
@@ -350,9 +381,13 @@ void AppCatalog::publish()
             {QStringLiteral("operable"), app.operable},
             {QStringLiteral("featured"), app.featured},
             {QStringLiteral("package"), app.package},
-        });
+        };
+        rows.push_back(row);
+        if (!app.internal)
+            forgeRows.push_back(row);
     }
     m_rows = rows;
+    m_forgeRows = forgeRows;
     emit appsChanged();
 }
 
@@ -360,7 +395,7 @@ bool AppCatalog::launch(const QString &id)
 {
     const auto found = std::find_if(m_apps.cbegin(), m_apps.cend(), [&id](const App &app) { return app.id == id; });
     if (found == m_apps.cend()) {
-        emit launched(id, false, QStringLiteral("no está en el catálogo"));
+        emit launched(id, false, uiText(QStringLiteral("no está en el catálogo"), QStringLiteral("not in the catalog")));
         return false;
     }
     if (!m_canLaunch) {
@@ -373,13 +408,13 @@ bool AppCatalog::launch(const QString &id)
     }
     QStringList command = commandOf(found->exec);
     if (command.isEmpty()) {
-        emit launched(id, false, QStringLiteral("la entrada no dice qué ejecutar"));
+        emit launched(id, false, uiText(QStringLiteral("la entrada no dice qué ejecutar"), QStringLiteral("the entry does not say what to run")));
         return false;
     }
     if (found->terminal) {
         const QString terminal = QStandardPaths::findExecutable(QStringLiteral("foot"));
         if (terminal.isEmpty()) {
-            emit launched(id, false, QStringLiteral("es de terminal y no hay terminal instalada"));
+            emit launched(id, false, uiText(QStringLiteral("es de terminal y no hay terminal instalada"), QStringLiteral("it runs in a terminal and no terminal is installed")));
             return false;
         }
         command.prepend(terminal);

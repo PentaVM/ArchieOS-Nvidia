@@ -1,0 +1,8 @@
+intro|Esto es ArchieOS: un sistema operativo con el que hablas, hecho para una persona y sus propias máquinas.
+desktop|Todo vive en un solo escritorio. El orbe, World, Vault, Forge, Sentry y el Stage son apps de la misma ventana, no programas sueltos.
+apps|Archie las abre como lo harías tú: presiona los botones del dock a través del Stage, la única puerta por la que pasa cada acción de Archie.
+ask|Ahora el pedido: Archie, dibuja la Mona Lisa.
+fast|Archie convierte el cuadro en cientos de trazos y los dibuja en Photopea, un editor real en un navegador real, con su propio puntero. Esta parte va acelerada.
+authority|Cada tanda de trazos es un permiso sellado, verificado contra la ventana tal como está ahora. Si mueves el mouse, el control es tuyo; Archie espera y sigue la misma línea.
+stack|Archie escucha con el reconocimiento de voz Nemotron de NVIDIA, razona con Nemotron en Nebius y encuentra lo que no tiene nombre mirando la pantalla.
+outro|ArchieOS. Tú lo dices, Archie lo hace, y el control sigue siendo tuyo.

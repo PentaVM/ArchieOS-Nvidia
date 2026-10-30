@@ -670,19 +670,14 @@ fn canvas_of(
 #[cfg(unix)]
 mod unix {
 
-    use archie_paint::{Canvas, Picture};
+    use archie_paint::session::{self, Deed, Progress, Seat};
+    use archie_paint::Canvas;
     use archie_policy::{PolicyEngine, Principal};
-    use archie_stage::{
-        learn, ActOutcome, ActRequest, CommandKey, LookOutcome, Operator, PointerButton,
-        StageAction, StageClient, StagePolicy, StageWorld,
-    };
-    use archie_types::PrivacyGrade;
-
-    /// How long a stroke waits for a person who has taken the stage before giving up on it.
-    const PATIENCE_MS: u64 = 120_000;
+    use archie_stage::{learn, CommandKey, Operator, StageClient, StagePolicy, StageWorld};
     use std::path::Path;
     use std::process::ExitCode;
-    use std::time::{Duration, Instant};
+    use std::sync::atomic::AtomicBool;
+    use std::time::Duration;
     use tokio::net::UnixStream;
 
     pub async fn main(args: Vec<String>) -> ExitCode {
@@ -699,37 +694,6 @@ mod unix {
         canvas_of, flag, flow_of, levels_of, number, palette_at, plan_with, prepared, shares_of,
         swatches_of, take, AsAsked, Palette,
     };
-
-    /// One thing to do on the way to a picture.
-    enum Deed {
-        /// Pick up a colour, by clicking the swatch the application offers for it.
-        Swatch(i32, i32),
-        /// Lines drawn one after another under a single authorisation. The round trip is
-        /// most of what a line costs, so they travel together.
-        Lines(Vec<Vec<archie_stage::StrokePoint>>),
-    }
-
-    /// The lines grouped into as few commands as one may carry.
-    fn in_batches(lines: Vec<Vec<archie_stage::StrokePoint>>, most: usize) -> Vec<Deed> {
-        let most = most.clamp(1, archie_stage::MAX_STROKE_PATHS);
-        let mut deeds = Vec::new();
-        let mut batch: Vec<Vec<archie_stage::StrokePoint>> = Vec::new();
-        let mut points = 0;
-        for line in lines {
-            let full =
-                batch.len() >= most || points + line.len() > archie_stage::MAX_STROKE_POINTS_IN_ALL;
-            if full && !batch.is_empty() {
-                deeds.push(Deed::Lines(std::mem::take(&mut batch)));
-                points = 0;
-            }
-            points += line.len();
-            batch.push(line);
-        }
-        if !batch.is_empty() {
-            deeds.push(Deed::Lines(batch));
-        }
-        deeds
-    }
 
     async fn run(mut args: Vec<String>) -> Result<ExitCode, String> {
         let socket = take(&mut args, "--socket");
@@ -789,16 +753,23 @@ mod unix {
         };
         let found = found.ok_or_else(|| format!("{app} has no surface on this stage"))?;
         let mut operator = Operator::new(key, policy, PolicyEngine::default());
-        let canvas = if find_paper {
-            let paper = look_for_paper(
-                &mut operator,
-                &mut client,
-                &mut world,
-                &app,
-                found.surface,
-                &socket,
-            )
-            .await?;
+        let mut seat = Seat {
+            operator: &mut operator,
+            client: &mut client,
+            world: &mut world,
+            app_id: app.clone(),
+            surface: found.surface,
+            principal: Principal::Human {
+                id: "archie-paint".into(),
+                authenticated: true,
+            },
+            snapshots: Path::new(&socket)
+                .parent()
+                .ok_or("--socket has no directory")?
+                .join("snapshots"),
+        };
+        let canvas: Canvas = if find_paper {
+            let paper = seat.find_paper().await?;
             println!(
                 "the paper is {}x{} at {},{} of that window",
                 paper.width, paper.height, paper.x, paper.y
@@ -831,9 +802,9 @@ mod unix {
             super::say_what_it_costs(length, travelled, 0.0, super::commands_for(&groups));
             for (colour, plan) in groups {
                 if let Some((x, y)) = palette.swatch(colour) {
-                    deeds.push(Deed::Swatch(x, y));
+                    deeds.push(Deed::Swatch(x, y, colour));
                 }
-                deeds.extend(in_batches(plan.strokes, batch));
+                deeds.extend(session::in_batches(plan.strokes, batch));
             }
         } else {
             let plan = plan_with(
@@ -849,189 +820,40 @@ mod unix {
                 },
             );
             super::planning::report(&plan, canvas);
-            deeds.extend(in_batches(plan.strokes, batch));
+            deeds.extend(session::in_batches(plan.strokes, batch));
         }
-        let started = Instant::now();
-        let (mut drawn, mut refused) = (0_usize, 0_usize);
-        let mut paused_ms = 0_u64;
-        let total = deeds.len().min(limit.unwrap_or(usize::MAX));
-        for (index, deed) in deeds.iter().take(total).enumerate() {
-            let action = match deed {
-                Deed::Swatch(x, y) => StageAction::Click {
-                    x: *x,
-                    y: *y,
-                    button: PointerButton::Left,
-                },
-                Deed::Lines(paths) => StageAction::Strokes {
-                    paths: paths.clone(),
-                    button: PointerButton::Left,
-                },
-            };
-            let mut request = ActRequest {
-                app_id: app.clone(),
-                surface: Some(found.surface),
-                action,
-                text_grade: PrivacyGrade::Public,
-                principal: Principal::Human {
-                    id: "archie-paint".into(),
-                    authenticated: true,
-                },
-                task_id: None,
-                user_present: true,
-                approved: false,
-                justification: match deed {
-                    Deed::Swatch(..) => "pick up a colour the application offers".into(),
-                    Deed::Lines(paths) => format!("draw {} strokes of a picture", paths.len()),
-                },
-            };
-            // A person reaching for the mouse takes the stage, and a picture is not a
-            // reason to argue with that: the stroke waits until they are done rather than
-            // being spent against a stage that is refusing it. The compositor gives the
-            // agent the stage back after its own quiet period.
-            let mut waited_ms = 0_u64;
-            let mut carried = 0_usize;
-            let outcome = loop {
-                let outcome = operator
-                    .act(&mut client, &mut world, &request, Duration::from_secs(30))
-                    .await
-                    .map_err(|e| e.to_string())?;
-                let held = matches!(
-                    &outcome,
-                    ActOutcome::Receipt { outcome, .. }
-                        if outcome == "operator_has_control" || outcome == "preempted_by_operator"
-                );
-                // A drawing the person interrupted says how much of it was made. What was
-                // made is not made again: the rest is asked for on its own, so a hand on the
-                // mouse costs the line it landed in and not the fifty behind it.
-                if let (
-                    ActOutcome::Receipt { finished, .. },
-                    StageAction::Strokes { paths, button },
-                ) = (&outcome, &request.action)
-                {
-                    if held && *finished > 0 && *finished < paths.len() {
-                        carried += *finished;
-                        let rest = paths[*finished..].to_vec();
-                        println!(
-                            "a person took the stage after {} of {} lines; the rest waits",
-                            carried,
-                            carried + rest.len()
-                        );
-                        request.action = StageAction::Strokes {
-                            paths: rest,
-                            button: *button,
-                        };
-                    }
-                }
-                if !held || waited_ms >= PATIENCE_MS {
-                    break outcome;
-                }
-                if waited_ms == 0 {
-                    println!("a person has the stage; waiting for them");
-                }
-                tokio::time::sleep(Duration::from_millis(500)).await;
-                waited_ms += 500;
-                paused_ms += 500;
-            };
-            match &outcome {
-                ActOutcome::Receipt { outcome, .. } if outcome == "executed" => {
-                    drawn += 1;
-                    if waited_ms > 0 {
-                        println!("back to it after {:.1}s", waited_ms as f32 / 1000.0);
-                    }
-                }
-                other => {
-                    refused += 1;
-                    if refused <= 3 {
-                        eprintln!("archie-paint: stroke {index} was not drawn: {other:?}");
-                    }
+        deeds.truncate(limit.unwrap_or(usize::MAX));
+        let stop = AtomicBool::new(false);
+        let mut commands = 0_usize;
+        let summary = session::perform(&mut seat, &deeds, &stop, &mut |progress| match progress {
+            Progress::Waiting => println!("a person has the stage; waiting for them"),
+            Progress::Resumed => println!("back to it"),
+            Progress::Drew { lines, of } => {
+                commands += 1;
+                if commands % 25 == 0 {
+                    println!("{lines} of {of} lines");
                 }
             }
-            if index % 25 == 24 {
-                println!(
-                    "{} of {total} commands, {:.1}s",
-                    index + 1,
-                    started.elapsed().as_secs_f32()
-                );
-            }
-        }
-        let seconds = started.elapsed().as_secs_f32();
-        let drawing = seconds - paused_ms as f32 / 1000.0;
-        let done = |pick: &dyn Fn(&Vec<Vec<archie_stage::StrokePoint>>) -> f32| -> f32 {
-            deeds
-                .iter()
-                .take(total)
-                .map(|deed| match deed {
-                    Deed::Lines(paths) => pick(paths),
-                    Deed::Swatch(..) => 0.0,
-                })
-                .sum()
-        };
-        let lines = done(&|paths| paths.len() as f32);
-        let inked = done(&|paths| paths.iter().map(|p| archie_paint::length_of(p)).sum());
+            Progress::Refused(why) => println!("refused: {why}"),
+            Progress::Colour(_) => {}
+        })
+        .await?;
         // Pixels of line a second is the number that decides whether a picture finishes.
         // Commands a second only says how fast it was asking.
         println!(
-            "drew {lines:.0} lines in {drawn} commands and had {refused} refused in {seconds:.1}s, of which {:.1}s was waiting for a person -- {:.0} pixels of line a second",
-            paused_ms as f32 / 1000.0,
-            inked / drawing.max(0.001)
+            "drew {} lines in {} commands and had {} refused in {:.1}s, of which {:.1}s was waiting for a person -- {:.0} pixels of line a second",
+            summary.lines,
+            summary.commands,
+            summary.refused,
+            summary.seconds,
+            summary.waited_seconds,
+            summary.pixels_per_second()
         );
-        Ok(if refused == 0 {
+        Ok(if summary.refused == 0 {
             ExitCode::SUCCESS
         } else {
             ExitCode::from(4)
         })
-    }
-
-    /// Looks at the window once and takes the largest light rectangle in it for paper.
-    ///
-    /// The capture goes the way every capture goes: a read lease, the compositor's checks,
-    /// a digest, and the file removed as it is read. Nothing of it is kept but a rectangle.
-    async fn look_for_paper(
-        operator: &mut Operator,
-        client: &mut StageClient<tokio::net::unix::OwnedReadHalf, tokio::net::unix::OwnedWriteHalf>,
-        world: &mut StageWorld,
-        app: &str,
-        surface: u32,
-        socket: &str,
-    ) -> Result<Canvas, String> {
-        let snapshots = Path::new(socket)
-            .parent()
-            .ok_or("--socket has no directory")?
-            .join("snapshots");
-        let request = ActRequest {
-            app_id: app.to_string(),
-            surface: Some(surface),
-            action: StageAction::Snapshot { region: None },
-            text_grade: PrivacyGrade::Public,
-            principal: Principal::Human {
-                id: "archie-paint".into(),
-                authenticated: true,
-            },
-            task_id: None,
-            user_present: true,
-            approved: false,
-            justification: "look for the paper to draw on".into(),
-        };
-        let outcome = operator
-            .look(client, world, &request, &snapshots, Duration::from_secs(30))
-            .await
-            .map_err(|e| e.to_string())?;
-        let snapshot = match outcome {
-            LookOutcome::Captured(snapshot) => snapshot,
-            LookOutcome::NotCaptured(outcome) => {
-                return Err(format!("the window was not captured: {outcome:?}"))
-            }
-        };
-        let picture = Picture::from_png(&snapshot.png).map_err(|e| e.to_string())?;
-        let paper = archie_paint::paper_in(&picture, archie_paint::PAPER)
-            .ok_or("there is no paper in that window to draw on")?;
-        // The capture may be of one part of the window; the paper is in the window.
-        Ok(Canvas::new(
-            paper.x + snapshot.x,
-            paper.y + snapshot.y,
-            paper.width,
-            paper.height,
-        ))
     }
 
     fn load_key(path: &str) -> Result<CommandKey, String> {

@@ -1,4 +1,6 @@
 import QtQuick
+import "qrc:/archie/shell/prototype" as Shell
+import "../../shell/prototype/Lang.js" as Tr
 
 // What sits over the orb: almost nothing. The orb is configured by Cortex, not by
 // panels, so this layer only keeps the hands (drag to turn, scroll to approach, click to
@@ -6,18 +8,23 @@ import QtQuick
 // saying what Archie is doing and what it is using.
 Item {
     id: hud
+    // The project's typeface (the shell embeds it); the HUD used the system monospace.
+    readonly property string family: inter.status === FontLoader.Ready ? inter.font.family : "sans-serif"
+    FontLoader { id: inter; source: "qrc:/archie/shell/fonts/inter/Inter-Variable.ttf" }
     required property var controller
     property bool navigationEnabled: true
 
     required property var view
     required property var orbScene
     property bool labelsVisible: true
-    property color textColor: "#e9edf3"
-    property color secondaryColor: "#c9ced8"
-    property color mutedColor: "#8b93a1"
-    property color errorColor: "#c98a8a"
+    property bool lightMode: Shell.Theme.light
+    property color textColor: Shell.Theme.t1
+    property color secondaryColor: Shell.Theme.t2
+    property color mutedColor: Shell.Theme.t3
+    property color errorColor: Shell.Theme.bad
 
     function pickAt(x, y) {
+        if (!hud.view.camera) return ""
         const near = hud.view.mapTo3DScene(Qt.vector3d(x, y, 0))
         const far = hud.view.mapTo3DScene(Qt.vector3d(x, y, 4000))
         const field = hud.orbScene.field
@@ -25,11 +32,11 @@ Item {
     }
 
     readonly property var s: hud.controller.scene
-    readonly property string mode: Number(s.speak || 0) > 0.05 ? "Hablando"
-                                   : Number(s.think || 0) > 0.05 ? "Pensando"
-                                   : Number(s.listen || 0) > 0.05 ? "Escuchando" : "En reposo"
-    readonly property color modeColour: mode === "Hablando" ? "#a9c7ff" : mode === "Pensando" ? "#f2c98f"
-                                        : mode === "Escuchando" ? "#8fe3d3" : "#6f7785"
+    readonly property string mode: Number(s.speak || 0) > 0.05 ? Tr.t("Hablando")
+                                   : Number(s.think || 0) > 0.05 ? Tr.t("Pensando")
+                                   : Number(s.listen || 0) > 0.05 ? Tr.t("Escuchando") : Tr.t("En reposo")
+    readonly property color modeColour: mode === Tr.t("Hablando") ? Shell.Theme.info
+        : mode === Tr.t("Pensando") ? Shell.Theme.warn : mode === Tr.t("Escuchando") ? Shell.Theme.ok : mutedColor
 
     HoverHandler {
         id: hover
@@ -106,13 +113,11 @@ Item {
                 x: at.x + 7
                 y: at.y - height / 2
                 text: String(place.name).toUpperCase()
-                color: "#d9e1ea"
-                opacity: 0.86
-                font.family: "monospace"
+                color: hud.textColor
+                font.family: hud.family
                 font.pixelSize: 11
                 font.letterSpacing: 0.4
-                style: Text.Outline
-                styleColor: "#d0000000"
+                Rectangle { anchors.fill: parent; anchors.margins: -3; z: -1; radius: 3; color: Shell.Theme.panel; border.color: Shell.Theme.hair }
             }
         }
         Column {
@@ -124,23 +129,21 @@ Item {
             spacing: 3
             Text {
                 text: String(hud.s.contentName || "").toUpperCase()
-                color: "#46d8ea"
-                font.family: "monospace"
+                color: hud.secondaryColor
+                font.family: hud.family
                 font.pixelSize: 13
                 font.weight: Font.DemiBold
                 font.letterSpacing: 0.6
-                style: Text.Outline
-                styleColor: "#c0000000"
+                Rectangle { anchors.fill: parent; anchors.margins: -3; z: -1; radius: 3; color: Shell.Theme.panel; border.color: Shell.Theme.hair }
             }
-            Rectangle { width: 170; height: 1; color: "#46d8ea"; opacity: 0.55 }
+            Rectangle { width: 170; height: 1; color: hud.secondaryColor; opacity: 0.55 }
             Text {
-                text: Number(hud.s.contentElements || 0).toFixed(0) + " ELEMENTOS  ·  "
+                text: Number(hud.s.contentElements || 0).toFixed(0) + Tr.t(" ELEMENTOS  ·  ")
                       + contentLabels.sizeText(Number(hud.s.contentBytes || 0))
-                color: "#cfd8e3"
-                font.family: "monospace"
+                color: hud.secondaryColor
+                font.family: hud.family
                 font.pixelSize: 11
-                style: Text.Outline
-                styleColor: "#c0000000"
+                Rectangle { anchors.fill: parent; anchors.margins: -3; z: -1; radius: 3; color: Shell.Theme.panel; border.color: Shell.Theme.hair }
             }
         }
     }
@@ -154,12 +157,16 @@ Item {
         color: hud.textColor
         font.pixelSize: 13
         font.weight: Font.Medium
-        style: Text.Raised
-        styleColor: "#aa000000"
+        Rectangle { anchors.fill: parent; anchors.margins: -6; z: -1; radius: Shell.Theme.rCard; color: Shell.Theme.panel; border.color: Shell.Theme.hair }
     }
 
     // The one line: state, then what is lit and why.
+    Rectangle {
+        anchors.fill: stateLine; anchors.margins: -9; radius: Shell.Theme.rCard
+        visible: stateLine.visible; color: Shell.Theme.panel; border.color: Shell.Theme.hair
+    }
     Row {
+        id: stateLine
         visible: hud.labelsVisible
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.bottom: parent.bottom
@@ -171,7 +178,7 @@ Item {
             width: 7; height: 7; radius: 3.5
             color: hud.modeColour
             SequentialAnimation on opacity {
-                running: hud.visible && hud.labelsVisible && !hud.controller.reducedMotion && hud.mode !== "En reposo"
+                running: hud.visible && hud.labelsVisible && !hud.controller.reducedMotion && hud.mode !== Tr.t("En reposo")
                 loops: 3
                 NumberAnimation { to: 0.35; duration: 700; easing.type: Easing.InOutSine }
                 NumberAnimation { to: 1.0; duration: 700; easing.type: Easing.InOutSine }
@@ -199,8 +206,9 @@ Item {
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 14
         visible: hud.labelsVisible && hud.controller.error.length > 0
-        text: "Sin conexión con el observador del sistema"
+        text: Tr.t("Sin conexión con el observador del sistema")
         color: hud.errorColor
         font.pixelSize: 11
+        Rectangle { anchors.fill: parent; anchors.margins: -4; z: -1; radius: 4; color: Shell.Theme.panel; border.color: Shell.Theme.hair }
     }
 }

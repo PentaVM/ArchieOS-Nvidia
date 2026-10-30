@@ -2,6 +2,10 @@ import QtQuick
 import QtQuick3D
 import QtQuick3D.Helpers
 import Archie.Observatory
+import "OrbActions.js" as OrbActions
+import "ModelActivity.js" as ModelActivity
+import "qrc:/archie/shell/prototype" as Shell
+import "../../shell/prototype/Lang.js" as Tr
 
 // Shared by the shell and native renderer: one controller, one active scene.
 Item {
@@ -11,21 +15,33 @@ Item {
     property bool navigationEnabled: true
     property bool hudVisible: true
     property bool reducedMotion: false
-    property color backgroundColor: controller.look.background
-    property color textColor: "#e9edf3"
-    property color secondaryColor: "#c9ced8"
-    property color mutedColor: "#8b93a1"
-    property color errorColor: "#c98a8a"
+    property bool frozen: false
+    property bool lightMode: Shell.Theme.light
+    property double modelActivityNow: Date.now()
+    property var modelActivity: ModelActivity.fromSnapshot(bridge.snapshot, modelActivityNow, bridge.connected)
+    Timer { interval:1000; repeat:true; running:viewport.presented; onTriggered:viewport.modelActivityNow=Date.now() }
+    property color backgroundColor: Shell.Theme.desktop
+    property color textColor: Shell.Theme.t1
+    property color secondaryColor: Shell.Theme.t2
+    property color mutedColor: Shell.Theme.t3
+    property color errorColor: Shell.Theme.bad
     property int frameIntervalMs: Number(bridge.frame.frameIntervalMs === undefined ? 16 : bridge.frame.frameIntervalMs)
     readonly property bool presented: viewport.visible && bridge.presented && viewport.width > 0 && viewport.height > 0
     // The hologram's grade is the look itself and costs one full-screen pass, so it runs
     // whenever the view draws; the governor's post-processing switch keeps the bloom.
     readonly property bool graded: !!controller.look.graded
     property bool ownsController: false
+    // Xavi's neural sphere draws the orb when the look preset names it as the field source.
+    readonly property bool neural: !!controller.settings.fieldSource && controller.settings.fieldSource === "neural"
 
+    function viewVerb(action,args) {
+        if (!viewport.presented || !viewport.ownsController) return Tr.t("El Orbe no está visible")
+        if (action === "freeze") { viewport.frozen=args.enabled; return "" }
+        return OrbActions.perform(action,args,controller,scene,orbHud,viewport.neural ? neuralView : null)
+    }
     Component.onCompleted: ownsController = controller.acquireView(viewport)
     Component.onDestruction: controller.releaseView(viewport)
-    Binding { target: controller; property: "active"; value: viewport.presented; when: viewport.ownsController }
+    Binding { target: controller; property: "active"; value: viewport.presented && !viewport.neural && !viewport.frozen; when: viewport.ownsController }
     Binding { target: controller; property: "renderBudget"; value: bridge.frame; when: viewport.ownsController }
     // renderBudget carries frameIntervalMs; the controller takes it from there alone.
     Binding { target: controller; property: "reducedMotion"; value: viewport.reducedMotion; when: viewport.ownsController }
@@ -33,7 +49,7 @@ Item {
     View3D {
         id: view
         anchors.fill: parent
-        visible: viewport.ownsController && viewport.presented && viewport.frameIntervalMs > 0
+        visible: viewport.ownsController && viewport.presented && viewport.frameIntervalMs > 0 && !viewport.neural
         renderMode: View3D.Offscreen
         camera: scene.camera
         environment: ExtendedSceneEnvironment {
@@ -81,13 +97,36 @@ Item {
             presented: viewport.presented
         }
     }
+    NeuralViewport {
+        id:neuralView
+        anchors.fill: parent
+        controller: viewport.controller
+        lightMode: viewport.lightMode
+        backgroundColor: viewport.backgroundColor
+        textColor: viewport.textColor
+        mutedColor: viewport.mutedColor
+        errorColor: viewport.errorColor
+        modelActivity: viewport.modelActivity
+        panelColor: Shell.Theme.panel
+        borderColor: Shell.Theme.hair
+        renderBudget: viewport.bridge.frame
+        active: viewport.ownsController && viewport.presented && viewport.neural
+        navigationEnabled: viewport.navigationEnabled
+        frozen: viewport.frozen
+        visible: viewport.ownsController && viewport.presented && viewport.neural
+        presented: visible
+        hudVisible: viewport.hudVisible
+        reducedMotion: viewport.reducedMotion || !viewport.controller.renderBudget.ambientMotion
+    }
     OrbHud {
+        id:orbHud
         anchors.fill: parent
         controller: viewport.controller
         view: view
         orbScene: scene
         navigationEnabled: viewport.navigationEnabled
         labelsVisible: viewport.hudVisible
+        lightMode: viewport.lightMode
         textColor:viewport.textColor
         secondaryColor:viewport.secondaryColor
         mutedColor:viewport.mutedColor

@@ -2181,9 +2181,20 @@ void manual_globe_navigation_stays_bounded_and_can_return_home() {
     for(int i=0;i<20;++i) model.orbit_globe(0.0F,0.0F,10.0F);
     const auto close=model.tick(2200).camera;
     const float r=std::sqrt(close.eye.x*close.eye.x+close.eye.y*close.eye.y+close.eye.z*close.eye.z);
-    CHECK(r>=22.99F);CHECK(std::fabs(close.eye.y/r)<0.997F);
+    CHECK(r>20.0F && r<20.001F);CHECK(std::fabs(close.eye.y/r)<0.9999F);
+    const auto beforePan=close;
+    model.tilt_globe(20);
+    const auto tilted=model.tick(2210).camera;
+    CHECK(!(tilted.eye==close.eye));CHECK(tilted.target==close.target);
+    const auto norm=[](Vec3 p){return std::sqrt(p.x*p.x+p.y*p.y+p.z*p.z);};
+    CHECK(norm(tilted.eye)>20.0F);
+    model.tilt_globe(std::nanf(""));CHECK(model.tick(2220).camera.eye==tilted.eye);
+    model.orbit_globe(40,-20,0);
+    const auto panned=model.tick(2250).camera;
+    CHECK(!(panned.target==beforePan.target));
+    CHECK(!(panned.target==Vec3{}));
     model.orbit_globe(std::nanf(""),0.0F,0.0F);
-    CHECK(model.tick(2300).camera.eye==close.eye);
+    CHECK(model.tick(2300).camera.eye==panned.eye);
     model.release_focus();model.tick(2400);
     CHECK(model.tick(4400).camera.eye==home.eye);
     model.request_mode(SceneMode::Cerebra);model.tick(4500);
@@ -2192,7 +2203,40 @@ void manual_globe_navigation_stays_bounded_and_can_return_home() {
     CHECK(model.tick(6600).camera.eye==core.eye);
 }
 
+void exploration_frames_true_radius_and_manual_input_only_moves_the_camera() {
+    CASE("exploration frames a near-surface AOI with geographic metres");
+    Observatory model;model.request_mode(SceneMode::Watcher);model.tick(0);model.tick(2000);
+    CHECK(model.frame_globe(-33.45,-70.66,1000,600,false));
+    CHECK(model.exploration_camera_active());
+    const auto framed=model.tick(2100).camera;
+    const auto distance=[](Vec3 a,Vec3 b){return std::sqrt((a.x-b.x)*(a.x-b.x)+(a.y-b.y)*(a.y-b.y)+(a.z-b.z)*(a.z-b.z));};
+    CHECK(std::fabs(distance(framed.eye,framed.target)-3000.0F*20.0F/6371000.0F)<0.00001F);
+    CHECK(distance(framed.target,Vec3{})>20.0F);
+    CHECK(!model.frame_globe(91,0,1000));CHECK(!model.frame_globe(0,0,-1));
+    CHECK(!model.frame_globe(0,std::nan(""),1000));
+    CHECK(model.tick(2200).camera.eye==framed.eye);
+    model.orbit_globe(20,-15,1);
+    const auto manual=model.tick(2300).camera;
+    CHECK(!(manual.eye==framed.eye));CHECK(!(manual.target==framed.target));
+    model.set_display_present(false,2400);model.tick(2400);
+    CHECK(model.tick(2500).camera.eye==manual.eye);
+    model.release_focus();model.tick(2600);
+    CHECK(model.tick(4600).camera.target==Vec3{});
+    CHECK(!model.exploration_camera_active());
+    CHECK(model.frame_globe(0,0,1000,-430,false));
+    const auto negative=model.tick(4650).camera;
+    CHECK(distance(negative.target,Vec3{})<20.0F);
+    CHECK(distance(negative.eye,negative.target)>0.009F);
+    model.request_mode(SceneMode::Cerebra);model.tick(4700);
+    CHECK(!model.frame_globe(0,0,1000));
+    model.request_mode(SceneMode::Watcher);model.tick(5000);model.tick(7000);
+    CHECK(model.frame_globe(0,180,1000,0,true));
+    const auto during=model.tick(7350).camera;
+    CHECK(distance(during.eye,Vec3{})>=20.0F);
+}
+
 int main() {
+    exploration_frames_true_radius_and_manual_input_only_moves_the_camera();
     manual_globe_navigation_stays_bounded_and_can_return_home();
     a_snapshot_becomes_a_drawable_frame();
     forgetting_a_node_releases_the_camera();

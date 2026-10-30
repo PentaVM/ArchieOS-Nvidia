@@ -11,6 +11,7 @@ const MAX_REQUEST_BYTES: usize = 4 * 1024;
 pub struct Request {
     pub method: String,
     pub path: String,
+    pub authorization: Option<String>,
 }
 
 impl Request {
@@ -24,6 +25,12 @@ impl Request {
         Some(Self {
             method,
             path: target.split('?').next().unwrap_or(target).to_string(),
+            authorization: raw
+                .lines()
+                .skip(1)
+                .filter_map(|line| line.split_once(':'))
+                .find(|(name, _)| name.eq_ignore_ascii_case("Authorization"))
+                .map(|(_, value)| value.trim().to_string()),
         })
     }
 }

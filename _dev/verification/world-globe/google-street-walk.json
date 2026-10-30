@@ -1,0 +1,52 @@
+[
+  {
+    "wait": 3000
+  },
+  {
+    "state": "planet"
+  },
+  {
+    "drag": [
+      368.17525,
+      174.86851
+    ],
+    "settle": 20
+  },
+  {
+    "wheel": 10,
+    "settle": 20
+  },
+  {
+    "wheel": 10,
+    "settle": 20
+  },
+  {
+    "wheel": 10,
+    "settle": 20
+  },
+  {
+    "wheel": 10,
+    "settle": 20
+  },
+  {
+    "wheel": 10,
+    "settle": 20
+  },
+  {
+    "wheel": 10,
+    "settle": 45000
+  },
+  {
+    "state": "street-loaded"
+  },
+  {
+    "drag": [
+      -200,
+      30
+    ],
+    "settle": 12000
+  },
+  {
+    "state": "panned-street-loaded"
+  }
+]

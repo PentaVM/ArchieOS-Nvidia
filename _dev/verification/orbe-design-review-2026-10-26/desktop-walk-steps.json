@@ -1,0 +1,1 @@
+[{"run": "win.closeAll"}, {"shot": "01-orbe"}, {"run": "app.world"}, {"wait": 2500}, {"state": "world"}, {"shot": "02-world"}, {"click": "dock.forge"}, {"wait": 500}, {"state": "forge-over-world"}, {"shot": "03-forge"}, {"run": "app.orb"}, {"wait": 500}, {"state": "orb-return"}]

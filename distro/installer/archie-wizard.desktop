@@ -4,6 +4,6 @@ Name=Install ArchieOS
 Name[es]=Instalar ArchieOS
 Comment=Prepare your node, owner identity and offline maps
 Exec=archie-wizard
-Icon=preferences-system
+Icon=archieos
 Terminal=false
 Categories=System;

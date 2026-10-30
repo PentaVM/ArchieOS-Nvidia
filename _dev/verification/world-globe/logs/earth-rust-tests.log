@@ -1,0 +1,26 @@
+
+running 154 tests
+....................................................................................... 87/154
+...................................................................
+test result: ok. 154 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.32s
+
+
+running 91 tests
+.................. 18/91
+exploration_control::tests::navigation_wire_accepts_only_typed_bounded_request_fields --- FAILED
+........................................................................
+failures:
+
+---- exploration_control::tests::navigation_wire_accepts_only_typed_bounded_request_fields stdout ----
+
+thread 'exploration_control::tests::navigation_wire_accepts_only_typed_bounded_request_fields' (26318) panicked at crates/archie-worldd/src/exploration_control.rs:222:9:
+assertion failed: authenticate(&serde_json::to_vec(&envelope).unwrap(), &token).is_ok()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    exploration_control::tests::navigation_wire_accepts_only_typed_bounded_request_fields
+
+test result: FAILED. 90 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.79s
+
+error: test failed, to rerun pass `-p archie-worldd --lib`

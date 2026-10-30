@@ -29,11 +29,13 @@ pub mod addressee;
 pub mod asr;
 pub mod audio;
 pub mod conversation;
+pub mod draw;
 pub mod hands;
 pub mod language;
 pub mod listen;
 #[cfg(feature = "live")]
 pub mod live;
+pub mod narration;
 #[cfg(feature = "nemo")]
 pub mod native;
 pub mod nemotron;
@@ -47,6 +49,8 @@ mod visual;
 pub mod voice;
 pub mod wanda;
 pub mod wav;
+#[cfg(any(feature = "live", test))]
+mod world_response;
 
 pub use act::{decide, Plan, Refusal};
 pub use hands::{Grounding, Hands, Launch, Performed};

@@ -1,0 +1,73 @@
+Test project D:/ArchieOS-Orbe-Review-20261026/native
+      Start  2: shell_runtime_contracts
+      Start  5: globe_stream_contracts
+ 1/34 Test  #5: globe_stream_contracts .............   Passed    6.94 sec
+      Start 12: display_control_contracts
+ 2/34 Test  #2: shell_runtime_contracts ............   Passed    7.87 sec
+      Start  9: world_texture_contracts
+ 3/34 Test #12: display_control_contracts ..........   Passed    3.12 sec
+      Start  1: native_contracts
+ 4/34 Test  #9: world_texture_contracts ............   Passed    2.70 sec
+      Start  7: earth_mesh_contracts
+ 5/34 Test  #7: earth_mesh_contracts ...............   Passed    0.47 sec
+      Start  3: app_catalog_contracts
+ 6/34 Test  #3: app_catalog_contracts ..............   Passed    0.31 sec
+      Start 11: world_hud_contracts
+ 7/34 Test  #1: native_contracts ...................   Passed    1.45 sec
+      Start 13: neural_sphere_contracts
+ 8/34 Test #11: world_hud_contracts ................   Passed    0.22 sec
+      Start  6: globe_tiles_contracts
+ 9/34 Test  #6: globe_tiles_contracts ..............   Passed    0.13 sec
+      Start 26: test_observatory
+10/34 Test #13: neural_sphere_contracts ............   Passed    0.19 sec
+      Start 25: test_layout
+11/34 Test #25: test_layout ........................   Passed    0.06 sec
+      Start  8: world_visual_contracts
+12/34 Test #26: test_observatory ...................   Passed    0.12 sec
+      Start  4: exploration_preview_contracts
+13/34 Test  #8: world_visual_contracts .............   Passed    0.05 sec
+      Start 10: exploration_credential_contracts
+14/34 Test  #4: exploration_preview_contracts ......   Passed    0.05 sec
+      Start 16: test_cognition
+15/34 Test #10: exploration_credential_contracts ...   Passed    0.05 sec
+      Start 21: test_scene
+16/34 Test #16: test_cognition .....................   Passed    0.05 sec
+      Start 22: test_lod
+17/34 Test #21: test_scene .........................   Passed    0.04 sec
+      Start 31: test_world
+18/34 Test #22: test_lod ...........................   Passed    0.04 sec
+      Start 14: test_freshness
+19/34 Test #31: test_world .........................   Passed    0.04 sec
+      Start 28: test_history
+20/34 Test #14: test_freshness .....................   Passed    0.05 sec
+      Start 32: test_lumen
+21/34 Test #28: test_history .......................   Passed    0.05 sec
+      Start 17: test_stage
+22/34 Test #32: test_lumen .........................   Passed    0.05 sec
+      Start 15: test_budget
+23/34 Test #17: test_stage .........................   Passed    0.04 sec
+      Start 19: test_graph
+24/34 Test #15: test_budget ........................   Passed    0.04 sec
+      Start 24: test_ingest
+25/34 Test #19: test_graph .........................   Passed    0.05 sec
+      Start 18: test_director
+26/34 Test #24: test_ingest ........................   Passed    0.05 sec
+      Start 23: test_events
+27/34 Test #18: test_director ......................   Passed    0.04 sec
+      Start 30: test_mesh
+28/34 Test #23: test_events ........................   Passed    0.04 sec
+      Start 20: test_camera
+29/34 Test #30: test_mesh ..........................   Passed    0.04 sec
+      Start 29: test_geo
+30/34 Test #20: test_camera ........................   Passed    0.04 sec
+      Start 27: test_palette
+31/34 Test #29: test_geo ...........................   Passed    0.04 sec
+      Start 33: test_protobuf
+32/34 Test #27: test_palette .......................   Passed    0.05 sec
+      Start 34: test_building
+33/34 Test #33: test_protobuf ......................   Passed    0.05 sec
+34/34 Test #34: test_building ......................   Passed    0.03 sec
+
+100% tests passed out of 34
+
+Total Test time (real) =  12.32 sec

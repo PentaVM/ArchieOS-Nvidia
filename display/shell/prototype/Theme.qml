@@ -1,18 +1,15 @@
 pragma Singleton
 import QtQuick
 
-// Archie Mac · cristal grafito. Tokens from the Claude Design handoff
-// (archie-mac-handoff/tokens.css). Two surface sets: glass (translucent; real blur comes from
-// the compositor, not from the shell) and opaque (no blur: "reduce transparency" and the Quiet
-// profile). Light mode is a local beta; dark remains the default.
+// Shared material palette. Opacity belongs to surfaces, never their text/content.
+// The canvas resolves a 60% white veil over a neutral base; panels use 75% coverage.
+// Both ink palettes remain readable even over an unblurred black/white scene.
 QtObject {
     id: t
-    property string colorMode: "dark"
+    property string colorMode: "light"
     readonly property bool light: colorMode === "light"
     property bool opaque: false
-    // True only when the compositor really blurs what is behind a surface. The shell cannot blur:
-    // without it, windows, sidebar and panels use their solid fill (translucency over unblurred
-    // content breaks legibility: text shows through). Bar and dock stay glass over the desktop.
+    // Blur is a compositor capability, not something this theme pretends to provide.
     property bool blur: false
     property bool reducedMotion: false
     property bool runtimeConserve: false
@@ -25,49 +22,69 @@ QtObject {
     readonly property string font: interFont.status === FontLoader.Ready ? interFont.font.family : "sans-serif"
     readonly property string disp: groteskFont.status === FontLoader.Ready ? groteskFont.font.family : font
 
-    readonly property color desktop: light ? "#eef3f8" : (vivid ? "#000000" : "#07080c")
+    readonly property real whiteBackdropOpacity: 0.60
+    readonly property real surfaceOpacity: opaque ? 1.0 : 0.75
+    readonly property color desktopBase: light ? "#50657e" : "#081321"
+    function composite(foreground, background) {
+        return Qt.rgba(foreground.r*foreground.a+background.r*(1-foreground.a),
+                       foreground.g*foreground.a+background.g*(1-foreground.a),
+                       foreground.b*foreground.a+background.b*(1-foreground.a),1)
+    }
+    readonly property color desktop: light ? composite(Qt.rgba(1,1,1,whiteBackdropOpacity),desktopBase) : desktopBase
+    function toggleColorMode() { colorMode=light ? "dark" : "light" }
 
     // Surfaces: glass / opaque.
-    readonly property color bar: light ? "#f8fafc" : (opaque ? (vivid ? "#030304" : "#101117") : (vivid ? Qt.rgba(2 / 255, 2 / 255, 4 / 255, 0.7) : Qt.rgba(16 / 255, 17 / 255, 23 / 255, 0.62)))
-    readonly property color dock: light ? "#f8fafc" : (opaque ? (vivid ? "#050506" : "#14151c") : (vivid ? Qt.rgba(4 / 255, 4 / 255, 6 / 255, 0.62) : Qt.rgba(20 / 255, 21 / 255, 28 / 255, 0.55)))
-    readonly property color win: light ? "#ffffff" : ((opaque || !blur) ? (vivid ? "#050507" : "#12131a") : (vivid ? Qt.rgba(3 / 255, 3 / 255, 5 / 255, 0.82) : Qt.rgba(18 / 255, 19 / 255, 26 / 255, 0.78)))
-    readonly property color side: light ? "#f0f4f8" : ((opaque || !blur) ? (vivid ? "#09090c" : "#1a1b24") : (vivid ? Qt.rgba(8 / 255, 8 / 255, 11 / 255, 0.7) : Qt.rgba(26 / 255, 27 / 255, 36 / 255, 0.66)))
-    readonly property color panel: light ? "#ffffff" : ((opaque || !blur) ? (vivid ? "#070709" : "#16171f") : (vivid ? Qt.rgba(5 / 255, 5 / 255, 8 / 255, 0.9) : Qt.rgba(22 / 255, 23 / 255, 31 / 255, 0.86)))
-    readonly property color raised: light ? "#edf2f7" : (opaque ? (vivid ? "#101013" : "#22232a") : Qt.rgba(1, 1, 1, 0.05))
-    readonly property color hover: light ? "#e3ebf3" : (opaque ? (vivid ? "#17171c" : "#2a2b32") : Qt.rgba(1, 1, 1, 0.08))
-    readonly property color pressed: light ? "#d6e2ee" : (opaque ? (vivid ? "#1e1e24" : "#31323a") : Qt.rgba(1, 1, 1, 0.11))
-    readonly property color hair: light ? "#bbcbd9" : (opaque ? (vivid ? "#202026" : "#2c2d36") : Qt.rgba(1, 1, 1, 0.09))
-    readonly property color inner: light ? "#ffffff" : (opaque ? (vivid ? "#141418" : "#25262e") : Qt.rgba(1, 1, 1, 0.06))
-    readonly property color sel: light ? "#d4eaff" : (opaque ? (vivid ? "#0a3a52" : "#1f3a4a") : (vivid ? Qt.rgba(0, 190 / 255, 1, 0.22) : Qt.rgba(111 / 255, 200 / 255, 245 / 255, 0.16)))
+    readonly property color bar: light ? Qt.rgba(.86,.90,.95,surfaceOpacity) : Qt.rgba(.025,.045,.075,surfaceOpacity)
+    readonly property color dock: light ? Qt.rgba(.86,.90,.95,surfaceOpacity) : Qt.rgba(.035,.055,.09,surfaceOpacity)
+    readonly property color win: light ? Qt.rgba(.86,.90,.95,surfaceOpacity) : Qt.rgba(.035,.055,.09,surfaceOpacity)
+    readonly property color side: light ? Qt.rgba(.84,.88,.94,surfaceOpacity) : Qt.rgba(.055,.08,.125,surfaceOpacity)
+    readonly property color panel: light ? Qt.rgba(.86,.90,.95,surfaceOpacity) : Qt.rgba(.035,.055,.09,surfaceOpacity)
+    // Resolve glass over our canvas for dense reading areas. This avoids ghost
+    // text from another window showing through without pretending to blur it.
+    readonly property color reading: composite(panel,desktop)
+    readonly property color raised: light ? "#c6d3e2" : "#1b2b40"
+    readonly property color hover: light ? "#b8cde0" : "#263b53"
+    readonly property color pressed: light ? "#a1bed7" : "#304b68"
+    readonly property color hair: light ? "#4f6b89" : "#718ba7"
+    readonly property color inner: light ? Qt.rgba(1,1,1,.38) : Qt.rgba(.6,.75,.9,.18)
+    readonly property color iconSurface: light ? "#d2dce8" : "#bbcbdc"
+    readonly property color iconInk: "#16324c"
+    readonly property color sel: light ? "#c6e4fa" : "#184c6a"
 
     // Text.
-    readonly property color t1: light ? "#142236" : (vivid ? "#ffffff" : "#f2f1ee")
-    readonly property color t2: light ? "#40566b" : (vivid ? "#cfcfdc" : "#b9b8c4")
-    readonly property color t3: light ? "#566c80" : (vivid ? "#a2a1b4" : "#8d8c9c")
-    readonly property color tdis: light ? "#7a8997" : ("#5e5d6b")
+    readonly property color t1: light ? "#142236" : "#f5f8ff"
+    readonly property color t2: light ? "#22374f" : "#dfe9f5"
+    readonly property color t3: light ? "#293d53" : "#c4d2e3"
+    readonly property color tdis: light ? "#425368" : "#91a5bd"
 
     // Accents and states. A state is never colour alone: icon + word always.
-    readonly property color acc: light ? "#006a99" : (vivid ? "#1ec0ff" : "#6fc8f5")
-    readonly property color arch: light ? "#875000" : (vivid ? "#ffb02e" : "#f0bb78")
-    readonly property color ok: light ? "#047b44" : (vivid ? "#17e387" : "#47d18b")
-    readonly property color warn: light ? "#885000" : (vivid ? "#ffc21a" : "#f0b429")
-    readonly property color bad: light ? "#ba263b" : (vivid ? "#ff4757" : "#f2626b")
-    readonly property color info: light ? "#006578" : (vivid ? "#22e6ff" : "#6fe3f5")
-    readonly property color unk: light ? "#566c80" : ("#8d8c9c")
+    readonly property color acc: light ? "#004d72" : "#40c4ff"
+    readonly property color arch: light ? "#704500" : "#ffbf64"
+    readonly property color ok: light ? "#07583e" : "#57dfb0"
+    readonly property color warn: light ? "#684200" : "#ffd077"
+    readonly property color bad: light ? "#8c1931" : "#ff9cb2"
+    readonly property color info: light ? "#005166" : "#83d9ee"
+    readonly property color unk: t3
 
+    // ArchieOS brand (logo package v3.5, design by Xavi): mint neon on deep matte black.
+    // The light theme carries the dark-ink wordmark; the dark theme carries the neon one.
+    readonly property color brandMint: "#20d79d"
+    readonly property color brandInk: "#0a0a0a"
+    readonly property url logo: Qt.resolvedUrl(light ? "../brand/archieos-logo-light.png" : "../brand/archieos-logo-dark.png")
+    readonly property url mark: Qt.resolvedUrl(light ? "../brand/archieos-icon-light-256.png" : "../brand/archieos-icon-256.png")
     readonly property color onAccent: light ? "#ffffff" : "#07131c"
+    readonly property color dockInk: "#ffffff"
     readonly property color track: light ? "#d9e3ed" : Qt.rgba(1,1,1,0.10)
 
     // File categories (colour-blind safe, same as the sphere's nodes).
-    readonly property var cat: (vivid ? { documents: "#ffa000", media: "#00c98d", data: "#fff000",
+    readonly property var cat: (light ? { documents:"#704500",media:"#005b45",data:"#555100",archive:"#713773",executable:"#8d350b",other:"#324d68" }
+                                : vivid ? { documents: "#ffa000", media: "#00c98d", data: "#fff000",
                                   archive: "#e85cb4", executable: "#ff5a00", other: "#d8d8d8" }
                                 : { documents: "#e69f00", media: "#009e73", data: "#f0e442",
                                   archive: "#cc79a7", executable: "#d55e00", other: "#bbbbbb" })
     // Dock icons: solid colour under a 165° white→black wash.
-    readonly property var dk: (vivid ? { orb: "#00b4d8", vault: "#2f7bff", forge: "#ff9500",
-                                 sentry: "#00c46a", stage: "#9b5cff", set: "#7b8798" }
-                               : { orb: "#1b8fa6", vault: "#3b7fd6", forge: "#b87a0b",
-                                 sentry: "#1f9a62", stage: "#8a5fd6", set: "#6b7686" })
+    readonly property var dk: ({orb:"#036889",world:"#276080",vault:"#1b59ad",forge:"#895100",
+                                sentry:"#066643",stage:"#6742b3",set:"#455b75"})
     // Window controls.
     readonly property color tlClose: "#d9605a"
     readonly property color tlMin: "#d9a441"

@@ -30,6 +30,10 @@ pub const FOLLOW_UP_WINDOW: Duration = Duration::from_secs(10);
 /// "Archy" are the same word said aloud.
 const NAMES: &[&str] = &["archie", "archi", "archy"];
 
+/// What the Nemotron 3.5 recogniser writes for the name said at the start of a Spanish
+/// request ("Archie, dibuja la Mona Lisa" came back "AC dibuja la Mona Lisa").
+const ADDRESSED_AS: &[&str] = &["ac", "hachi"];
+
 /// Real words one letter from the name, which must not wake Archie.
 const NOT_NAMES: &[&str] = &["arch", "archive", "archer", "arco", "marchi"];
 
@@ -115,6 +119,11 @@ pub fn plain(text: &str) -> String {
 pub fn names_archie(text: &str) -> bool {
     let plain = plain(text);
     let words: Vec<&str> = plain.split(' ').collect();
+    // Said first, in Spanish, the name comes back as "AC" (two letters, "a-ce"): only at
+    // the head of a request, where nobody starts a sentence with those letters alone.
+    if words.len() > 2 && ADDRESSED_AS.contains(&words[0]) {
+        return true;
+    }
     words.iter().any(|word| sounds_like_archie(word))
         || words.windows(2).any(|pair| {
             pair[0].len() <= 3 && sounds_like_archie(&format!("{}{}", pair[0], pair[1]))
@@ -274,8 +283,14 @@ mod tests {
             "Oye Arshi.",
             "Harchi, mira esto",
             "oye ar chi qué es esto",
+            "AC dibuja la Mona. Lisa.",
+            "AC, abre Sentry",
         ] {
             assert!(names_archie(misheard), "{misheard}");
+        }
+        // The two letters are the name only at the head of a request.
+        for other in ["el AC del auto", "AC.", "prende el ac"] {
+            assert!(!names_archie(other), "{other}");
         }
         for other in [
             "Busca el archivo.",

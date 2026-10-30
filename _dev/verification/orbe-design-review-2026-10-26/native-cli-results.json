@@ -1,0 +1,30 @@
+[
+  [
+    {
+      "action": "focus",
+      "value": "."
+    },
+    "ok\n"
+  ],
+  [
+    {
+      "action": "focus",
+      "value": "missing-node"
+    },
+    "error: El nodo no est\u00e1 en esta instant\u00e1nea\n"
+  ],
+  [
+    {
+      "action": "camera",
+      "value": "closer"
+    },
+    "ok\n"
+  ],
+  [
+    {
+      "action": "freeze",
+      "enabled": true
+    },
+    "ok\n"
+  ]
+]

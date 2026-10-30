@@ -49,6 +49,61 @@ typedef struct DesignContentOptions {
 } DesignContentOptions;
 size_t design_content_scene(const char *root, size_t root_len, const DesignContentOptions *options,
     int64_t generated_at_ms, char *out, size_t capacity);
+
+// Xavi's neural sphere (Lumenfield's "Esfera neuronal", API 2): model and scene state in Rust,
+// drawn by the host with the original's materials. Opaque handles; Rust keeps no caller buffer.
+// Buffers: query with out=NULL and capacity 0 (returns the count), then fill (returns the count
+// written, or 0 when the capacity is short). Strings are NUL-terminated UTF-8. Nothing unwinds.
+typedef struct NeuralIndex NeuralIndex;
+typedef struct NeuralSphere NeuralSphere;
+typedef struct NeuralPoint { float position[3], colour[3], kind, fire, ring, born; } NeuralPoint;
+typedef struct NeuralVertex { float position[3], colour[3]; } NeuralVertex;
+typedef struct NeuralSpark { float position[3], colour[3], fade; } NeuralSpark;
+typedef struct NeuralStats {
+    uint32_t visible, moving, leaving, born, total, sparks;
+    float max_step, dt, time;
+    uint64_t rebuilds, revision;
+} NeuralStats;
+// Line layers: 0 skeleton and axons, 2..6 mesh, bridge and the host's links, 7 the selection.
+#define NEURAL_LINE_LAYERS 8
+#define NEURAL_HOT_LAYER 7
+// Read-only, bounded listing of a folder (safe off the GUI thread). NULL if unreadable.
+NeuralIndex *neural_scan(const char *root, size_t root_len, uint32_t limit, uint32_t files_per_folder);
+size_t neural_index_count(const NeuralIndex *index);
+void neural_index_free(NeuralIndex *index);
+// still: the original's deterministic frame (no motion, no build). seed drives the sparks (7).
+NeuralSphere *neural_new(const NeuralIndex *index, uint32_t seed, bool still);
+void neural_free(NeuralSphere *sphere);
+bool neural_set_index(NeuralSphere *sphere, const NeuralIndex *index, bool animate);
+void neural_grow(NeuralSphere *sphere, float seconds);
+void neural_step(NeuralSphere *sphere, float dt);
+float neural_prime_still(NeuralSphere *sphere);
+bool neural_building(const NeuralSphere *sphere);
+bool neural_stats(const NeuralSphere *sphere, NeuralStats *out);
+size_t neural_points(const NeuralSphere *sphere, NeuralPoint *out, size_t capacity);
+size_t neural_lines(const NeuralSphere *sphere, uint32_t layer, NeuralVertex *out, size_t capacity);
+size_t neural_sparks(const NeuralSphere *sphere, NeuralSpark *out, size_t capacity);
+// Decoration as floats (radius 100): 0 ghosts xyz, 1 globe, 2 base, 3 orbit (segments xyz),
+// 4 projection cone (triangles, xyz and the cylinder's v per vertex). Capacity counts floats.
+size_t neural_decor(uint32_t part, float *out, size_t capacity);
+// Live settings by the original's names; invalid values change nothing and return false.
+bool neural_set_number(NeuralSphere *sphere, const char *key, double value);
+bool neural_set_flag(NeuralSphere *sphere, const char *key, bool value);
+bool neural_set_background(NeuralSphere *sphere, const char *hex);
+bool neural_set_link(NeuralSphere *sphere, uint32_t kind, int32_t on /* 0, 1, else keep */, double opacity /* NaN keeps */);
+size_t neural_settings_json(const NeuralSphere *sphere, char *out, size_t capacity);
+bool neural_select(NeuralSphere *sphere, const char *id);
+bool neural_activate(NeuralSphere *sphere, const char *id);
+bool neural_toggle_fold(NeuralSphere *sphere, const char *id);
+size_t neural_pick(const NeuralSphere *sphere, const float origin[3], const float direction[3], float threshold,
+    char *out, size_t capacity);
+bool neural_position(const NeuralSphere *sphere, const char *id, float out[3]);
+// Text queries: call with capacity 0 first (computes and returns the length), then fill.
+// Labels: "kind\tx\ty\tz\tid\ttext\n" lines (kind p program, f folder). Selection: id, title,
+// counts and folded note, one line each.
+size_t neural_labels(NeuralSphere *sphere, char *out, size_t capacity);
+size_t neural_selection(NeuralSphere *sphere, const char *root_label, char *out, size_t capacity);
+bool neural_link_counts(NeuralSphere *sphere, uint32_t out[7]);
 #ifdef __cplusplus
 }
 #endif

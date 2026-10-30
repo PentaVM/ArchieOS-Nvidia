@@ -1,5 +1,7 @@
 import QtQuick
 import QtQuick.Controls
+import "qrc:/archie/shell/prototype" as Shell
+import "../../shell/prototype/Lang.js" as Tr
 
 // FORGE: the machine's applications as a desktop. Large icons, their names, and nothing
 // else to operate: Archie opens and uses them; a person can still click one open.
@@ -9,8 +11,8 @@ Item {
     id: forge
 
     property string notice: ""
-    readonly property var apps: appCatalog.apps.filter(function (a) { return a.section !== "suggested" })
-    readonly property var missing: appCatalog.apps.filter(function (a) { return a.section === "suggested" })
+    readonly property var apps: appCatalog.forgeApps.filter(function (a) { return a.section !== "suggested" })
+    readonly property var missing: appCatalog.forgeApps.filter(function (a) { return a.section === "suggested" })
 
     Connections {
         target: appCatalog
@@ -32,7 +34,7 @@ Item {
         boundsBehavior: Flickable.StopAtBounds
         ScrollBar.vertical: ScrollBar {
             policy: ScrollBar.AsNeeded
-            contentItem: Rectangle { implicitWidth: 4; radius: 2; color: "#33ffffff" }
+            contentItem: Rectangle { implicitWidth: 4; radius: 2; color: Shell.Theme.hair }
         }
 
         Column {
@@ -56,7 +58,7 @@ Item {
                 visible: forge.missing.length > 0
                 width: parent.width
                 spacing: 16
-                Text { text: "Para instalar"; color: "#5d6574"; font.pixelSize: 12; font.weight: Font.Medium; font.letterSpacing: 0.4 }
+                Text { text: Tr.t("Para instalar"); color: Shell.Theme.t3; font.pixelSize: 12; font.weight: Font.Medium; font.letterSpacing: 0.4 }
                 Grid {
                     width: parent.width
                     columns: grid.columns
@@ -77,8 +79,9 @@ Item {
         anchors.bottomMargin: 22
         visible: forge.notice.length > 0
         text: forge.notice
-        color: "#c9ced8"
+        color: Shell.Theme.t2
         font.pixelSize: 12
+        Rectangle { anchors.fill: parent; anchors.margins: -8; z: -1; radius: Shell.Theme.rCard; color: Shell.Theme.panel; border.color: Shell.Theme.hair }
     }
 
     component AppIcon: Item {
@@ -88,7 +91,6 @@ Item {
         readonly property bool ready: !!app.available && appCatalog.canLaunch
         width: 112
         height: 128
-        opacity: faint ? 0.32 : (app.available ? 1.0 : 0.45)
 
         Rectangle {
             id: tile
@@ -96,11 +98,8 @@ Item {
             width: 76; height: 76; radius: 20
             scale: area.pressed ? 0.94 : (area.containsMouse ? 1.05 : 1.0)
             Behavior on scale { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
-            gradient: Gradient {
-                GradientStop { position: 0.0; color: icon.app.section === "archie" ? "#2a2433" : "#1b2029" }
-                GradientStop { position: 1.0; color: icon.app.section === "archie" ? "#171320" : "#12161d" }
-            }
-            border.color: area.containsMouse ? "#40ffffff" : "#14ffffff"
+            color: Shell.Theme.iconSurface
+            border.color: area.containsMouse ? Shell.Theme.acc : Shell.Theme.hair
             Image {
                 id: image
                 anchors.centerIn: parent
@@ -116,7 +115,7 @@ Item {
                 anchors.centerIn: parent
                 visible: image.status !== Image.Ready
                 text: icon.app.glyph || "·"
-                color: icon.app.section === "archie" ? "#d9c3ff" : "#dfe4ec"
+                color: Shell.Theme.iconInk
                 font.pixelSize: 30
                 font.weight: Font.Light
             }
@@ -128,7 +127,7 @@ Item {
             anchors.topMargin: 6
             width: 5; height: 5; radius: 2.5
             visible: icon.app.running > 0
-            color: "#9fe6c9"
+            color: Shell.Theme.ok
         }
         Text {
             anchors.horizontalCenter: parent.horizontalCenter
@@ -137,7 +136,7 @@ Item {
             width: parent.width
             horizontalAlignment: Text.AlignHCenter
             text: icon.app.name || ""
-            color: "#dfe4ec"
+            color: icon.faint || !icon.app.available ? Shell.Theme.t3 : Shell.Theme.t1
             font.pixelSize: 12
             elide: Text.ElideRight
             maximumLineCount: 2
@@ -149,8 +148,13 @@ Item {
             hoverEnabled: true
             onClicked: if (!icon.faint) appCatalog.launch(icon.app.id)
         }
-        ToolTip.visible: area.containsMouse && (!!icon.app.comment || !!icon.app.missing)
-        ToolTip.delay: 600
-        ToolTip.text: icon.app.available ? (icon.app.comment || "") : (icon.app.missing || "")
+        ToolTip {
+            id: appTip
+            visible: area.containsMouse && (!!icon.app.comment || !!icon.app.missing)
+            delay: 600
+            text: icon.app.available ? (icon.app.comment || "") : (icon.app.missing || "")
+            contentItem: Text { text: appTip.text; color: Shell.Theme.t1; font.family: Shell.Theme.font; font.pixelSize: 12; wrapMode: Text.Wrap }
+            background: Rectangle { color: Shell.Theme.panel; border.color: Shell.Theme.hair; radius: Shell.Theme.rCard }
+        }
     }
 }

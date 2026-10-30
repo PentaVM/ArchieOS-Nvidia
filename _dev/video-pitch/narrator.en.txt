@@ -1,0 +1,8 @@
+intro|This is ArchieOS: an operating system you talk to, built for one person and their own machines.
+desktop|Everything lives on one desktop. The orb, World, Vault, Forge, Sentry and the Stage are apps in the same window, not separate programs.
+apps|Archie can open them the way you would: it presses the dock buttons through the Stage, the one gate every action of Archie's has to pass.
+ask|Now the request: Archie, draw the Mona Lisa.
+fast|Archie turns the painting into hundreds of pen strokes and draws them in Photopea, a real editor in a real browser, with its own pointer. We sped this part up.
+authority|Every batch of strokes is a sealed permission, checked against the window as it is right now. Move the mouse and the person has control; Archie waits, then continues the same line.
+stack|Archie hears with NVIDIA's Nemotron speech recognition, reasons with Nemotron on Nebius, and finds what it can't name by looking at the screen.
+outro|ArchieOS. You say it, Archie does it, and you stay in charge.

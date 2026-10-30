@@ -1,0 +1,61 @@
+[
+  {
+    "wait": 5000
+  },
+  {
+    "state": "planet"
+  },
+  {
+    "settle": 1000,
+    "drag": [
+      368.17525,
+      174.86851
+    ]
+  },
+  {
+    "state": "new-york-orbit"
+  },
+  {
+    "wheel": 10,
+    "settle": 1000
+  },
+  {
+    "wheel": 5,
+    "settle": 10000
+  },
+  {
+    "state": "country"
+  },
+  {
+    "wheel": 10,
+    "settle": 1000
+  },
+  {
+    "wheel": 5,
+    "settle": 10000
+  },
+  {
+    "state": "city"
+  },
+  {
+    "wheel": 10,
+    "settle": 1000
+  },
+  {
+    "wheel": 10,
+    "settle": 12000
+  },
+  {
+    "state": "street"
+  },
+  {
+    "settle": 12000,
+    "drag": [
+      -100,
+      20
+    ]
+  },
+  {
+    "state": "panned-street"
+  }
+]

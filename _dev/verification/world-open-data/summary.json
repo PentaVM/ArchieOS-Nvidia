@@ -1,0 +1,99 @@
+{
+  "job_id": "766fc39a847d540c013ffbff14e0fb0d",
+  "state": "running",
+  "runtime": "/tmp/archie-world-open-data-20261025-v3/runtime",
+  "world_port": 17667,
+  "displayd_port": 17666,
+  "anonymous_status": 403,
+  "downloaded_payload_bytes": 2009165,
+  "stored_bytes": 2130818,
+  "source_metadata": [
+    {
+      "attribution": "NASA EOSDIS GIBS \u00b7 NASA/USGS/ESA source imagery; dates and gaps vary",
+      "date_applied": true,
+      "date_selection": "requested",
+      "error": null,
+      "imagery_date": "2026-10-20",
+      "label": "NASA HLS Sentinel-2",
+      "mode": "open_data",
+      "requested_date": "2026-10-20",
+      "retrieved_at_ms": 1792915315212,
+      "source_id": "sentinel2",
+      "state": "ready"
+    },
+    {
+      "attribution": "NASA EOSDIS GIBS \u00b7 NASA/USGS/ESA source imagery; dates and gaps vary",
+      "date_applied": false,
+      "date_selection": "requested",
+      "error": null,
+      "imagery_date": "static",
+      "label": "NASA Blue Marble shaded relief",
+      "mode": "open_data",
+      "requested_date": "2026-10-20",
+      "retrieved_at_ms": 1792915316555,
+      "source_id": "blue_marble",
+      "state": "ready"
+    },
+    {
+      "attribution": "\u00a9 Google \u00b7 experimental online display only; imagery dates vary",
+      "date_applied": false,
+      "date_selection": "requested",
+      "error": null,
+      "imagery_date": null,
+      "label": "Google satellite \u00b7 experimental online preview",
+      "mode": "online_preview_only",
+      "requested_date": "2026-10-20",
+      "retrieved_at_ms": 1792915317484,
+      "source_id": "google_satellite",
+      "state": "ready"
+    }
+  ],
+  "signal_points": 19,
+  "signal_sources": [
+    {
+      "error": null,
+      "id": "usgs_earthquakes",
+      "label": "USGS \u00b7 last 24 hours",
+      "matched_total": 0,
+      "omitted_points": 0,
+      "rejected": 192,
+      "retrieved_at_ms": 1792915318085,
+      "seen": 192,
+      "state": "no_data",
+      "total_is_lower_bound": false,
+      "truncated": false
+    },
+    {
+      "error": null,
+      "id": "nasa_eonet",
+      "label": "NASA EONET \u00b7 reported natural events",
+      "matched_total": 0,
+      "omitted_points": 0,
+      "rejected": 0,
+      "retrieved_at_ms": 1792915319067,
+      "seen": 0,
+      "state": "no_data",
+      "total_is_lower_bound": false,
+      "truncated": false
+    },
+    {
+      "error": null,
+      "id": "adsb_lol",
+      "label": "adsb.lol \u00b7 reported aircraft",
+      "matched_total": 19,
+      "omitted_points": 0,
+      "rejected": 0,
+      "retrieved_at_ms": 1792915319816,
+      "seen": 19,
+      "state": "ready",
+      "total_is_lower_bound": false,
+      "truncated": false
+    }
+  ],
+  "daemon_pids": [
+    27865,
+    27883
+  ],
+  "proprietary_pixels_saved": false,
+  "gpu_or_live_voice_verified": false
+}

@@ -1,0 +1,60 @@
+   Compiling archie-lumen-design v0.1.0 (C:\Users\Penta\.codex\worktrees\archieos-nvidia-latest\ArchieOS\core\crates\archie-lumen-design)
+    Finished `test` profile [unoptimized] target(s) in 3.86s
+     Running unittests src\lib.rs (D:\ArchieOS-Orbe-Review-20261026\cargo-target\debug\deps\archie_lumen_design-fd809e910259f551.exe)
+
+running 40 tests
+test tests::continuity_recovers_each_velocity_component_independently ... ok
+test tests::content_sphere::classify_follows_the_design_table ... ok
+test tests::continuity_is_root_scoped_and_bounded ... ok
+test tests::exported_catalog_has_real_flattened_source_profiles ... ok
+test tests::extreme_finite_ffi_inputs_are_rejected_without_nan_or_mutation ... ok
+test tests::ffi_step_rejects_invalid_input_without_partial_mutation ... ok
+test tests::ffi_material_policy_respects_capabilities_and_rejects_invalid_input ... ok
+test tests::free_motion_preserves_weak_damping_and_fixed_root ... ok
+test tests::ffi_surface_rejects_short_null_and_overlapping_buffers ... ok
+test tests::mesh_ffi_query_fill_and_short_buffers_are_consistent ... ok
+test tests::delivered_geometry_forms_have_uvs_normals_and_dimensions ... ok
+test tests::neural_golden::hud_numbers_read_as_in_spanish ... ok
+test tests::golden::catalog_holds_every_original_profile_value ... ok
+test tests::neural_golden::settings_take_changes_and_limits_as_the_original ... ok
+test tests::content_sphere::scan_skips_hidden_and_build_output_and_is_deterministic ... ok
+test tests::content_sphere::ffi_writes_the_scene_or_nothing ... ok
+test tests::neural_golden::collation_is_icu_root_order_as_node_sorts ... ok
+test tests::quality_uses_sustained_samples_and_preserves_content_limit ... ok
+test tests::simulation_cannot_sleep_at_a_turning_point_or_zero_delta ... ok
+test tests::simulation_sleeps_and_wakes_on_input_or_revision ... ok
+test tests::poles_are_spatial_and_finite_at_center ... ok
+test tests::source_hybrid_parameters_and_near_lod_are_preserved ... ok
+test tests::simulation_reports_small_position_changes_and_exact_final_rest ... ok
+test tests::neural_golden::hash_and_categories_match ... ok
+test tests::springless_free_motion_and_constrained_targets_reach_source_rest ... ok
+test tests::texture_tiers_have_source_dead_band_and_capabilities ... ok
+test tests::typed_setting_validation_and_invalidation_do_not_rebuild_anchors_for_color ... ok
+test tests::neural_golden::palette_rng_build_and_motion_match ... ok
+test tests::neural_golden::model_shows_folds_and_places_everything_as_the_original ... ok
+test tests::content_sphere::scan_respects_node_and_per_folder_bounds ... ok
+test tests::neural_golden::mesh_bridge_links_and_budget_match ... ok
+test tests::neural_golden::c_abi_lists_draws_and_rejects_without_unwinding ... ok
+test tests::source_surface_bake_is_linear_repeatable_and_has_packed_normals ... ok
+test shell::tests::distinct_shells_are_bounded_repeatable_and_keep_observed_radius ... ok
+test tests::neural_golden::picking_selects_the_nearest_node_along_the_ray ... ok
+test tests::neural_golden::settings_rebuild_only_what_needs_geometry ... ok
+test tests::neural_golden::tree_and_bridge_curves_match ... ok
+test tests::neural_golden::unfolding_a_program_and_folding_off_match ... ok
+test tests::neural_golden::folding_and_another_graph_move_instead_of_jumping ... ok
+test tests::neural_golden::the_scene_builds_grows_and_settles_without_jumps ... ok
+
+test result: ok. 40 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.56s
+
+     Running tests\neural_ffi_contract.rs (D:\ArchieOS-Orbe-Review-20261026\cargo-target\debug\deps\neural_ffi_contract-e071ae625b8cbf43.exe)
+
+running 1 test
+test a_picked_id_can_be_queried_before_allocating_its_buffer ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests archie_lumen_design
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

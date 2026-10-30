@@ -1,0 +1,8 @@
+{
+  "final_linux": { "passed": 362, "ignored": 33, "failed": 0 },
+  "final_linux_voice_tools": { "passed": 5, "failed": 0 },
+  "windows_before_final_job_controls": { "passed": 351, "ignored": 19, "failed": 0 },
+  "windows_final": "MSVC PDB linker LNK1318; not a passing final run",
+  "native_final_ctests": 5,
+  "live_smoke": "complete"
+}

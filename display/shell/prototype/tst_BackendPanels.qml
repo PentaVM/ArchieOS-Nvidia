@@ -68,8 +68,13 @@ Item {
             var o=forge.createObject(host)
             verify("bridge" in o,"Forge accepts backend bridge")
             o.bridge=wire
-            compare(o.records.length,1)
+            verify(content(o).indexOf("Manifiesto de Forge")<0,"Forge only contains application launching")
             verify(content(o).indexOf("freecad-bridge")<0,"no invented live bridge")
+            o.destroy()
+        }
+        function test_forge_has_no_developer_jobs_tab() {
+            var o=forge.createObject(host)
+            verify(findChild(o,"forge.section.jobs")===null,"Forge is the application launcher; diagnostics belong in Activity")
             o.destroy()
         }
         function test_notifications_only_observed_jobs() {

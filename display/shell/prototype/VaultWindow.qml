@@ -1,6 +1,7 @@
 import QtQuick
 import QtCore
 import Qt.labs.folderlistmodel
+import "Lang.js" as Tr
 
 // Vault window (file manager) in the Archie Mac look: the person's own folders, read only.
 // Places, tabs, breadcrumbs, list or grid, sorting and going up all read the real file system
@@ -26,12 +27,12 @@ Panel {
     // ---- places: the person's standard folders, then the whole system -----------------------
     readonly property url homeUrl: StandardPaths.writableLocation(StandardPaths.HomeLocation)
     readonly property var places: [
-        { name: "Inicio",     icon: "personal",   url: String(homeUrl) },
-        { name: "Escritorio", icon: "spaces",     url: String(StandardPaths.writableLocation(StandardPaths.DesktopLocation)) },
-        { name: "Documentos", icon: "documents",  url: String(StandardPaths.writableLocation(StandardPaths.DocumentsLocation)) },
-        { name: "Descargas",  icon: "deliveries", url: String(StandardPaths.writableLocation(StandardPaths.DownloadLocation)) },
-        { name: "Imágenes",   icon: "image",      url: String(StandardPaths.writableLocation(StandardPaths.PicturesLocation)) },
-        { name: "Sistema",    icon: "stack",      url: "file:///" }
+        { name: Tr.t("Inicio"),     icon: "personal",   url: String(homeUrl) },
+        { name: Tr.t("Escritorio"), icon: "spaces",     url: String(StandardPaths.writableLocation(StandardPaths.DesktopLocation)) },
+        { name: Tr.t("Documentos"), icon: "documents",  url: String(StandardPaths.writableLocation(StandardPaths.DocumentsLocation)) },
+        { name: Tr.t("Descargas"),  icon: "deliveries", url: String(StandardPaths.writableLocation(StandardPaths.DownloadLocation)) },
+        { name: Tr.t("Imágenes"),   icon: "image",      url: String(StandardPaths.writableLocation(StandardPaths.PicturesLocation)) },
+        { name: Tr.t("Sistema"),    icon: "stack",      url: "file:///" }
     ]
 
     // ---- state: tabs, navigation, sort -------------------------------------------------------
@@ -82,11 +83,11 @@ Panel {
     readonly property var crumbs: {
         var home = String(homeUrl), f = folder, out = []
         if (f === home || f.indexOf(home + "/") === 0) {
-            out.push({ label: "Inicio", url: home })
+            out.push({ label: Tr.t("Inicio"), url: home })
             var rest = f.slice(home.length).split("/").filter(function (s) { return s !== "" })
             for (var i = 0; i < rest.length; i++) out.push({ label: decodeURIComponent(rest[i]), url: home + "/" + rest.slice(0, i + 1).join("/") })
         } else {
-            out.push({ label: "Sistema", url: "file:///" })
+            out.push({ label: Tr.t("Sistema"), url: "file:///" })
             var parts = f.replace(/^file:\/\//, "").split("/").filter(function (s) { return s !== "" })
             for (var j = 0; j < parts.length; j++) out.push({ label: decodeURIComponent(parts[j]), url: "file:///" + parts.slice(0, j + 1).join("/") })
         }
@@ -103,15 +104,15 @@ Panel {
     function select(i) { selected = (i >= 0 && i < listing.count) ? i : -1 }
     function openItem(i) {
         var f = entry(i)
-        if (!f) { flash("Elige un archivo o una carpeta."); return false }
+        if (!f) { flash(Tr.t("Elige un archivo o una carpeta.")); return false }
         if (f.dir) { setFolder(f.url); return true }
-        if (Qt.openUrlExternally(f.url)) { flash("Abriendo «" + f.name + "» con la aplicación predeterminada."); return true }
-        flash("Ninguna aplicación instalada abre «" + f.name + "».")
+        if (Qt.openUrlExternally(f.url)) { flash(Tr.t("Abriendo «") + f.name + Tr.t("» con la aplicación predeterminada.")); return true }
+        flash(Tr.t("Ninguna aplicación instalada abre «") + f.name + Tr.t("»."))
         return false
     }
     function openSelected() { return openItem(selected) }
     function up() {
-        if (folder === "file:///") { flash("Ya estás en la raíz del sistema."); return false }
+        if (folder === "file:///") { flash(Tr.t("Ya estás en la raíz del sistema.")); return false }
         var parent = String(listing.parentFolder)
         setFolder(parent === "" || parent === "file:" ? "file:///" : parent)
         return true
@@ -120,7 +121,7 @@ Panel {
     function toggleSort() { sortMode = (sortMode + 1) % 3 }
     function reveal(name) {                  // select a name in the current folder, if it is there
         for (var i = 0; i < listing.count; i++) if (listing.get(i, "fileName") === name) { selected = i; return true }
-        flash("«" + name + "» no está en esta carpeta.")
+        flash("«" + name + Tr.t("» no está en esta carpeta."))
         return false
     }
 
@@ -178,7 +179,7 @@ Panel {
         Row { x: 12; anchors.verticalCenter: parent.verticalCenter; spacing: 6
             Repeater { model: win.tabsModel
                 delegate: Rectangle { objectName: "vault.tab." + index; height: 28; radius: Theme.rRow; width: Math.min(180, tl.implicitWidth) + 8 + 12 + 19
-                    color: index === win.tabIndex ? Theme.hover : (tma.containsMouse ? Qt.rgba(1, 1, 1, 0.04) : "transparent")
+                    color: index === win.tabIndex ? Theme.sel : (tma.containsMouse ? Theme.hover : "transparent")
                     MouseArea { id: tma; anchors.fill: parent; hoverEnabled: true; onClicked: win.setTab(index) }
                     Row { x: 11; anchors.verticalCenter: parent.verticalCenter; spacing: 8
                         Text { id: tl; width: Math.min(180, implicitWidth); elide: Text.ElideMiddle
@@ -209,19 +210,19 @@ Panel {
         Row { x: 16; anchors.verticalCenter: parent.verticalCenter; spacing: 14
             Row { spacing: 4
                 Text { text: win.loading ? "…" : String(win.count); color: Theme.t2; font.family: Theme.font; font.pixelSize: 11; font.weight: Font.Medium; font.features: { "tnum": 1 } }
-                Text { text: win.selected >= 0 ? "elementos · 1 seleccionado" : "elementos"; color: Theme.t3; font.family: Theme.font; font.pixelSize: 11 } }
+                Text { text: win.selected >= 0 ? Tr.t("elementos · 1 seleccionado") : Tr.t("elementos"); color: Theme.t3; font.family: Theme.font; font.pixelSize: 11 } }
             Text { text: win.note !== "" ? win.note : decodeURIComponent(win.folder.replace(/^file:\/\//, "")); elide: Text.ElideMiddle; width: Math.min(560, implicitWidth)
                 color: win.note !== "" ? Theme.warn : Theme.t3; font.family: Theme.font; font.pixelSize: 11 } }
         Row { anchors.right: parent.right; anchors.rightMargin: 16; anchors.verticalCenter: parent.verticalCenter; spacing: 6
             Icon { name: "eye"; size: 12; color: Theme.t3; anchors.verticalCenter: parent.verticalCenter }
-            Text { text: "Solo lectura · este equipo"; color: Theme.t3; font.family: Theme.font; font.pixelSize: 11; anchors.verticalCenter: parent.verticalCenter } } }
+            Text { text: Tr.t("Solo lectura · este equipo"); color: Theme.t3; font.family: Theme.font; font.pixelSize: 11; anchors.verticalCenter: parent.verticalCenter } } }
 
     // ---- sidebar ---------------------------------------------------------------------------
     Rectangle { id: side; x: 0; y: tbar.height + tabs.height; width: 228; height: parent.height - y - foot.height
         color: Theme.side
         Rectangle { anchors.right: parent.right; width: 1; height: parent.height; color: Theme.hair }
         Column { x: 10; y: 16; width: parent.width - 20; spacing: 2
-            Text { text: "UBICACIONES"; leftPadding: 10; bottomPadding: 6; color: Theme.t3; font.family: Theme.disp; font.pixelSize: 10; font.weight: Font.DemiBold; font.letterSpacing: 1.2 }
+            Text { text: Tr.t("UBICACIONES"); leftPadding: 10; bottomPadding: 6; color: Theme.t3; font.family: Theme.disp; font.pixelSize: 10; font.weight: Font.DemiBold; font.letterSpacing: 1.2 }
             Repeater { model: win.places
                 delegate: Rectangle { objectName: "vault.place." + index; width: parent.width; height: 30; radius: Theme.rRow; color: win.place === index ? Theme.sel : (sma.containsMouse ? Theme.hover : "transparent")
                     Row { x: 10; anchors.verticalCenter: parent.verticalCenter; spacing: 10
@@ -229,30 +230,31 @@ Panel {
                         Text { text: modelData.name; color: win.place === index ? Theme.t1 : Theme.t2; font.family: Theme.font; font.pixelSize: 13; anchors.verticalCenter: parent.verticalCenter } }
                     MouseArea { id: sma; anchors.fill: parent; hoverEnabled: true; onClicked: win.goPlace(index) } } }
             Item { width: 1; height: 14 }
-            Text { text: "SISTEMA"; leftPadding: 10; bottomPadding: 6; color: Theme.t3; font.family: Theme.disp; font.pixelSize: 10; font.weight: Font.DemiBold; font.letterSpacing: 1.2 }
+            Text { text: Tr.t("SISTEMA"); leftPadding: 10; bottomPadding: 6; color: Theme.t3; font.family: Theme.disp; font.pixelSize: 10; font.weight: Font.DemiBold; font.letterSpacing: 1.2 }
             // Sealed is a status row, never a folder you can open.
             Item { width: parent.width; height: 30
                 Row { x: 10; anchors.verticalCenter: parent.verticalCenter; spacing: 10
                     Icon { name: "sealed"; size: 16; color: Theme.t3; anchors.verticalCenter: parent.verticalCenter }
                     Text { text: "Sealed"; color: Theme.t2; font.family: Theme.font; font.pixelSize: 13; anchors.verticalCenter: parent.verticalCenter } }
-                Text { anchors.right: parent.right; anchors.rightMargin: 10; anchors.verticalCenter: parent.verticalCenter; text: "solo estado"; color: Theme.t3; font.family: Theme.font; font.pixelSize: 11 } } } }
+                Text { anchors.right: parent.right; anchors.rightMargin: 10; anchors.verticalCenter: parent.verticalCenter; text: Tr.t("solo estado"); color: Theme.t3; font.family: Theme.font; font.pixelSize: 11 } } } }
 
     // ---- main: list | grid -------------------------------------------------------------------
     Item { id: main; x: side.width; y: side.y; width: parent.width - side.width; height: side.height
-        VoidBox { visible: !win.loading && win.count === 0; x: 14; y: 14; width: parent.width - 28; icon: "folder"; title: "Carpeta vacía"
-            text: "No hay archivos visibles aquí, o la carpeta no existe en este equipo. Los archivos ocultos no se muestran." }
+        Rectangle { anchors.fill: parent; color: Theme.reading }
+        VoidBox { visible: !win.loading && win.count === 0; x: 14; y: 14; width: parent.width - 28; icon: "folder"; title: Tr.t("Carpeta vacía")
+            text: Tr.t("No hay archivos visibles aquí, o la carpeta no existe en este equipo. Los archivos ocultos no se muestran.") }
 
         // ---- list ----
         Item { visible: !win.gridView && win.count > 0; x: 14; y: 8; width: parent.width - 28; height: parent.height - 16
             Item { id: head; width: parent.width; height: 32
                 Rectangle { anchors.bottom: parent.bottom; width: parent.width; height: 1; color: Theme.hair }
                 Row { objectName: "vault.sortHeader"; x: 12; anchors.verticalCenter: parent.verticalCenter; spacing: 4
-                    Text { text: win.sortMode === 2 ? "Más recientes" : "Nombre"; color: Theme.t1; font.family: Theme.font; font.pixelSize: 11; font.weight: Font.Medium; anchors.verticalCenter: parent.verticalCenter }
+                    Text { text: win.sortMode === 2 ? Tr.t("Más recientes") : Tr.t("Nombre"); color: Theme.t1; font.family: Theme.font; font.pixelSize: 11; font.weight: Font.Medium; anchors.verticalCenter: parent.verticalCenter }
                     Icon { name: "chevD"; size: 12; color: Theme.t1; rotation: win.sortMode === 1 ? 180 : 0; anchors.verticalCenter: parent.verticalCenter } }
                 MouseArea { x: 0; width: 140; height: parent.height; onClicked: win.toggleSort() }
                 Text { x: parent.width - 12 - 200 - 12 - 92; width: 92; horizontalAlignment: Text.AlignRight; anchors.verticalCenter: parent.verticalCenter
-                    text: "Tamaño"; color: Theme.t3; font.family: Theme.font; font.pixelSize: 11; font.weight: Font.Medium }
-                Text { x: parent.width - 12 - 200; anchors.verticalCenter: parent.verticalCenter; text: "Modificado"; color: Theme.t3; font.family: Theme.font; font.pixelSize: 11; font.weight: Font.Medium } }
+                    text: Tr.t("Tamaño"); color: Theme.t3; font.family: Theme.font; font.pixelSize: 11; font.weight: Font.Medium }
+                Text { x: parent.width - 12 - 200; anchors.verticalCenter: parent.verticalCenter; text: Tr.t("Modificado"); color: Theme.t3; font.family: Theme.font; font.pixelSize: 11; font.weight: Font.Medium } }
             ListView { id: list; y: head.height + 4; width: parent.width; height: parent.height - y; clip: true
                 model: listing; currentIndex: win.selected; boundsBehavior: Flickable.StopAtBounds
                 onCurrentIndexChanged: positionViewAtIndex(currentIndex, ListView.Contain)
@@ -274,7 +276,7 @@ Panel {
                 Rectangle { anchors.fill: parent; anchors.margins: 6; radius: 12
                     color: win.selected === index ? Theme.sel : "transparent"; border.width: 1; border.color: win.selected === index ? Theme.tint(Theme.acc, 0.45) : "transparent"
                     Column { x: 8; y: 8; width: parent.width - 16; spacing: 4
-                        Rectangle { width: parent.width; height: 62; radius: 9; color: Qt.rgba(1, 1, 1, 0.04); border.width: 1; border.color: Theme.hair
+                        Rectangle { width: parent.width; height: 62; radius: 9; color: Theme.raised; border.width: 1; border.color: Theme.hair
                             Icon { anchors.centerIn: parent; name: win.iconOf(fileIsDir, fileSuffix); size: 34; color: win.colorOf(fileIsDir, fileSuffix) } }
                         Text { text: fileName; elide: Text.ElideRight; width: parent.width; color: Theme.t1; font.family: Theme.font; font.pixelSize: 13; font.weight: Font.Medium }
                         Text { text: win.sizeText(fileIsDir, fileSize) + " · " + Qt.formatDateTime(fileModified, "d MMM HH:mm"); elide: Text.ElideRight; width: parent.width

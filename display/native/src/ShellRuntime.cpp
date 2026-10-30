@@ -1,4 +1,6 @@
 #include "ShellRuntime.h"
+#include "UiText.h"
+#include <QCoreApplication>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -10,11 +12,20 @@ constexpr qsizetype maximumFrameBytes = 1024 * 1024;
 constexpr qsizetype maximumErrorBytes = 4096;
 }
 
-ShellRuntime::ShellRuntime(QString program, QString lanFile, QString workspacesRoot, QObject *parent)
+ShellRuntime::ShellRuntime(QString program, QString lanFile, QString workspacesRoot,
+                           quint16 projectionPort, QObject *parent)
     : QObject(parent) {
+    // A bare name is looked up on PATH and then beside this executable, where a build or an
+    // install puts archie-shell-bridge next to archie-display.
+    if (!program.contains(QLatin1Char('/')) && !program.contains(QLatin1Char('\\'))
+        && QStandardPaths::findExecutable(program).isEmpty()) {
+        const QString beside = QStandardPaths::findExecutable(program, {QCoreApplication::applicationDirPath()});
+        if (!beside.isEmpty()) program = beside;
+    }
     m_process.setProgram(program);
     m_process.setArguments({QStringLiteral("watch"), QStringLiteral("--lan-file"), lanFile,
-                           QStringLiteral("--workspaces-root"), workspacesRoot});
+                           QStringLiteral("--workspaces-root"), workspacesRoot,
+                           QStringLiteral("--displayd"), QStringLiteral("127.0.0.1:%1").arg(projectionPort)});
     m_restart.setSingleShot(true);
     m_restart.setInterval(3000);
     m_stop.setSingleShot(true);
@@ -50,7 +61,7 @@ void ShellRuntime::aiPolicyRequest(const QString &verb)
     const QString archie = QStandardPaths::findExecutable(QStringLiteral("archie"));
     if (archie.isEmpty()) {
         m_aiPolicy = QStringLiteral("unknown");
-        m_aiPolicyNote = QStringLiteral("La CLI archie no está instalada en este equipo.");
+        m_aiPolicyNote = uiText(QStringLiteral("La CLI archie no está instalada en este equipo."), QStringLiteral("The archie CLI is not installed on this machine."));
         emit aiPolicyChanged();
         return;
     }
@@ -70,12 +81,12 @@ void ShellRuntime::aiPolicyRequest(const QString &verb)
             const bool recorded = answer.value(QStringLiteral("recorded")).toBool();
             m_aiPolicy = paused ? QStringLiteral("paused") : QStringLiteral("running");
             m_aiPolicyNote = paused == recorded ? QString()
-                : (paused ? QStringLiteral("Pausada, pero sin registro: un reinicio la levantaría.")
-                          : QStringLiteral("En marcha, pero queda un registro de pausa: un reinicio pausaría."));
+                : (paused ? uiText(QStringLiteral("Pausada, pero sin registro: un reinicio la levantaría."), QStringLiteral("Paused, but not recorded: a restart would resume it."))
+                          : uiText(QStringLiteral("En marcha, pero queda un registro de pausa: un reinicio pausaría."), QStringLiteral("Running, but a pause record remains: a restart would pause.")));
         } else {
             m_aiPolicy = QStringLiteral("unknown");
-            m_aiPolicyNote = (verb == QLatin1String("status") ? QStringLiteral("Core no respondió: ")
-                                                              : QStringLiteral("Core rechazó la orden: "))
+            m_aiPolicyNote = (verb == QLatin1String("status") ? uiText(QStringLiteral("Core no respondió: "), QStringLiteral("Core did not answer: "))
+                                                              : uiText(QStringLiteral("Core rechazó la orden: "), QStringLiteral("Core refused the order: ")))
                 + (err.isEmpty() ? QStringLiteral("sin respuesta") : err.split(QLatin1Char('\n')).last());
         }
         m_aiProcess = nullptr;
@@ -105,7 +116,7 @@ void ShellRuntime::useLocalModel(const QString &name)
             return;
         }
     }
-    m_localModelNote = QStringLiteral("archie-local no ofrece ese modelo.");
+    m_localModelNote = uiText(QStringLiteral("archie-local no ofrece ese modelo."), QStringLiteral("archie-local does not offer that model."));
     emit localModelsChanged();
 }
 
@@ -115,7 +126,7 @@ void ShellRuntime::localModelRequest(const QStringList &arguments, int timeoutMs
     const QString program = QStandardPaths::findExecutable(QStringLiteral("archie-local"));
     if (program.isEmpty()) {
         m_localModels.clear();
-        m_localModelNote = QStringLiteral("archie-local no está instalado en este equipo.");
+        m_localModelNote = uiText(QStringLiteral("archie-local no está instalado en este equipo."), QStringLiteral("archie-local is not installed on this machine."));
         emit localModelsChanged();
         return;
     }
@@ -138,10 +149,10 @@ void ShellRuntime::localModelRequest(const QStringList &arguments, int timeoutMs
                 if (model.value(QStringLiteral("name")).isString()) models.append(model.toVariantMap());
             }
             m_localModels = models;
-            m_localModelNote = models.isEmpty() ? QStringLiteral("archie-local no listó modelos.") : QString();
+            m_localModelNote = models.isEmpty() ? uiText(QStringLiteral("archie-local no listó modelos."), QStringLiteral("archie-local listed no models.")) : QString();
         } else if (!ok) {
-            m_localModelNote = (listing ? QStringLiteral("archie-local no respondió: ")
-                                        : QStringLiteral("No se pudo cambiar de modelo: "))
+            m_localModelNote = (listing ? uiText(QStringLiteral("archie-local no respondió: "), QStringLiteral("archie-local did not answer: "))
+                                        : uiText(QStringLiteral("No se pudo cambiar de modelo: "), QStringLiteral("Could not switch model: ")))
                 + (err.isEmpty() ? QStringLiteral("sin respuesta") : err.split(QLatin1Char('\n')).last());
         }
         m_localProcess = nullptr;

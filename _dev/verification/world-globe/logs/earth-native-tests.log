@@ -1,0 +1,27 @@
+Test project /tmp/archie-world-native-check
+      Start  1: native_contracts
+ 1/11 Test  #1: native_contracts ...................   Passed    1.39 sec
+      Start  2: shell_runtime_contracts
+ 2/11 Test  #2: shell_runtime_contracts ............   Passed    6.60 sec
+      Start  3: exploration_preview_contracts
+ 3/11 Test  #3: exploration_preview_contracts ......   Passed    0.01 sec
+      Start  4: globe_stream_contracts
+ 4/11 Test  #4: globe_stream_contracts .............   Passed    6.71 sec
+      Start  5: globe_tiles_contracts
+ 5/11 Test  #5: globe_tiles_contracts ..............   Passed    0.11 sec
+      Start  6: earth_mesh_contracts
+ 6/11 Test  #6: earth_mesh_contracts ...............   Passed    0.35 sec
+      Start  7: world_visual_contracts
+ 7/11 Test  #7: world_visual_contracts .............   Passed    0.01 sec
+      Start  8: world_texture_contracts
+ 8/11 Test  #8: world_texture_contracts ............   Passed    2.15 sec
+      Start  9: exploration_credential_contracts
+ 9/11 Test  #9: exploration_credential_contracts ...   Passed    0.01 sec
+      Start 10: world_hud_contracts
+10/11 Test #10: world_hud_contracts ................   Passed    0.22 sec
+      Start 11: display_control_contracts
+11/11 Test #11: display_control_contracts ..........   Passed    0.76 sec
+
+100% tests passed out of 11
+
+Total Test time (real) =  18.33 sec

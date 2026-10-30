@@ -1,0 +1,54 @@
+{
+  "first_job_id": "766fc39a847d540c013ffbff14e0fb0d",
+  "second_job_id": "e0776578fddffc74b7af7703ced11e1a",
+  "final_state": "complete",
+  "signal_updates_done": 2,
+  "final_signal_points": 18,
+  "final_signal_sources": [
+    {
+      "error": null,
+      "id": "usgs_earthquakes",
+      "label": "USGS \u00b7 last 24 hours",
+      "matched_total": 0,
+      "omitted_points": 0,
+      "rejected": 192,
+      "retrieved_at_ms": 1792915380034,
+      "seen": 192,
+      "state": "no_data",
+      "total_is_lower_bound": false,
+      "truncated": false
+    },
+    {
+      "error": null,
+      "id": "nasa_eonet",
+      "label": "NASA EONET \u00b7 reported natural events",
+      "matched_total": 0,
+      "omitted_points": 0,
+      "rejected": 0,
+      "retrieved_at_ms": 1792915319043,
+      "seen": 0,
+      "state": "cached",
+      "total_is_lower_bound": false,
+      "truncated": false
+    },
+    {
+      "error": null,
+      "id": "adsb_lol",
+      "label": "adsb.lol \u00b7 reported aircraft",
+      "matched_total": 18,
+      "omitted_points": 0,
+      "rejected": 0,
+      "retrieved_at_ms": 1792915380328,
+      "seen": 18,
+      "state": "ready",
+      "total_is_lower_bound": false,
+      "truncated": false
+    }
+  ],
+  "selected_route_anonymous_status": 403,
+  "selected_route_post_status": 405,
+  "missing_capture_status": 404,
+  "selected_reads_change_downloads": false,
+  "google_ram_tiles": 8,
+  "google_persistent_entries_without_pixels": 1
+}

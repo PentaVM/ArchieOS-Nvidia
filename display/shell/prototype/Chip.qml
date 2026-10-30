@@ -38,7 +38,7 @@ Item {
     }
     DashedRect {
         anchors.fill: parent; visible: c.dashed; radius: height / 2
-        color: c.design ? Theme.tint(Theme.warn, 0.6) : Qt.rgba(141 / 255, 140 / 255, 156 / 255, 0.6)
+        color: c.design ? Theme.tint(Theme.warn, 0.75) : Theme.t3
     }
     Row {
         id: row

@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 200" width="960" height="200" role="img" aria-label="You say: Archie, draw the Mona Lisa. Nemotron proposes draw_picture. Policy allows it. Archie draws in Photopea.">
+  <title>From a sentence to a drawing</title>
+  <style>
+    .card { fill: #071021; }
+    .edge { fill: none; stroke: #1e3a5f; stroke-width: 1.5; }
+    .t { font-family: Inter, "Segoe UI", Helvetica, Arial, sans-serif; fill: #f2f7ff; }
+    .small { font-size: 13px; fill: #9fb3cc; letter-spacing: 1.6px; }
+    .said { font-size: 26px; font-weight: 600; }
+    .mono { font-family: "JetBrains Mono", Consolas, Menlo, monospace; font-size: 16px; }
+    .wave { stroke: #45e3f5; stroke-width: 4; stroke-linecap: round; }
+    .chip { rx: 15; }
+  </style>
+  <rect class="card" x="0" y="0" width="960" height="200" rx="22"/>
+  <rect class="edge" x="1" y="1" width="958" height="198" rx="21"/>
+
+  <!-- 1. The microphone hears: a voice level that moves only while words arrive. -->
+  <text class="t small" x="40" y="44">YOU SAY</text>
+  <g transform="translate(52 96)">
+    <line class="wave" x1="0" y1="-8" x2="0" y2="8"><animate attributeName="y1" values="-8;-22;-6;-18;-8;-8" keyTimes="0;.1;.2;.3;.4;1" dur="7s" repeatCount="indefinite"/><animate attributeName="y2" values="8;22;6;18;8;8" keyTimes="0;.1;.2;.3;.4;1" dur="7s" repeatCount="indefinite"/></line>
+    <line class="wave" x1="12" y1="-12" x2="12" y2="12"><animate attributeName="y1" values="-12;-6;-26;-10;-12;-12" keyTimes="0;.1;.2;.3;.4;1" dur="7s" repeatCount="indefinite"/><animate attributeName="y2" values="12;6;26;10;12;12" keyTimes="0;.1;.2;.3;.4;1" dur="7s" repeatCount="indefinite"/></line>
+    <line class="wave" x1="24" y1="-6" x2="24" y2="6"><animate attributeName="y1" values="-6;-20;-12;-24;-6;-6" keyTimes="0;.1;.2;.3;.4;1" dur="7s" repeatCount="indefinite"/><animate attributeName="y2" values="6;20;12;24;6;6" keyTimes="0;.1;.2;.3;.4;1" dur="7s" repeatCount="indefinite"/></line>
+  </g>
+  <!-- The sentence types itself while it is said. -->
+  <clipPath id="typing"><rect x="96" y="70" height="44" width="0"><animate attributeName="width" values="0;520;520;0" keyTimes="0;.38;.96;1" dur="7s" repeatCount="indefinite"/></rect></clipPath>
+  <text class="t said" x="100" y="103" clip-path="url(#typing)">“Archie, draw the Mona Lisa.”</text>
+
+  <!-- 2. Nemotron proposes; 3. Policy allows; 4. the Stage draws. -->
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.42;.48;.96;1" dur="7s" repeatCount="indefinite"/>
+    <text class="t small" x="40" y="160">NEMOTRON PROPOSES</text>
+    <text class="t mono" x="226" y="160" fill="#9a75ff">draw_picture("Mona Lisa")</text>
+  </g>
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.58;.64;.96;1" dur="7s" repeatCount="indefinite"/>
+    <rect x="490" y="140" width="148" height="30" rx="15" fill="#0f2b22" stroke="#68f1ac"/>
+    <text class="t mono" x="506" y="161" fill="#68f1ac">✓ policy: allow</text>
+  </g>
+  <g opacity="0">
+    <animate attributeName="opacity" values="0;0;1;1;0" keyTimes="0;.72;.78;.96;1" dur="7s" repeatCount="indefinite"/>
+    <rect x="654" y="140" width="270" height="30" rx="15" fill="#0b2433" stroke="#45e3f5"/>
+    <text class="t mono" x="670" y="161" fill="#45e3f5">Archie · drawing · Photopea</text>
+  </g>
+
+  <!-- The brand mark, quietly, top right. -->
+  <g transform="translate(888 26)" fill="none" stroke="#20d79d" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="20" cy="20" r="18"/>
+    <path d="M20 22V8M15 13l5-5 5 5M11 37v-6a9 9 0 0 1 18 0v6M16 38.5v-7.5a4 4 0 0 1 8 0v7.5"/>
+  </g>
+</svg>

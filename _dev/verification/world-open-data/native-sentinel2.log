@@ -1,0 +1,14 @@
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+MESA-EGL: warning: failed to get driver name for fd -1
+MESA-EGL: warning: MESA-LOADER: failed to retrieve device information
+MESA-EGL: warning: failed to get driver name for fd -1
+MESA: error: ZINK: vkCreateInstance failed (VK_ERROR_INCOMPATIBLE_DRIVER)
+MESA-EGL: warning: egl: failed to create dri2 screen
+qrc:/qt/qml/Archie/Observatory/qml/Main.qml:417:17: QML View3D: Cannot resolve view position without a camera assigned!
+archie-display ui-walk: step 0 {"shot":"latest-area"}
+archie-display ui-walk: step 1 {"click":"world.pick.aoi:766fc39a847d540c013ffbff14e0fb0d","settle":3000}
+archie-display ui-walk: step 2 {"shot":"older-area"}
+archie-display ui-walk: 1 clicks, 0 without effect; report /tmp/archie-world-sentinel2-walk-delivery/report.jsonl

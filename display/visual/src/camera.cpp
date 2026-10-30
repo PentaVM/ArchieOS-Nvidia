@@ -1,4 +1,6 @@
 #include "archie/visual/camera.hpp"
+#include <cmath>
+#include <algorithm>
 
 namespace archie::visual {
 namespace {
@@ -23,7 +25,20 @@ CameraPose CameraDirector::pose() const noexcept {
     if (!moving()) {
         return m_to;
     }
-    return interpolate(m_from, m_to, ease(progress()));
+    const float t=ease(progress());
+    auto result=interpolate(m_from,m_to,t);
+    if(m_spherical_navigation) {
+        const auto radius=[](Vec3 p){return std::sqrt(p.x*p.x+p.y*p.y+p.z*p.z);};
+        const float a=radius(m_from.eye),b=radius(m_to.eye);
+        if(a>0 && b>0) {
+            constexpr float pi=3.14159265358979323846F;
+            const float lonA=std::atan2(m_from.eye.x,m_from.eye.z),lonB=std::atan2(m_to.eye.x,m_to.eye.z);
+            const float latA=std::asin(std::clamp(m_from.eye.y/a,-1.0F,1.0F)),latB=std::asin(std::clamp(m_to.eye.y/b,-1.0F,1.0F));
+            const float lon=lonA+std::remainder(lonB-lonA,2*pi)*t,lat=lerp(latA,latB,t),r=lerp(a,b,t);
+            result.eye={r*std::cos(lat)*std::sin(lon),r*std::sin(lat),r*std::cos(lat)*std::cos(lon)};
+        }
+    }
+    return result;
 }
 
 float CameraDirector::progress() const noexcept {
@@ -44,6 +59,7 @@ void CameraDirector::begin(const CameraPose& to, std::int64_t duration_ms, Camer
     // back to the old origin before setting off again, which reads as a glitch rather
     // than a change of mind.
     m_from = pose();
+    m_spherical_navigation = false;
     m_to = to;
     m_elapsed_ms = 0;
 
@@ -95,11 +111,12 @@ void CameraDirector::release_focus() {
     begin(m_home, m_policy.return_transition_ms, CameraState::Returning);
 }
 
-void CameraDirector::navigate(const CameraPose& pose_) {
+void CameraDirector::navigate(const CameraPose& pose_, bool animate, bool spherical) {
     m_manual = true;
     m_focused.clear();
     m_settling_into = CameraState::Resting;
-    begin(pose_, 0, CameraState::Resting);
+    begin(pose_, animate ? m_policy.focus_transition_ms : 0, CameraState::Transitioning);
+    m_spherical_navigation=spherical;
 }
 
 void CameraDirector::note_node_removed(const std::string& node_id) {

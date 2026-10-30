@@ -6,8 +6,9 @@ import QtQuick
 // segments stroked 2.2x wider. Generated from icons.json: do not edit by hand.
 QtObject {
     readonly property var paths: ({
+        "dkWorld": { d: "M12 3a9 9 0 1 0 0 18a9 9 0 0 0 0-18zM3 12h18M12 3c-5 5-5 13 0 18M12 3c5 5 5 13 0 18", dots: "" },
         "activity": { d: "M12 4a8 8 0 1 0 0 16a8 8 0 1 0 0-16zM12 12V4a8 8 0 0 1 8 8z", dots: "" },
-        "archie": { d: "M12 2.75a9.25 9.25 0 1 0 0 18.5a9.25 9.25 0 1 0 0-18.5zM12 7.6 7.9 14.4M12 7.6l4.4 6.8M7.9 14.4h8.5", dots: "M12 7.6h.01M7.9 14.4h.01M16.4 14.4h.01" },
+        "archie": { d: "M12 2.75a9.25 9.25 0 1 0 0 18.5a9.25 9.25 0 1 0 0-18.5zM12 12.3V6.2M9.4 8.8 12 6.2l2.6 2.6M7.4 19.9v-3a4.6 4.6 0 0 1 9.2 0v3M10 20.9v-3.9a2 2 0 0 1 4 0v3.9", dots: "" },
         "archive": { d: "M4.5 7.5h15v11a1 1 0 0 1-1 1h-13a1 1 0 0 1-1-1zM3.5 4.5h17v3h-17zM10 12.2h4", dots: "" },
         "bad": { d: "M12 4a8 8 0 1 0 0 16a8 8 0 1 0 0-16zM9.2 9.2l5.6 5.6M14.8 9.2l-5.6 5.6", dots: "" },
         "bell": { d: "M12 3.5a5.5 5.5 0 0 0-5.5 5.5v4.5L5 16.5v1h14v-1l-1.5-3V9A5.5 5.5 0 0 0 12 3.5zM10 20a2 2 0 0 0 4 0", dots: "" },

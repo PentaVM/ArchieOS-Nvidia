@@ -17,7 +17,7 @@ use tokio::io::{AsyncReadExt, AsyncWriteExt};
 use tokio::net::TcpStream;
 use tokio::sync::RwLock;
 
-const WORLD_ENDPOINT: &str = "127.0.0.1:7667";
+const DEFAULT_WORLD_PORT: u16 = 7667;
 /// The snapshot also carries the LAN device graph (bounded at
 /// `archie_worldd::lan::MAX_VIEW_BYTES` on the ingestion side), so the
 /// transport bound mirrors it rather than the smaller observation-only one.
@@ -31,14 +31,25 @@ pub struct WorldService {
 }
 
 impl WorldService {
-    /// Connect to the fixed local adapter. There is deliberately no provider URL or
-    /// routable-address option in this process.
+    /// Connect to the local adapter on the same owner-configured port as exploration.
+    /// There is deliberately no provider URL or routable-address option. Invalid
+    /// configuration stays unavailable instead of reading another service's data.
     pub fn live() -> Self {
-        Self::at_loopback(
-            WORLD_ENDPOINT
-                .parse()
-                .expect("static world endpoint is valid"),
-        )
+        let port = match std::env::var("ARCHIE_WORLDD_PORT") {
+            Ok(value) => value.parse::<u16>().ok().filter(|port| *port != 0),
+            Err(std::env::VarError::NotPresent) => Some(DEFAULT_WORLD_PORT),
+            Err(_) => None,
+        };
+        match port {
+            Some(port) => Self::at_loopback(([127, 0, 0, 1], port).into()),
+            None => Self {
+                endpoint: None,
+                state: Arc::new(RwLock::new(WorldSnapshot::service_unavailable(
+                    WorldDataSource::LiveProvider,
+                    Timestamp::now(),
+                ))),
+            },
+        }
     }
 
     pub fn disabled(source: WorldDataSource) -> Self {
@@ -184,6 +195,54 @@ fn validate_contract(snapshot: &WorldSnapshot) -> Result<(), &'static str> {
 mod tests {
     use super::*;
     use tokio::net::TcpListener;
+
+    #[test]
+    fn configured_world_port() {
+        // Each configuration runs in its own process; other async tests never see
+        // a changed process environment.
+        const EXPECTED: &str = "ARCHIE_TEST_WORLD_ENDPOINT";
+        if let Ok(expected) = std::env::var(EXPECTED) {
+            let actual = WorldService::live().endpoint.map(|value| value.to_string());
+            assert_eq!(
+                actual.as_deref(),
+                (expected != "none").then_some(expected.as_str())
+            );
+            return;
+        }
+        for (port, expected) in [
+            (None, "127.0.0.1:7667"),
+            (Some("17667"), "127.0.0.1:17667"),
+            (Some("0"), "none"),
+            (Some("65536"), "none"),
+            (Some(""), "none"),
+            (Some("192.0.2.1:7667"), "none"),
+            (Some("invalid"), "none"),
+        ] {
+            let mut child = std::process::Command::new(std::env::current_exe().unwrap());
+            child
+                .args([
+                    "--exact",
+                    "world::tests::configured_world_port",
+                    "--nocapture",
+                ])
+                .env(EXPECTED, expected);
+            match port {
+                Some(port) => {
+                    child.env("ARCHIE_WORLDD_PORT", port);
+                }
+                None => {
+                    child.env_remove("ARCHIE_WORLDD_PORT");
+                }
+            }
+            let result = child.output().unwrap();
+            assert!(
+                result.status.success(),
+                "port {port:?}: {}{}",
+                String::from_utf8_lossy(&result.stdout),
+                String::from_utf8_lossy(&result.stderr)
+            );
+        }
+    }
 
     async fn serve_once(body: Vec<u8>) -> SocketAddr {
         let listener = TcpListener::bind("127.0.0.1:0").await.unwrap();

@@ -1,4 +1,5 @@
 import QtQuick
+import "Lang.js" as Tr
 
 // The three window lights, wired to the window manager: close, minimise (to the dock) and zoom.
 // Grey while the window is not in front, coloured while it is or while the pointer is over the
@@ -16,9 +17,11 @@ Item {
         id: row
         spacing: 8
         Repeater {
-            model: [ { c: Theme.tlClose, g: "×", act: "close" }, { c: Theme.tlMin, g: "–", act: "min" }, { c: Theme.tlZoom, g: "+", act: "zoom" } ]
+            model: [ { c: Theme.tlClose, g: "×", act: "close", n: Tr.t("Cerrar") }, { c: Theme.tlMin, g: "–", act: "min", n: Tr.t("Minimizar") }, { c: Theme.tlZoom, g: "+", act: "zoom", n: Tr.t("Ampliar") } ]
             delegate: Rectangle {
                 width: 12; height: 12; radius: 6
+                Accessible.role: Accessible.Button
+                Accessible.name: modelData.n + " " + Wm.title(l.wid)
                 color: l.lit ? modelData.c : Theme.tlOff
                 border.width: 1; border.color: Qt.rgba(0, 0, 0, 0.22)
                 Text { anchors.centerIn: parent; anchors.verticalCenterOffset: -0.5; visible: group.containsMouse

@@ -1,0 +1,20 @@
+
+running 11 tests
+.......... 10/11
+world_signals::tests::aircraft_small_provider_clock_lead_is_explicit_and_preserves_reported_time --- FAILED
+
+failures:
+
+---- world_signals::tests::aircraft_small_provider_clock_lead_is_explicit_and_preserves_reported_time stdout ----
+
+thread 'world_signals::tests::aircraft_small_provider_clock_lead_is_explicit_and_preserves_reported_time' (14591) panicked at crates/archie-worldd/src/world_signals.rs:512:10:
+called `Result::unwrap()` on an `Err` value: "aircraft feed timestamp is missing, stale or in the future"
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    world_signals::tests::aircraft_small_provider_clock_lead_is_explicit_and_preserves_reported_time
+
+test result: FAILED. 10 passed; 1 failed; 0 ignored; 0 measured; 53 filtered out; finished in 0.05s
+
+error: test failed, to rerun pass `-p archie-worldd --lib`

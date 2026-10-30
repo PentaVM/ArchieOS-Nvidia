@@ -1,0 +1,12 @@
+Warning: .drectve `-exclude-symbols:"_RNvYNtNtNtNtCs9qcQDiGWtgW_3std3sys5stdio7windows6StderrNtNtNtCs2Ja4erDm0Jl_4core2io5write5Write9write_fmtCsitj83H8SyA5_19archie_lumen_design.llvm.10390767391020650649" ' unrecognized
+Warning: .drectve `-exclude-symbols:"anon.65ed58e0a009a320d1040470f9a63b4a.3.llvm.10390767391020650649" ' unrecognized
+Warning: .drectve `-exclude-symbols:"anon.65ed58e0a009a320d1040470f9a63b4a.4.llvm.10390767391020650649" ' unrecognized
+Warning: .drectve `-exclude-symbols:"anon.65ed58e0a009a320d1040470f9a63b4a.5.llvm.10390767391020650649" ' unrecognized
+Warning: .drectve `-exclude-symbols:"anon.65ed58e0a009a320d1040470f9a63b4a.6.llvm.10390767391020650649" ' unrecognized
+Warning: .drectve `-exclude-symbols:"anon.65ed58e0a009a320d1040470f9a63b4a.41.llvm.10390767391020650649" ' unrecognized
+Warning: .drectve `-exclude-symbols:_RINvMsm_NtCs2Ja4erDm0Jl_4core5arrayAdj3_7try_mapINtNtNtB8_3ops9try_trait17NeverShortCircuitfENCINvMBN_BK_10wrap_mut_1dNCNCNCNvNtNtCsitj83H8SyA5_19archie_lumen_design6neural3ffi12neural_decor0s0_00E0EB24_ ' unrecognized
+Warning: .drectve `-exclude-symbols:_RINvMsm_NtCs2Ja4erDm0Jl_4core5arrayAdj3_7try_mapINtNtNtB8_3ops9try_trait17NeverShortCircuitfENCINvMBN_BK_10wrap_mut_1dNCNCNCNvNtNtCsitj83H8SyA5_19archie_lumen_design6neural3ffi12neural_decor0s1_00E0EB24_ ' unrecognized
+Warning: corrupt .drectve at end of def file
+Warning: corrupt .drectve at end of def file
+Warning: corrupt .drectve at end of def file
+[100%] Built target archie-display

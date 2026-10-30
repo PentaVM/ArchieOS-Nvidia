@@ -177,3 +177,8 @@ lto = "thin"
 codegen-units = 4
 panic = "abort"
 strip = true
+
+# The desktop development launcher streams and decodes real city geometry.
+# Optimize this hot path without rebuilding the whole daemon workspace in release.
+[profile.dev.package.archie-worldd]
+opt-level = 2

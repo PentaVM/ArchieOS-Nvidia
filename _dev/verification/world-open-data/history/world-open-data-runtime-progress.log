@@ -1,0 +1,28 @@
+
+running 60 tests
+............................................... 47/60
+exploration_runtime::tests::a_signal_error_without_any_success_does_not_claim_last_good_data --- FAILED
+exploration_runtime::tests::google_provider_cannot_be_opted_into_persistent_cache --- FAILED
+...........
+failures:
+
+---- exploration_runtime::tests::a_signal_error_without_any_success_does_not_claim_last_good_data stdout ----
+
+thread 'exploration_runtime::tests::a_signal_error_without_any_success_does_not_claim_last_good_data' (1346) panicked at crates/archie-worldd/src/exploration_runtime.rs:2018:9:
+assertion failed: signals["sources"].as_array().unwrap().iter().all(|source|
+        source["state"] == "error")
+
+---- exploration_runtime::tests::google_provider_cannot_be_opted_into_persistent_cache stdout ----
+
+thread 'exploration_runtime::tests::google_provider_cannot_be_opted_into_persistent_cache' (1353) panicked at crates/archie-worldd/src/exploration_runtime.rs:1992:9:
+assertion failed: !cached
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    exploration_runtime::tests::a_signal_error_without_any_success_does_not_claim_last_good_data
+    exploration_runtime::tests::google_provider_cannot_be_opted_into_persistent_cache
+
+test result: FAILED. 58 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+error: test failed, to rerun pass `-p archie-worldd --lib`

@@ -1,0 +1,30 @@
+# The stage policy of the Nebius demo (display/session/nebius-demo.sh writes the copy it
+# runs with, filling in the browser and its profile). Separate from the node's own policy
+# (core/crates/archie-stage/policy/apps.toml), which stays as it is: drawing in Photopea
+# needs strokes and captures in the browser, which a person's everyday Firefox should not
+# grant.
+#
+# The browser is Photopea too: the drawing opens photopea.com in it, with a document of the
+# painting's shape made by the page itself, and finds its paper and tools by looking at the
+# window (snapshot). Enter still waits for a person, as on the node.
+
+[[app]]
+app_id = "@FIREFOX_APP_ID@"
+display_name = "Firefox"
+allow = ["move", "click", "double_click", "drag", "scroll", "stroke", "text", "key", "focus", "snapshot"]
+max_text_grade = "public"
+max_text_chars = 512
+allow_modified_keys = true
+approval_keys = ["enter"]
+launch = ["@FIREFOX@", "--profile", "@PROFILE@", "--new-window"]
+aliases = ["browser", "navegador", "el navegador", "internet", "photopea", "photoshop", "programa de dibujo", "drawing program"]
+
+[[app]]
+# ArchieOS's own shell, the stage's desktop: Orb, Vault, Forge, Sentry and World. Archie may
+# point at and press its controls, which name themselves to the accessibility bus; it can
+# not type in it, and it is never opened or closed by voice. Its windows show the shell's
+# read-only projections, and the demo's grounding model runs on this machine.
+app_id = "archie-display"
+display_name = "Escritorio de ArchieOS"
+allow = ["move", "click", "scroll", "focus", "snapshot"]
+aliases = ["escritorio", "desktop", "archieos", "shell"]

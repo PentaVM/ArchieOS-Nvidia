@@ -21,28 +21,28 @@ Item {
         function init() { Demo.orbAcceptedProfile="";Demo.nativeProfiles=[];Demo.orbProfile=0 }
         function cleanup() { Demo.orbAcceptedProfile="";Demo.nativeProfiles=[];Demo.orbProfile=0 }
         function test_source_values_survive_until_explicit_user_change() {
-            var native=createTemporaryObject(controller,null)
-            var view=createTemporaryObject(live,null,{nativeController:native})
+            var fakeController=createTemporaryObject(controller,null)
+            var view=createTemporaryObject(live,null,{nativeController:fakeController})
             verify(view!==null)
             Demo.orbProfile=Demo.orbProfiles.indexOf("polar-prisma")
-            compare(native.profile,"polar-prisma")
-            compare(native.settings.exposure,1.32)
-            compare(native.settings.pulseSpeed,.55)
-            compare(native.settings.accentWarm,"#e8b47d")
+            compare(fakeController.profile,"polar-prisma")
+            compare(fakeController.settings.exposure,1.32)
+            compare(fakeController.settings.pulseSpeed,.55)
+            compare(fakeController.settings.accentWarm,"#e8b47d")
             view.applyLook("brightness")
-            compare(native.settings.exposure,[1.6,2.2,2.5][Demo.orbBrightI])
-            compare(native.settings.pulseSpeed,.55)
+            compare(fakeController.settings.exposure,[1.6,2.2,2.5][Demo.orbBrightI])
+            compare(fakeController.settings.pulseSpeed,.55)
         }
         function test_acknowledged_profile_is_not_applied_twice() {
-            var native=createTemporaryObject(controller,null)
-            var view=createTemporaryObject(live,null,{nativeController:native})
+            var fakeController=createTemporaryObject(controller,null)
+            var view=createTemporaryObject(live,null,{nativeController:fakeController})
             Demo.orbProfile=Demo.orbProfiles.indexOf("polar-prisma")
-            native.applyProfile("polar-prisma")
-            const before=native.calls
+            fakeController.applyProfile("polar-prisma")
+            const before=fakeController.calls
             Demo.orbAcceptedProfile="polar-prisma"
             Demo.orbProfileChanged()
-            compare(native.calls,before)
-            compare(native.settings.exposure,1.32)
+            compare(fakeController.calls,before)
+            compare(fakeController.settings.exposure,1.32)
         }
         function test_ipc_preset_keeps_the_next_user_selection_effective() {
             var window=createTemporaryObject(shell,null)

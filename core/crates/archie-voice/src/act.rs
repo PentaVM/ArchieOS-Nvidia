@@ -42,6 +42,15 @@ pub enum Plan {
         down: bool,
         steps: i32,
     },
+    /// Draw a painting in Photopea, in the background, telling it as it goes
+    /// ([`crate::draw`]). `lang` is the language to tell it in, when the model said.
+    Draw {
+        app_id: String,
+        work: &'static str,
+        lang: Option<crate::draw::Lang>,
+    },
+    /// Stop the drawing under way, between two batches of lines.
+    StopDrawing,
 }
 
 impl Plan {
@@ -51,7 +60,9 @@ impl Plan {
             | Self::Click { app_id, .. }
             | Self::Type { app_id, .. }
             | Self::Keys { app_id, .. }
-            | Self::Scroll { app_id, .. } => app_id,
+            | Self::Scroll { app_id, .. }
+            | Self::Draw { app_id, .. } => app_id,
+            Self::StopDrawing => "",
         }
     }
 }
@@ -75,6 +86,10 @@ fn refuse(code: &'static str, spoken: impl Into<String>) -> Refusal {
 pub const MAX_TARGET_CHARS: usize = 200;
 /// The most scroll steps one proposal may ask for.
 pub const MAX_SCROLL_STEPS: i32 = 20;
+/// The longest address or search the browser is asked to open.
+pub const MAX_URL_CHARS: usize = 2048;
+/// Where a search is opened when the person asked for one rather than for an address.
+pub const SEARCH: &str = "https://duckduckgo.com/?q=";
 
 /// Decides what a proposal would do, or why it will not be done.
 ///
@@ -89,6 +104,18 @@ pub fn decide(
         "open_app" => {
             let args = arguments(&intent.raw_arguments, &["app"])?;
             let name = text(&args, "app", 128)?;
+            // Orb, World, Vault, Forge, Sentry, Stage and Ajustes are not programs but buttons
+            // of the desktop's dock: opening one is pressing it, by the name it gives the
+            // accessibility bus, when the policy lets Archie press the desktop at all.
+            if policy.named(name).is_none() {
+                if let Some(button) = dock_button(name) {
+                    permitted(policy, DESKTOP_APP, ActionKind::Click, "hacer clic")?;
+                    return Ok(Plan::Click {
+                        app_id: DESKTOP_APP.into(),
+                        target: button.into(),
+                    });
+                }
+            }
             let app = policy.named(name).ok_or_else(|| {
                 refuse(
                     "unknown_app",
@@ -200,8 +227,141 @@ pub fn decide(
                 steps,
             })
         }
+        "open_website" => {
+            let args = arguments(&intent.raw_arguments, &["url", "search"])?;
+            let address = match (args.get("url"), args.get("search")) {
+                (Some(_), None) => web_address(text(&args, "url", MAX_URL_CHARS)?)?,
+                (None, Some(_)) => {
+                    format!("{SEARCH}{}", query_encode(text(&args, "search", 256)?))
+                }
+                _ => {
+                    return Err(refuse(
+                        "bad_arguments",
+                        "Dime una dirección o qué buscar, una de las dos.",
+                    ))
+                }
+            };
+            let app = policy
+                .named("browser")
+                .or_else(|| policy.named("navegador"))
+                .ok_or_else(|| refuse("unknown_app", "No tengo un navegador que pueda abrir."))?;
+            if app.launch.is_empty() {
+                return Err(refuse(
+                    "not_openable",
+                    format!("No tengo permiso para abrir {}.", app.display_name),
+                ));
+            }
+            let mut argv = app.launch.clone();
+            argv.push(address);
+            Ok(Plan::Open {
+                app_id: app.app_id.clone(),
+                argv,
+            })
+        }
+        "draw_picture" => {
+            let args = arguments(&intent.raw_arguments, &["picture", "language"])?;
+            let named = text(&args, "picture", 128)?;
+            let lang = match args.get("language").and_then(Value::as_str) {
+                Some(code) if code.starts_with("en") => Some(crate::draw::Lang::En),
+                Some(code) if code.starts_with("es") => Some(crate::draw::Lang::Es),
+                _ => None,
+            };
+            let work = crate::draw::find_work(named).ok_or_else(|| {
+                refuse(
+                    "unknown_picture",
+                    format!(
+                        "Todavía no sé dibujar {named}. Sé dibujar {}.",
+                        crate::draw::repertoire(crate::draw::Lang::Es)
+                    ),
+                )
+            })?;
+            let app = policy.named("photopea").ok_or_else(|| {
+                refuse(
+                    "unknown_app",
+                    "No tengo Photopea entre las aplicaciones que puedo usar.",
+                )
+            })?;
+            if app.launch.is_empty() {
+                return Err(refuse(
+                    "not_openable",
+                    "No tengo permiso para abrir Photopea.",
+                ));
+            }
+            for (kind, doing) in [
+                (ActionKind::Stroke, "dibujar"),
+                (ActionKind::Click, "tomar el pincel"),
+                (ActionKind::Key, "cambiar de tinta"),
+                (ActionKind::Snapshot, "mirar el papel"),
+            ] {
+                permitted(policy, &app.app_id, kind, doing)?;
+            }
+            Ok(Plan::Draw {
+                app_id: app.app_id.clone(),
+                work: work.id,
+                lang,
+            })
+        }
+        "stop_drawing" => {
+            if !intent.raw_arguments.trim().is_empty() {
+                arguments(&intent.raw_arguments, &[])?;
+            }
+            Ok(Plan::StopDrawing)
+        }
         _ => Err(refuse("unknown_tool", "Eso todavía no sé hacerlo.")),
     }
+}
+
+/// An address the browser may be asked to open: the web, and nothing else — no files, no
+/// scripts, no other programs' schemes. A bare host is taken as https.
+fn web_address(said: &str) -> Result<String, Refusal> {
+    let bad = || {
+        refuse(
+            "bad_url",
+            format!("«{said}» no es una dirección web que pueda abrir."),
+        )
+    };
+    if said.chars().any(|c| c.is_whitespace() || c.is_control()) {
+        return Err(bad());
+    }
+    let address = match said.split_once("://") {
+        Some((scheme, _))
+            if scheme.eq_ignore_ascii_case("https") || scheme.eq_ignore_ascii_case("http") =>
+        {
+            said.to_string()
+        }
+        Some(_) => return Err(bad()),
+        None if said.contains(':') && !said.contains('.') => return Err(bad()),
+        None => format!("https://{said}"),
+    };
+    let host = address
+        .split_once("://")
+        .map(|(_, rest)| rest.split(['/', '?', '#']).next().unwrap_or(""))
+        .unwrap_or("");
+    let host = host.rsplit('@').next().unwrap_or(host);
+    if host.is_empty()
+        || host.starts_with('-')
+        || !host
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '.' | '-' | ':' | '[' | ']'))
+    {
+        return Err(bad());
+    }
+    Ok(address)
+}
+
+/// A search as a query string: letters and digits as they are, everything else escaped.
+fn query_encode(text: &str) -> String {
+    let mut out = String::with_capacity(text.len() * 3);
+    for byte in text.bytes() {
+        match byte {
+            b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_' | b'.' | b'~' => {
+                out.push(byte as char)
+            }
+            b' ' => out.push('+'),
+            _ => out.push_str(&format!("%{byte:02X}")),
+        }
+    }
+    out
 }
 
 /// The proposal's arguments as an object holding only the keys this tool takes.
@@ -240,6 +400,41 @@ fn front_app(front: Option<&str>) -> Result<String, Refusal> {
             "No hay ninguna aplicación al frente para eso.",
         )
     })
+}
+
+/// The ArchieOS desktop's app id, as the stage lays it under every window.
+pub const DESKTOP_APP: &str = "archie-display";
+
+/// The dock button a spoken app name means, by the name the dock gives the accessibility
+/// bus (display/shell/prototype/Synthetic.qml), in either language.
+pub fn dock_button(name: &str) -> Option<&'static str> {
+    let said = name.trim().to_lowercase();
+    let said = said
+        .strip_prefix("el ")
+        .or_else(|| said.strip_prefix("la "))
+        .or_else(|| said.strip_prefix("the "))
+        .unwrap_or(&said);
+    Some(match said {
+        "orb" | "orbe" | "la esfera" | "esfera" => "Orb",
+        "world" | "mundo" | "el mundo" | "globo" | "el globo" | "globe" => "World",
+        "vault" | "bóveda" | "boveda" | "archivos" | "files" => "Vault",
+        "forge" | "forja" => "Forge",
+        "sentry" | "sentinel" | "centinela" => "Sentry",
+        "stage" | "escenario" => "Stage",
+        "ajustes" | "settings" | "configuración" | "configuracion" | "preferencias" => {
+            settings_button()
+        }
+        _ => return None,
+    })
+}
+
+/// The settings button's name on the dock, which follows the desktop's language
+/// (ARCHIE_UI_LANG, as display/shell/prototype/Lang.js reads it).
+fn settings_button() -> &'static str {
+    match std::env::var("ARCHIE_UI_LANG") {
+        Ok(lang) if lang.starts_with("en") => "Settings",
+        _ => "Ajustes",
+    }
 }
 
 fn permitted<'a>(
@@ -481,6 +676,200 @@ allow = ["stroke", "click"]
         assert_eq!(in_front.app_id(), "org.qt-project.qml");
         let long = format!(r#"{{"target":"{}"}}"#, "x".repeat(MAX_TARGET_CHARS + 1));
         assert!(decide(&intent("click", &long), &policy(), FOX).is_err());
+    }
+
+    const DEMO: &str = r#"
+[[app]]
+app_id = "firefox"
+display_name = "Firefox"
+allow = ["click", "text", "key", "scroll", "focus", "stroke", "snapshot"]
+launch = ["firefox", "--new-window"]
+aliases = ["browser", "navegador", "photopea"]
+"#;
+
+    #[test]
+    fn a_website_opens_in_the_browser_the_policy_names_and_nothing_else_does() {
+        let policy = StagePolicy::parse(DEMO).unwrap();
+        let open = |raw: &str| decide(&intent("open_website", raw), &policy, None);
+        assert_eq!(
+            open(r#"{"url":"photopea.com"}"#).unwrap(),
+            Plan::Open {
+                app_id: "firefox".into(),
+                argv: vec![
+                    "firefox".into(),
+                    "--new-window".into(),
+                    "https://photopea.com".into()
+                ],
+            }
+        );
+        let Plan::Open { argv, .. } = open(r#"{"search":"clima en Santiago & más"}"#).unwrap()
+        else {
+            panic!("an open plan");
+        };
+        assert_eq!(
+            argv.last().unwrap(),
+            "https://duckduckgo.com/?q=clima+en+Santiago+%26+m%C3%A1s"
+        );
+        for raw in [
+            r#"{"url":"file:///etc/passwd"}"#,
+            r#"{"url":"javascript:alert(1)"}"#,
+            r#"{"url":"https://a.com --kiosk"}"#,
+            r#"{"url":"-profile"}"#,
+            r#"{"url":"a.com","search":"b"}"#,
+            r#"{}"#,
+        ] {
+            assert!(open(raw).is_err(), "{raw}");
+        }
+        // Without a browser entry there is nothing to open it in.
+        assert_eq!(
+            decide(
+                &intent("open_website", r#"{"url":"a.com"}"#),
+                &self::policy(),
+                None
+            )
+            .unwrap_err()
+            .code,
+            "unknown_app"
+        );
+    }
+
+    #[test]
+    fn a_painting_is_drawn_only_where_the_policy_lets_archie_draw() {
+        let policy = StagePolicy::parse(DEMO).unwrap();
+        let plan = decide(
+            &intent(
+                "draw_picture",
+                r#"{"picture":"the Mona Lisa","language":"en"}"#,
+            ),
+            &policy,
+            None,
+        )
+        .unwrap();
+        assert_eq!(
+            plan,
+            Plan::Draw {
+                app_id: "firefox".into(),
+                work: "mona-lisa",
+                lang: Some(crate::draw::Lang::En),
+            }
+        );
+        let unknown = decide(
+            &intent("draw_picture", r#"{"picture":"el grito"}"#),
+            &policy,
+            None,
+        )
+        .unwrap_err();
+        assert_eq!(unknown.code, "unknown_picture");
+        assert!(
+            unknown.spoken.contains("la Mona Lisa"),
+            "{}",
+            unknown.spoken
+        );
+        // An everyday Firefox, granted no strokes, is not a canvas.
+        let everyday = StagePolicy::parse(&DEMO.replace(", \"stroke\"", "")).unwrap();
+        assert_eq!(
+            decide(
+                &intent("draw_picture", r#"{"picture":"mona lisa"}"#),
+                &everyday,
+                None
+            )
+            .unwrap_err()
+            .code,
+            "action_not_allowed"
+        );
+        assert_eq!(
+            decide(&intent("stop_drawing", "{}"), &policy, None).unwrap(),
+            Plan::StopDrawing
+        );
+    }
+
+    #[test]
+    fn the_nebius_demo_policy_draws_browses_and_presses_the_desktop_but_never_opens_it() {
+        let text = include_str!("../../../../display/session/nebius-demo-apps.toml")
+            .replace("@FIREFOX_APP_ID@", "firefox")
+            .replace("@FIREFOX@", "/usr/bin/firefox")
+            .replace("@PROFILE@", "/tmp/archie-demo/firefox");
+        let policy = StagePolicy::parse(&text).unwrap();
+        assert!(matches!(
+            decide(
+                &intent("draw_picture", r#"{"picture":"Mona Lisa","language":"en"}"#),
+                &policy,
+                None
+            ),
+            Ok(Plan::Draw {
+                work: "mona-lisa",
+                ..
+            })
+        ));
+        let Ok(Plan::Open { argv, .. }) = decide(
+            &intent("open_website", r#"{"url":"nebius.com"}"#),
+            &policy,
+            None,
+        ) else {
+            panic!("the browser opens a website");
+        };
+        assert_eq!(
+            argv,
+            [
+                "/usr/bin/firefox",
+                "--profile",
+                "/tmp/archie-demo/firefox",
+                "--new-window",
+                "https://nebius.com"
+            ]
+        );
+        assert_eq!(
+            decide(
+                &intent("click", r#"{"target":"Sentry","app":"escritorio"}"#),
+                &policy,
+                None
+            )
+            .unwrap()
+            .app_id(),
+            "archie-display"
+        );
+        assert_eq!(
+            decide(
+                &intent("open_app", r#"{"app":"escritorio"}"#),
+                &policy,
+                None
+            )
+            .unwrap_err()
+            .code,
+            "not_openable"
+        );
+        // The dock's apps open by pressing their buttons, in either language.
+        for (said, button) in [
+            ("Sentry", "Sentry"),
+            ("World", "World"),
+            ("el mundo", "World"),
+            ("Forge", "Forge"),
+            ("ajustes", "Ajustes"),
+        ] {
+            assert_eq!(
+                decide(
+                    &intent("open_app", &format!(r#"{{"app":"{said}"}}"#)),
+                    &policy,
+                    None
+                )
+                .unwrap(),
+                Plan::Click {
+                    app_id: "archie-display".into(),
+                    target: button.into()
+                },
+                "{said}"
+            );
+        }
+        assert_eq!(
+            decide(
+                &intent("type_text", r#"{"text":"hola"}"#),
+                &policy,
+                Some("archie-display")
+            )
+            .unwrap_err()
+            .code,
+            "action_not_allowed"
+        );
     }
 
     #[test]

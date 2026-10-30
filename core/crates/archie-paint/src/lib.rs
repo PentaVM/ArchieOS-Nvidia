@@ -14,6 +14,8 @@ pub mod bench;
 mod flow;
 mod image;
 mod paper;
+pub mod photopea;
+pub mod session;
 
 pub use flow::{length_of, plan as flow_plan, Flow};
 pub use image::{Picture, PictureError};

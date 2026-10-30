@@ -1,0 +1,21 @@
+
+running 1 test
+world_signals::tests::bounded_output_counts_omissions_and_keeps_unknown_time_unknown --- FAILED
+
+failures:
+
+---- world_signals::tests::bounded_output_counts_omissions_and_keeps_unknown_time_unknown stdout ----
+
+thread 'world_signals::tests::bounded_output_counts_omissions_and_keeps_unknown_time_unknown' (31764) panicked at crates/archie-worldd/src/world_signals.rs:649:9:
+assertion `left == right` failed
+  left: (128, 140, 12, true)
+ right: (128, 140, 0, true)
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    world_signals::tests::bounded_output_counts_omissions_and_keeps_unknown_time_unknown
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 62 filtered out; finished in 0.09s
+
+error: test failed, to rerun pass `-p archie-worldd --lib`

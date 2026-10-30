@@ -10,12 +10,15 @@
 
 #include <QCommandLineParser>
 #include <QFile>
+#include <QFileInfo>
 #include <QGuiApplication>
+#include <QIcon>
 #include <QScreen>
 #include <QQmlApplicationEngine>
 #include <QQuickWindow>
 #include <QStandardPaths>
 #include <QTimer>
+#include <QUrl>
 
 #include "CommandCodec.h"
 #include "StageController.h"
@@ -24,6 +27,7 @@ int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
     QGuiApplication::setApplicationName(QStringLiteral("archie-stage"));
+    QGuiApplication::setWindowIcon(QIcon(QStringLiteral(":/archie/brand/archieos-app-512.png")));
     QGuiApplication::setDesktopFileName(QStringLiteral("org.archieos.Stage"));
 
     QCommandLineParser parser;
@@ -59,6 +63,20 @@ int main(int argc, char *argv[])
         QStringLiteral("A file rewritten when a person touches the mouse or keyboard; its age is how long "
                        "the machine has been untouched. Empty writes none."),
         QStringLiteral("path"), QStringLiteral("/run/archie/person-input"));
+    const QCommandLineOption desktopApp(
+        QStringLiteral("desktop-app"),
+        QStringLiteral("The app id of the desktop: its window titled --desktop-title is laid under every "
+                       "other one, unframed, across the whole screen, and the others are framed between its "
+                       "top bar and its dock. Empty: no desktop."),
+        QStringLiteral("app-id"), QStringLiteral("archie-display"));
+    const QCommandLineOption desktopTitle(QStringLiteral("desktop-title"),
+                                          QStringLiteral("The title of the desktop's window."),
+                                          QStringLiteral("title"), QStringLiteral("ArchieOS"));
+    const QCommandLineOption narrationFile(
+        QStringLiteral("narration-file"),
+        QStringLiteral("A JSON file ({\"text\", \"lang\", \"at_ms\"}) Archie's voice rewrites with each line "
+                       "it says on its own while it works; the stage shows it as a subtitle."),
+        QStringLiteral("path"));
     const QCommandLineOption windowed(QStringLiteral("windowed"), QStringLiteral("Do not go full screen."));
     const QCommandLineOption screen(
         QStringLiteral("screen"),
@@ -78,9 +96,17 @@ int main(int argc, char *argv[])
                                        QStringLiteral("ms"));
     const QCommandLineOption quitAfter(QStringLiteral("quit-after-ms"), QStringLiteral("Exit after this long."),
                                        QStringLiteral("ms"));
-    parser.addOptions({socketName, control, keyFile, reducedMotion, tier, tempo, seats, strokeSpeed, presenceFile, windowed, screen, width, height, grab, grabAfter,
+    parser.addOptions({socketName, control, keyFile, reducedMotion, tier, tempo, seats, strokeSpeed, presenceFile,
+                       desktopApp, desktopTitle, narrationFile, windowed, screen, width, height, grab, grabAfter,
                        grabEvery, quitAfter});
     parser.process(app);
+    // The subtitle is read by the scene from a local file; Qt Quick reads local files only
+    // when told it may. The scene is the stage's own, and reads nothing else.
+    QString narrationUrl;
+    if (parser.isSet(narrationFile) && !parser.value(narrationFile).isEmpty()) {
+        qputenv("QML_XHR_ALLOW_FILE_READ", "1");
+        narrationUrl = QUrl::fromLocalFile(QFileInfo(parser.value(narrationFile)).absoluteFilePath()).toString();
+    }
 
     StageController::Options options;
     options.control_socket = parser.value(control);
@@ -157,6 +183,8 @@ int main(int argc, char *argv[])
 
     StageController controller(options);
     QQmlApplicationEngine engine;
+    // The stage's words follow ARCHIE_UI_LANG, as the shell's do (Lang.js); Spanish otherwise.
+    engine.setUiLanguage(qEnvironmentVariable("ARCHIE_UI_LANG"));
     engine.setInitialProperties({
         {QStringLiteral("stage"), QVariant::fromValue(&controller)},
         {QStringLiteral("stageSocketName"), parser.value(socketName)},
@@ -168,6 +196,9 @@ int main(int argc, char *argv[])
          parser.isSet(windowed) ? parser.value(width).toInt() : stand.width()},
         {QStringLiteral("initialHeight"),
          parser.isSet(windowed) ? parser.value(height).toInt() : stand.height()},
+        {QStringLiteral("desktopApp"), parser.value(desktopApp)},
+        {QStringLiteral("desktopTitle"), parser.value(desktopTitle)},
+        {QStringLiteral("narrationUrl"), narrationUrl},
     });
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreationFailed, &app,
                      [] { QCoreApplication::exit(1); }, Qt::QueuedConnection);

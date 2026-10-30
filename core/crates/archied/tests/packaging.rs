@@ -922,10 +922,22 @@ fn the_renderer_is_a_native_compiled_gpu_client_not_a_web_app() {
     }
 }
 
+/// The Observatory's view: the window `Main.qml` opens and the content it hosts, which the
+/// desktop embeds as well.
+fn observatory_qml() -> String {
+    ["Main.qml", "ObservatoryContent.qml"]
+        .iter()
+        .map(|name| {
+            std::fs::read_to_string(repo_root().join("display/native/qml").join(name))
+                .expect("native QML exists")
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
 #[test]
 fn native_motion_has_a_real_trigger_and_no_synthetic_loading_loop() {
-    let qml = std::fs::read_to_string(repo_root().join("display/native/qml/Main.qml"))
-        .expect("native QML exists");
+    let qml = observatory_qml();
     assert!(qml.contains("onSnapshotRevisionChanged() { realEventPulse.restart() }"));
     assert!(qml.contains("visible: archieBridge.busy"));
     assert!(qml.contains("height: archieBridge.busy ? 2 : 0"));
@@ -954,8 +966,7 @@ fn the_draw_budget_changes_the_drawing_rather_than_describing_it() {
     // Reading pressure and then rendering identically would make the budget a caption.
     // The observatory is the largest discretionary consumer on the node, so a saturated
     // machine has to actually get its GPU back.
-    let qml = std::fs::read_to_string(repo_root().join("display/native/qml/Main.qml"))
-        .expect("native QML exists");
+    let qml = observatory_qml();
 
     assert!(
         qml.contains("antialiasingMode: archieBridge.frame.msaaSamples"),
@@ -989,8 +1000,7 @@ fn unmeasured_and_idle_never_render_the_same() {
     // A gauge reading zero and a gauge that cannot read must look different. One says the
     // machine is quiet; the other says nothing is being measured, and an operator acts
     // differently on each.
-    let qml = std::fs::read_to_string(repo_root().join("display/native/qml/Main.qml"))
-        .expect("native QML exists");
+    let qml = observatory_qml();
 
     assert!(
         qml.contains("pressureKnown") && qml.contains("thermalKnown"),

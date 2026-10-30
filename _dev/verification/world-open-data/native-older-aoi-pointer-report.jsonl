@@ -1,0 +1,4 @@
+{"i":0,"kind":"shot","shot":"000-latest-area.png","state":{"cameraOwner":"AOI · elevación de la fuente","scene":"world","selectedArea":"e0776578fddffc74b7af7703ced11e1a","selectedImagery":"sentinel2","selectedPoint":""}}
+{"changed":["cameraOwner","selectedArea","selectedPoint"],"i":1,"kind":"click","pixels":63.1,"result":"ok","shot":"001-world.pick.aoi_766fc39a847d540c013ffbff14e0fb0d.png","state":{"cameraOwner":"Cámara manual","scene":"world","selectedArea":"766fc39a847d540c013ffbff14e0fb0d","selectedImagery":"sentinel2","selectedPoint":"aoi:766fc39a847d540c013ffbff14e0fb0d"},"target":"world.pick.aoi:766fc39a847d540c013ffbff14e0fb0d","x":1120.957275390625,"y":777.4019165039062}
+{"i":2,"kind":"shot","shot":"002-older-area.png","state":{"cameraOwner":"Cámara manual","scene":"world","selectedArea":"766fc39a847d540c013ffbff14e0fb0d","selectedImagery":"sentinel2","selectedPoint":"aoi:766fc39a847d540c013ffbff14e0fb0d"}}
+{"clicks":1,"i":3,"kind":"summary","no_effect":0}

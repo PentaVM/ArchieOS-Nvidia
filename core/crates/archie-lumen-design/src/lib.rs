@@ -8,6 +8,7 @@ pub mod catalog;
 pub mod content;
 mod ffi;
 pub mod mesh;
+pub mod neural;
 pub mod policy;
 pub mod shell;
 pub mod simulation;

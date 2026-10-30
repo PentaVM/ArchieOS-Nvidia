@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=ArchieOS
+Comment=ArchieOS desktop: Orb, Forge, World and the apps Archie uses, in one window
+Exec=archie-display --shell
+Icon=archieos
+Categories=System;
+StartupWMClass=archie-display
+NoDisplay=false

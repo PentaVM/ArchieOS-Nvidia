@@ -10,11 +10,21 @@
 
 #include "archie/visual/observatory.hpp"
 
+class WorldImageProvider;
+
 class ArchieBridge final : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(QVariantMap snapshot READ snapshot NOTIFY snapshotChanged)
     Q_PROPERTY(QVariantMap world READ world NOTIFY worldChanged)
+    Q_PROPERTY(QVariantMap exploration READ exploration NOTIFY explorationChanged)
+    Q_PROPERTY(QVariantList explorationMeshes READ explorationMeshes NOTIFY explorationChanged)
+    Q_PROPERTY(QVariantList imageryMeshes READ imageryMeshes NOTIFY explorationChanged)
+    Q_PROPERTY(QVariantList imagerySources READ imagerySources NOTIFY explorationChanged)
+    Q_PROPERTY(QVariantList worldPoints READ worldPoints NOTIFY explorationChanged)
+    Q_PROPERTY(QVariantList signalSources READ signalSources NOTIFY explorationChanged)
+    Q_PROPERTY(QString selectedImagery READ selectedImagery WRITE setSelectedImagery NOTIFY selectedImageryChanged)
+    Q_PROPERTY(QString selectedExplorationJob READ selectedExplorationJobId NOTIFY explorationSelectionChanged)
     Q_PROPERTY(bool busy READ busy NOTIFY busyChanged)
     Q_PROPERTY(bool connected READ connected NOTIFY connectedChanged)
     Q_PROPERTY(QString error READ error NOTIFY errorChanged)
@@ -58,12 +68,22 @@ class ArchieBridge final : public QObject
     Q_PROPERTY(QVariantMap frame READ frame NOTIFY frameChanged)
 
 public:
-    explicit ArchieBridge(QObject *parent = nullptr, bool shellMode = false);
+    explicit ArchieBridge(QObject *parent = nullptr, bool shellMode = false, quint16 projectionPort = 7666);
+    void setWorldImageProvider(WorldImageProvider *provider) {m_imageProvider=provider;}
     bool presented() const { return m_presented; }
     void setPresented(bool presented);
 
     QVariantMap snapshot() const { return m_snapshot; }
     QVariantMap world() const { return m_world; }
+    QVariantList imageryMeshes() const {return m_imageryMeshes;}
+    QVariantList imagerySources() const {return m_imagerySources;}
+    QVariantList worldPoints() const {return m_worldPoints;}
+    QVariantList signalSources() const {return m_signalSources;}
+    QString selectedImagery() const {return m_selectedImagery;}
+    QString selectedExplorationJobId() const {return m_selectedExplorationJob;}
+    void setSelectedImagery(const QString &id);
+    QVariantMap exploration() const { return m_exploration; }
+    QVariantList explorationMeshes() const { return m_explorationMeshes; }
     QVariantList sceneNodes() const { return m_sceneNodes; }
     QVariantList sceneEdges() const { return m_sceneEdges; }
     bool busy() const { return m_pendingRequests > 0; }
@@ -83,6 +103,11 @@ public:
 
     Q_INVOKABLE void refreshSnapshot();
     Q_INVOKABLE void refreshWorld();
+    Q_INVOKABLE void refreshExploration();
+    Q_INVOKABLE bool selectExplorationJob(const QString &id);
+    Q_INVOKABLE void latestExplorationJob();
+    Q_INVOKABLE void enableWorld();
+    Q_INVOKABLE bool frameExploration(double latitude, double longitude, double radiusM, double elevationM, bool animate);
     Q_INVOKABLE void refreshKernel();
     Q_INVOKABLE void refreshOrb();
     Q_INVOKABLE void refreshGeoFabric();
@@ -105,10 +130,14 @@ public:
     Q_INVOKABLE void focusNode(const QString &id);
     Q_INVOKABLE void releaseFocus();
     Q_INVOKABLE void orbitGlobe(float longitudeDelta, float latitudeDelta, float zoomSteps);
+    Q_INVOKABLE void tiltGlobe(float deltaDegrees);
 
 signals:
     void snapshotChanged();
     void worldChanged();
+    void explorationChanged();
+    void selectedImageryChanged();
+    void explorationSelectionChanged();
     void busyChanged();
     void connectedChanged();
     void errorChanged();
@@ -124,7 +153,7 @@ signals:
     void presentedChanged();
 
 private:
-    enum class Projection { Snapshot, World, Kernel, GeoFabric, Orb };
+    enum class Projection { Snapshot, World, Kernel, GeoFabric, Orb, Exploration };
 
     void request(Projection projection, const QUrl &url);
     void accept(Projection projection, const QByteArray &body);
@@ -134,6 +163,7 @@ private:
 
     /// Advance the model and publish what it says to draw.
     void tick();
+    void clearExplorationVisuals();
 
     /// The model. Everything drawn comes out of this, and nothing about how to draw it
     /// is decided anywhere else in this process.
@@ -142,6 +172,7 @@ private:
     QNetworkAccessManager m_network;
     QTimer m_snapshotTimer;
     QTimer m_worldTimer;
+    QTimer m_explorationTimer;
     QTimer m_kernelTimer;
     QTimer m_orbTimer;
     QTimer m_clockTimer;
@@ -150,6 +181,15 @@ private:
     QTimer m_frameTimer;
     QVariantMap m_snapshot;
     QVariantMap m_world;
+    QVariantMap m_exploration{{QStringLiteral("source"), QStringLiteral("unavailable")}};
+    QVariantList m_explorationMeshes,m_imageryMeshes,m_imagerySources,m_worldPoints,m_signalSources;
+    QString m_selectedImagery,m_imageryPreference;
+    QString m_selectedExplorationJob;
+    quint64 m_explorationSelectionRevision=0;
+    WorldImageProvider *m_imageProvider=nullptr;
+    quint16 m_projectionPort=7666;
+    QByteArray m_explorationGeometryDigest;
+    bool m_explorationPending = false;
     QVariantMap m_kernel;
     QVariantList m_sceneNodes;
     QVariantList m_sceneEdges;

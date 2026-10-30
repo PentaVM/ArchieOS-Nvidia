@@ -96,7 +96,7 @@ public:
     /// Let go of whatever is focused and head home.
     void release_focus();
     /// Direct operator navigation keeps the configured home available for Escape.
-    void navigate(const CameraPose& pose);
+    void navigate(const CameraPose& pose, bool animate = false, bool spherical = false);
     [[nodiscard]] bool manual_navigation() const noexcept { return m_manual; }
 
     /// The focused node no longer exists.
@@ -144,6 +144,7 @@ private:
     CameraPose m_to{};
     std::string m_focused{};
     bool m_manual = false;
+    bool m_spherical_navigation = false;
 
     std::int64_t m_duration_ms = 0;
     std::int64_t m_elapsed_ms = 0;

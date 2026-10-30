@@ -1,0 +1,244 @@
+{
+  "schema": 1,
+  "retrieved_on": "2026-10-28",
+  "purpose": "Unmodified official application identity; not endorsement or installation status",
+  "icons": [
+    {
+      "file": "kicad.png",
+      "repository": "https://github.com/KiCad/kicad-source-mirror",
+      "ref": "3a3a56ced78e248a4fedfc3486eeaf9f89209c09",
+      "path": "resources/bitmaps_png/png/icon_kicad_256.png",
+      "url": "https://raw.githubusercontent.com/KiCad/kicad-source-mirror/3a3a56ced78e248a4fedfc3486eeaf9f89209c09/resources/bitmaps_png/png/icon_kicad_256.png",
+      "sha256": "91ddb6a35d7f14db12d7d153d0fcf2d12bbcc2b2a8a67b37ee6ee344376f75b2",
+      "bytes": 15510,
+      "kind": "image",
+      "app_id": "org.kicad.kicad",
+      "project": "KiCad",
+      "license": "CC-BY-SA-4.0",
+      "license_basis": "KiCad project; bitmap source embeds CC-BY-SA-4.0",
+      "project_url": "https://www.kicad.org/",
+      "modified": false
+    },
+    {
+      "file": "firefox.svg",
+      "repository": "https://github.com/mozilla/protocol-assets",
+      "ref": "916694f6f6d822289f0f66c3dd4684aee218497e",
+      "path": "logos/firefox/browser/logo.svg",
+      "url": "https://raw.githubusercontent.com/mozilla/protocol-assets/916694f6f6d822289f0f66c3dd4684aee218497e/logos/firefox/browser/logo.svg",
+      "sha256": "f8301ac5f5dd3ca962db4283c1148e9a90ffcebe690ec83cedad88107d449f79",
+      "bytes": 10250,
+      "kind": "image",
+      "app_id": "firefox",
+      "project": "Firefox Browser",
+      "license": "MPL-2.0",
+      "license_basis": "Mozilla protocol-assets repository license; Firefox trademark policy applies",
+      "project_url": "https://www.mozilla.org/en-US/foundation/trademarks/policy/",
+      "modified": false
+    },
+    {
+      "file": "kdenlive.png",
+      "repository": "https://github.com/KDE/kdenlive",
+      "ref": "f3d6078a705072090cb62d844cbac1c8784a2758",
+      "path": "data/icons/256-apps-kdenlive.png",
+      "url": "https://raw.githubusercontent.com/KDE/kdenlive/f3d6078a705072090cb62d844cbac1c8784a2758/data/icons/256-apps-kdenlive.png",
+      "sha256": "22a01b4f7e1e4a858fdf9c4f095884cadb040de7349be665d3001c2c125600f1",
+      "bytes": 4399,
+      "kind": "image",
+      "app_id": "org.kde.kdenlive",
+      "project": "Kdenlive",
+      "license": "GPL-3.0-or-later",
+      "license_basis": "KDE Kdenlive repository COPYING; unmodified application icon",
+      "project_url": "https://apps.kde.org/kdenlive/",
+      "modified": false
+    },
+    {
+      "file": "freecad.svg",
+      "repository": "https://github.com/FreeCAD/FreeCAD",
+      "ref": "74168a8ae2d0c1a6e3006297673a871e8c1c8399",
+      "path": "src/Gui/Icons/freecad.svg",
+      "url": "https://raw.githubusercontent.com/FreeCAD/FreeCAD/74168a8ae2d0c1a6e3006297673a871e8c1c8399/src/Gui/Icons/freecad.svg",
+      "sha256": "10a70c5cec0f5456c995f269fc2b73978f9b4b7eb193c5fab765ea97254682ba",
+      "bytes": 2552,
+      "kind": "image",
+      "app_id": "org.freecad.FreeCAD",
+      "project": "FreeCAD",
+      "license": "LGPL-2.1-or-later",
+      "license_basis": "FreeCAD repository default LICENSE; the icon has no separate SPDX header",
+      "project_url": "https://www.freecad.org/",
+      "modified": false
+    },
+    {
+      "file": "blender.svg",
+      "repository": "https://github.com/blender/blender",
+      "ref": "5e5800e01a68f006767b3795b9ee43221e0465c9",
+      "path": "release/freedesktop/icons/scalable/apps/blender.svg",
+      "url": "https://raw.githubusercontent.com/blender/blender/5e5800e01a68f006767b3795b9ee43221e0465c9/release/freedesktop/icons/scalable/apps/blender.svg",
+      "sha256": "fd18ae29afd0743a6eee912fdfab71476f6da0f6699a16c1ecd7db7ea8a5de59",
+      "bytes": 2976,
+      "kind": "image",
+      "app_id": "blender",
+      "project": "Blender",
+      "license": "GPL-2.0-or-later",
+      "license_basis": "Blender source repository COPYING/GPL; Blender name and logo remain trademarks",
+      "project_url": "https://www.blender.org/about/logo/",
+      "modified": false
+    },
+    {
+      "file": "inkscape.svg",
+      "repository": "https://gitlab.com/inkscape/inkscape",
+      "ref": "483fa312c9e481a3fd11148fd8db1973093a573d",
+      "path": "share/branding/inkscape-flat.svg",
+      "url": "https://gitlab.com/inkscape/inkscape/-/raw/483fa312c9e481a3fd11148fd8db1973093a573d/share/branding/inkscape-flat.svg",
+      "sha256": "424b54a148228f68e5cc8947118dad9f7992361ca19b2fe2b5083fd6ff1b9bf0",
+      "bytes": 1465,
+      "kind": "image",
+      "app_id": "org.inkscape.Inkscape",
+      "project": "Inkscape",
+      "license": "CC-BY-SA-3.0",
+      "license_basis": "Unmodified official flat branding variant; sibling inkscape.svg embeds CC-BY-SA-3.0 attribution to Andy Fitzsimon",
+      "project_url": "https://gitlab.com/inkscape/inkscape/-/tree/483fa312c9e481a3fd11148fd8db1973093a573d/share/branding",
+      "modified": false
+    },
+    {
+      "file": "gimp.svg",
+      "repository": "https://github.com/GNOME/gimp-data",
+      "ref": "dba1b6d3d5e0703c5337c9ec32805ac017dc1270",
+      "path": "images/logo/gimp-logo.svg",
+      "url": "https://raw.githubusercontent.com/GNOME/gimp-data/dba1b6d3d5e0703c5337c9ec32805ac017dc1270/images/logo/gimp-logo.svg",
+      "sha256": "f16e91ac7ad855e30e5bf7b14eb734ece683ea65c743fb5ccdb7514aa2f549c6",
+      "bytes": 7666,
+      "kind": "image",
+      "app_id": "gimp",
+      "project": "GIMP",
+      "license": "CC-BY-SA-4.0",
+      "license_basis": "GIMP logo README and official linking page; Wilber logo by Aryeom Han / GIMP team",
+      "project_url": "https://www.gimp.org/about/linking.html",
+      "modified": false
+    },
+    {
+      "file": "obs-studio.png",
+      "repository": "https://github.com/obsproject/obs-studio",
+      "ref": "2735cc48ce60e2f03483ff5e80f96bd07e0a94d7",
+      "path": "frontend/cmake/linux/icons/obs-logo-256.png",
+      "url": "https://raw.githubusercontent.com/obsproject/obs-studio/2735cc48ce60e2f03483ff5e80f96bd07e0a94d7/frontend/cmake/linux/icons/obs-logo-256.png",
+      "sha256": "b56657342921cefcb7aac7f9ac34def73974ade8bbd49e60c8e1230863fe307b",
+      "bytes": 45887,
+      "kind": "image",
+      "app_id": "com.obsproject.Studio",
+      "project": "OBS Studio",
+      "license": "GPL-2.0-or-later",
+      "license_basis": "OBS Studio repository README/COPYING; unmodified Linux application icon",
+      "project_url": "https://obsproject.com/",
+      "modified": false
+    },
+    {
+      "file": "libreoffice.png",
+      "repository": "https://github.com/LibreOffice/core",
+      "ref": "03b6d67df3ca8314306754e102ab90dffa262ed3",
+      "path": "sysui/desktop/icons/hicolor/256x256/apps/startcenter.png",
+      "url": "https://raw.githubusercontent.com/LibreOffice/core/03b6d67df3ca8314306754e102ab90dffa262ed3/sysui/desktop/icons/hicolor/256x256/apps/startcenter.png",
+      "sha256": "b9b116e770031040e653370a025d3e97290192f653f018fb08f82a23d7e218cf",
+      "bytes": 11170,
+      "kind": "image",
+      "app_id": "libreoffice-startcenter",
+      "project": "LibreOffice",
+      "license": "MPL-2.0 OR LGPL-3.0-or-later",
+      "license_basis": "LibreOffice repository COPYING.MPL/COPYING.LGPL defaults; no separate icon notice",
+      "project_url": "https://www.libreoffice.org/about-us/licenses/",
+      "modified": false
+    }
+  ],
+  "documents": [
+    {
+      "kind": "document",
+      "file": "licenses/kicad-bitmap-source.txt",
+      "url": "https://raw.githubusercontent.com/KiCad/kicad-source-mirror/3a3a56ced78e248a4fedfc3486eeaf9f89209c09/resources/bitmaps_png/sources/light/icon_kicad.svg",
+      "sha256": "a47c2f208e0783c7741b356e25966fd38c1e4962a727ba700266b2fa62ec62a4",
+      "bytes": 12566
+    },
+    {
+      "kind": "document",
+      "file": "licenses/kicad-license-readme.txt",
+      "url": "https://raw.githubusercontent.com/KiCad/kicad-source-mirror/3a3a56ced78e248a4fedfc3486eeaf9f89209c09/LICENSE.README",
+      "sha256": "05ed7ad379869c36a12a7c3702cc37e620d75c8532943ce9cf577b9b04a7f270",
+      "bytes": 2873
+    },
+    {
+      "kind": "document",
+      "file": "licenses/mozilla-license.txt",
+      "url": "https://raw.githubusercontent.com/mozilla/protocol-assets/916694f6f6d822289f0f66c3dd4684aee218497e/LICENSE",
+      "sha256": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5",
+      "bytes": 16725
+    },
+    {
+      "kind": "document",
+      "file": "licenses/kdenlive-copying.txt",
+      "url": "https://raw.githubusercontent.com/KDE/kdenlive/f3d6078a705072090cb62d844cbac1c8784a2758/COPYING",
+      "sha256": "b6a8bf63ae2c95b0aa256ee774680d7bd18f21f457da75466f7610b3b16acc4e",
+      "bytes": 34670
+    },
+    {
+      "kind": "document",
+      "file": "licenses/freecad-license.txt",
+      "url": "https://raw.githubusercontent.com/FreeCAD/FreeCAD/74168a8ae2d0c1a6e3006297673a871e8c1c8399/LICENSE",
+      "sha256": "7ffe1954587c77dfba1cf8eb9b2ea743671fa6e63f9e7a2f258119d42e14eefe",
+      "bytes": 27030
+    },
+    {
+      "kind": "document",
+      "file": "licenses/blender-license.txt",
+      "url": "https://raw.githubusercontent.com/blender/blender/5e5800e01a68f006767b3795b9ee43221e0465c9/COPYING",
+      "sha256": "19e6f4b541772f9d7b98a52bdbca3ebd5ef9e404956a9a6de68bfc3c1a178387",
+      "bytes": 302
+    },
+    {
+      "kind": "document",
+      "file": "licenses/gimp-logo-readme.txt",
+      "url": "https://raw.githubusercontent.com/GNOME/gimp-data/dba1b6d3d5e0703c5337c9ec32805ac017dc1270/images/logo/README.md",
+      "sha256": "4c7aa8facbb6c1eeb2db731e6cbbadd23a6daeb2e1c68016c7165ba008b01702",
+      "bytes": 9460
+    },
+    {
+      "kind": "document",
+      "file": "licenses/obs-license.txt",
+      "url": "https://raw.githubusercontent.com/obsproject/obs-studio/2735cc48ce60e2f03483ff5e80f96bd07e0a94d7/COPYING",
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643",
+      "bytes": 18092
+    },
+    {
+      "kind": "document",
+      "file": "licenses/obsproject-extra-license.txt",
+      "url": "https://raw.githubusercontent.com/obsproject/obs-studio/2735cc48ce60e2f03483ff5e80f96bd07e0a94d7/README.rst",
+      "sha256": "be2dff0124620dcd9d8d83ef9084b12d1e61e896d3295232501cb3ebd3f6a318",
+      "bytes": 3139
+    },
+    {
+      "kind": "document",
+      "file": "licenses/libreoffice-mpl.txt",
+      "url": "https://raw.githubusercontent.com/LibreOffice/core/03b6d67df3ca8314306754e102ab90dffa262ed3/COPYING.MPL",
+      "sha256": "1f256ecad192880510e84ad60474eab7589218784b9a50bc7ceee34c2b91f1d5",
+      "bytes": 16725
+    },
+    {
+      "kind": "document",
+      "file": "licenses/libreoffice-lgpl.txt",
+      "url": "https://raw.githubusercontent.com/LibreOffice/core/03b6d67df3ca8314306754e102ab90dffa262ed3/COPYING.LGPL",
+      "sha256": "a853c2ffec17057872340eee242ae4d96cbf2b520ae27d903e1b2fef1a5f9d1c",
+      "bytes": 7639
+    },
+    {
+      "kind": "document",
+      "file": "licenses/inkscape-license.txt",
+      "url": "https://gitlab.com/inkscape/inkscape/-/raw/483fa312c9e481a3fd11148fd8db1973093a573d/share/branding/README",
+      "sha256": "33d2155901f9fe423ea1b5d587ddc6e4c87c32e9a9fad71b732ba5fc9518a0f6",
+      "bytes": 114
+    },
+    {
+      "kind": "document",
+      "file": "licenses/inkscape-source.svg.txt",
+      "url": "https://gitlab.com/inkscape/inkscape/-/raw/483fa312c9e481a3fd11148fd8db1973093a573d/share/branding/inkscape.svg",
+      "sha256": "9866c0baa6c432334f6044032dd8f8e4d2f240e0c08189b10e7e93ce98272269",
+      "bytes": 37448
+    }
+  ]
+}

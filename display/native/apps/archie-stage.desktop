@@ -1,5 +1,6 @@
 [Desktop Entry]
 Type=Application
+X-Archie-Internal=true
 Name=Archie Stage
 Comment=El escenario donde Archie trabaja: cada acción pasa por la política
 Exec=archie-stage --windowed --width 1280 --height 800

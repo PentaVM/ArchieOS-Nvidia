@@ -44,7 +44,7 @@ his sphere (`docs/gui/screenshots/29-esfera-holograma-frio.png`):
   FFI). `display/visual`: 19 suites passing (filament and frame cases added). Native
   CTest: 4 passing (new `contentSphereListsItsFolderWithoutTheObserver`). Shell QML: 77.
 - Real frames with `--render-check` under WSLg/Mesa llvmpipe (software; Zink failed):
-  `35-esfera-nativa-holograma-frio.png`, `36-esfera-nativa-holograma-calido.png`.
+  `35-esfera-nativa-neural.png` (Esfera neuronal, preset `holograma`; la variante cálida se retiró).
   `ARCHIE_RENDER_CHECK_MS` lengthens the wait so a slow software renderer can settle.
 
 ## Limits

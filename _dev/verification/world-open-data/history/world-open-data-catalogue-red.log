@@ -1,0 +1,20 @@
+error[E0599]: no variant, associated function, or constant named `NasaGibs` found for enum `GeoProviderId` in the current scope
+  --> crates/archie-geofabric/tests/fabric.rs:27:80
+   |
+27 | ...d::NasaGibs));
+   |       ^^^^^^^^ variant, associated function, or constant not found in `GeoProviderId`
+
+error[E0599]: no variant, associated function, or constant named `NasaGibs` found for enum `GeoProviderId` in the current scope
+  --> crates/archie-geofabric/tests/fabric.rs:28:61
+   |
+28 | ...d::NasaGibs, N...
+   |       ^^^^^^^^ variant, associated function, or constant not found in `GeoProviderId`
+
+error[E0599]: no variant, associated function, or constant named `NasaGibs` found for enum `GeoProviderId` in the current scope
+  --> crates/archie-geofabric/tests/fabric.rs:31:38
+   |
+31 | ...d::NasaGibs).s...
+   |       ^^^^^^^^ variant, associated function, or constant not found in `GeoProviderId`
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `archie-geofabric` (test "fabric") due to 3 previous errors

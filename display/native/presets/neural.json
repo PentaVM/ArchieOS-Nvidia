@@ -1,9 +1,8 @@
 {
   "name": "neural",
-  "label": "Neuronal",
+  "label": "Esfera neuronal (diseño de Xavi)",
   "settings": {
-    "categoryPull": 0.29, "hierarchyPull": 0.8, "radialLayers": 0.77, "scale": 1.06,
-    "shellOpacity": 0.03, "ambientCount": 120, "nodeSize": 1.6, "linkBudget": 260,
-    "rotationSpeed": 0.3, "bloomStrength": 0.2
+    "fieldSource": "neural", "contentLimit": 2500, "contentFiles": 30,
+    "background": "#01060b"
   }
 }

@@ -1,5 +1,6 @@
 #include "DisplayControl.h"
 #include "LumenField.h"
+#include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -93,6 +94,20 @@ private slots:
         QVERIFY(socket.readAll().startsWith("error:"));
         QCOMPARE(delivered.count(), 0);
     }
+    void shellAcknowledgesWorldOnlyAfterNativeHostIsAvailable() {
+        LumenField field;
+        DisplayControl control(&field,nullptr,true);
+        QVERIFY(!control.scenes().contains(QStringLiteral("world")));
+        control.setWorldAvailable(true);
+        QVERIFY(control.scenes().contains(QStringLiteral("world")));
+        QVERIFY(control.start(0));
+        QSignalSpy delivered(&control,&DisplayControl::commandReceived);
+        QTcpSocket socket;socket.connectToHost(QHostAddress::LocalHost,control.port());
+        QTRY_COMPARE(socket.state(),QAbstractSocket::ConnectedState);
+        socket.write("{\"action\":\"scene\",\"value\":\"world\"}\n");
+        QTRY_VERIFY(socket.bytesAvailable()>0);
+        QCOMPARE(socket.readAll(),QByteArray("ok\n"));QCOMPARE(delivered.count(),1);
+    }
     void overlaysRequireAnActualBoolean() {
         LumenField field;
         DisplayControl control(&field);
@@ -105,6 +120,117 @@ private slots:
         QTRY_VERIFY(socket.bytesAvailable() > 0);
         QVERIFY(socket.readAll().startsWith("error:"));
         QCOMPARE(delivered.count(), 0);
+    }
+    void newVerbsAreDeliveredOnlyWhenWellFormed() {
+        LumenField field;
+        DisplayControl control(&field);
+        QVERIFY(control.start(0));
+        control.setViewHandler([](const QString &,const QVariantMap &) { return QString(); });
+        QSignalSpy views(&control, &DisplayControl::viewCommand);
+        QSignalSpy looks(&control, &DisplayControl::commandReceived);
+        const QList<QByteArray> good{
+            "{\"action\":\"focus\",\"value\":\"src/core\"}\n",
+            "{\"action\":\"focus\",\"value\":\"\"}\n",
+            "{\"action\":\"camera\",\"value\":\"closer\"}\n",
+            "{\"action\":\"window\",\"value\":\"windowed\"}\n",
+            "{\"action\":\"pointer\",\"x\":0.25,\"y\":1,\"click\":true}\n",
+            "{\"action\":\"highlight\",\"value\":\"docs\",\"enabled\":false}\n",
+            "{\"action\":\"popup\",\"value\":\"Hola\",\"seconds\":2.5}\n",
+            "{\"action\":\"popup\",\"value\":\"Sin tiempo\"}\n",
+            "{\"action\":\"freeze\",\"enabled\":true}\n"};
+        for (const QByteArray &command : good)
+            QCOMPARE(request(control, command), QByteArray("ok\n"));
+        QCOMPARE(views.count(), good.size());
+        QCOMPARE(views.at(0).at(1).toMap().value(QStringLiteral("id")).toString(), QStringLiteral("src/core"));
+        QCOMPARE(views.at(4).at(1).toMap().value(QStringLiteral("click")).toBool(), true);
+        QCOMPARE(views.at(7).at(1).toMap().value(QStringLiteral("seconds")).toDouble(), 4.0);
+        // Nothing the older channel reports changed.
+        QCOMPARE(looks.count(), 0);
+
+        const QList<QByteArray> bad{
+            "{\"action\":\"focus\",\"value\":7}\n",
+            "{\"action\":\"focus\",\"value\":\"a\\nb\"}\n",
+            "{\"action\":\"camera\",\"value\":\"sideways\"}\n",
+            "{\"action\":\"window\",\"value\":\"minimized\"}\n",
+            "{\"action\":\"pointer\",\"x\":1.5,\"y\":0.5}\n",
+            "{\"action\":\"pointer\",\"x\":\"0.5\",\"y\":0.5}\n",
+            "{\"action\":\"pointer\",\"x\":0.5,\"y\":0.5,\"click\":\"yes\"}\n",
+            "{\"action\":\"highlight\",\"value\":\"docs\"}\n",
+            "{\"action\":\"highlight\",\"value\":\"\",\"enabled\":true}\n",
+            "{\"action\":\"popup\",\"value\":\"   \"}\n",
+            "{\"action\":\"popup\",\"value\":\"x\",\"seconds\":31}\n",
+            "{\"action\":\"popup\",\"value\":\"x\",\"seconds\":0.5}\n",
+            "{\"action\":\"freeze\",\"enabled\":\"true\"}\n"};
+        for (const QByteArray &command : bad)
+            QVERIFY2(request(control, command).startsWith("error:"), command.constData());
+        const QByteArray tooLong = "{\"action\":\"popup\",\"value\":\"" + QByteArray(201, 'x') + "\"}\n";
+        QVERIFY(request(control, tooLong).startsWith("error:"));
+        QCOMPARE(views.count(), good.size());
+    }
+    void captureWritesInsideTheDisplaysOwnFolder() {
+        LumenField field;
+        DisplayControl control(&field);
+        QVERIFY(control.start(0));
+        // No window to capture: refused, not acknowledged.
+        QVERIFY(request(control, "{\"action\":\"capture\"}\n").startsWith("error:"));
+        QString written;
+        control.setCapture([&written](const QString &path) {
+            written = path;
+            QFile file(path);
+            return file.open(QIODevice::WriteOnly) && file.write("png") == 3;
+        });
+        const QByteArray reply = request(control, "{\"action\":\"capture\",\"value\":\"/etc/passwd\"}\n");
+        QVERIFY(reply.startsWith("ok "));
+        QCOMPARE(QString::fromUtf8(reply).trimmed(), QStringLiteral("ok ") + written);
+        // The caller names nothing: the folder and the file name are the display's.
+        QVERIFY(written.startsWith(control.captureFolder() + QLatin1Char('/')));
+        QVERIFY(written.endsWith(QStringLiteral(".png")));
+        QVERIFY(QFile::exists(written));
+        QFile::remove(written);
+        control.setCapture([](const QString &) { return false; });
+        QVERIFY(request(control, "{\"action\":\"capture\"}\n").startsWith("error:"));
+    }
+    void viewWithoutActiveHandlerDoesNotClaimApplied() {
+        LumenField field;
+        DisplayControl control(&field);
+        QVERIFY(control.start(0));
+        QVERIFY(request(control, "{\"action\":\"focus\",\"value\":\"missing-node\"}\n").startsWith("error:"));
+    }
+    void neuralLayersDoNotAcknowledgeUnavailableGuides() {
+        LumenField field;
+        QVERIFY(field.applyProfile(QStringLiteral("neural")));
+        DisplayControl control(&field);
+        QVERIFY(control.start(0));
+        QSignalSpy delivered(&control, &DisplayControl::commandReceived);
+        QVERIFY(request(control,"{\"action\":\"overlay\",\"value\":\"guides\",\"enabled\":true}\n").startsWith("error:"));
+        QCOMPARE(delivered.count(),0);
+    }
+    void activeViewFailureIsReturnedWithoutSuccessNotification() {
+        LumenField field;
+        DisplayControl control(&field, nullptr, true);
+        QVERIFY(control.start(0));
+        QSignalSpy views(&control, &DisplayControl::viewCommand);
+        control.setViewHandler([](const QString &, const QVariantMap &args) {
+            return args.value(QStringLiteral("id")).toString() == QStringLiteral("present")
+                ? QString() : QStringLiteral("node absent");
+        });
+        QCOMPARE(request(control, "{\"action\":\"focus\",\"value\":\"absent\"}\n"), QByteArray("error: node absent\n"));
+        QCOMPARE(views.count(), 0);
+        QCOMPARE(request(control, "{\"action\":\"focus\",\"value\":\"present\"}\n"), QByteArray("ok\n"));
+        QCOMPARE(views.count(), 1);
+    }
+    void shellRefusesTheOrbVerbsButCanCapture() {
+        LumenField field;
+        DisplayControl control(&field, nullptr, true);
+        QVERIFY(control.start(0));
+        QSignalSpy views(&control, &DisplayControl::viewCommand);
+        for (const QByteArray &command : QList<QByteArray>{
+                 "{\"action\":\"focus\",\"value\":\"x\"}\n", "{\"action\":\"camera\",\"value\":\"home\"}\n",
+                 "{\"action\":\"popup\",\"value\":\"x\"}\n", "{\"action\":\"freeze\",\"enabled\":true}\n"})
+            QVERIFY(request(control, command).startsWith("error:"));
+        QCOMPARE(views.count(), 0);
+        control.setCapture([](const QString &) { return true; });
+        QVERIFY(request(control, "{\"action\":\"capture\"}\n").startsWith("ok "));
     }
     void shellPanelsAreAllowlistedLocalViews() {
         LumenField field;

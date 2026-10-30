@@ -8,6 +8,8 @@ Rectangle {
     property bool on: false
     property bool ring: false
     signal clicked()
+    Accessible.role: Accessible.Button
+    Accessible.name: s.text
     width: parent ? parent.width : 180; height: 30; radius: 8
     color: on ? Theme.sel : (ma.containsMouse ? Theme.hover : "transparent")
     Rectangle { anchors.fill: parent; radius: 8; color: "transparent"; border.width: 2; border.color: Theme.acc; visible: s.ring }

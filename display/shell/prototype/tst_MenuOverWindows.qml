@@ -54,5 +54,14 @@ Item {
             compare(desktop.overlay, "")
             compare(Wm.front(), "forge")
         }
+        function test_theme_toggle_remains_reachable_with_a_panel_open() {
+            const previousMode=Theme.colorMode, previousMotion=Theme.reducedMotion
+            Theme.reducedMotion=true
+            desktop.overlay="control"
+            mouseClick(findChild(desktop,"bar.theme"))
+            compare(Theme.colorMode,previousMode==="light" ? "dark" : "light")
+            compare(desktop.overlay,"control")
+            desktop.overlay=""; Theme.colorMode=previousMode; Theme.reducedMotion=previousMotion
+        }
     }
 }

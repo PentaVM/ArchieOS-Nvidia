@@ -252,6 +252,41 @@ impl Picture {
         }
     }
 
+    /// The picture without a share of each edge, as a mat frames a print. An old painting
+    /// darkens toward its edges (varnish, the frame's shadow, a photograph's vignette), and
+    /// a line that follows form follows that too: a band of straight strokes along the top.
+    pub fn matted(&self, share: f32) -> Self {
+        let share = share.clamp(0.0, 0.25);
+        let (cut_x, cut_y) = (
+            (self.width as f32 * share) as u32,
+            (self.height as f32 * share) as u32,
+        );
+        let (width, height) = (self.width - 2 * cut_x, self.height - 2 * cut_y);
+        if width == 0 || height == 0 || (cut_x == 0 && cut_y == 0) {
+            return self.clone();
+        }
+        let inside = |y: u32, x: u32| ((y + cut_y) * self.width + x + cut_x) as usize;
+        let mut grey = Vec::with_capacity((width * height) as usize);
+        let mut colour = self
+            .colour
+            .as_ref()
+            .map(|_| Vec::with_capacity(grey.capacity()));
+        for y in 0..height {
+            for x in 0..width {
+                grey.push(self.grey[inside(y, x)]);
+                if let (Some(out), Some(from)) = (colour.as_mut(), self.colour.as_ref()) {
+                    out.push(from[inside(y, x)]);
+                }
+            }
+        }
+        Self {
+            grey,
+            colour,
+            width,
+            height,
+        }
+    }
+
     /// How dark the picture has to be for a given share of it to be at least that dark.
     ///
     /// Tone levels chosen this way come from the picture rather than from a number: the
@@ -341,5 +376,24 @@ impl Picture {
             })
             .collect();
         Self::from_grey(grey, frame.width, frame.height)
+    }
+}
+
+#[cfg(test)]
+mod mat_tests {
+    use super::Picture;
+
+    #[test]
+    fn a_mat_takes_the_same_share_of_every_edge() {
+        let grey: Vec<u8> = (0..100).map(|i| i as u8).collect();
+        let picture = Picture::from_grey(grey, 10, 10).unwrap();
+        let matted = picture.matted(0.1);
+        assert_eq!((matted.width(), matted.height()), (8, 8));
+        assert_eq!(
+            matted.grey(0, 0),
+            Some(11),
+            "the first pixel inside the mat"
+        );
+        assert_eq!(picture.matted(0.0), picture);
     }
 }

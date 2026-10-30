@@ -1,4 +1,5 @@
 import QtQuick
+import "Lang.js" as Tr
 
 // The native host provides the existing controller and budget bridge. Plain QML
 // previews keep their desktop background without importing native types.
@@ -23,6 +24,8 @@ Item {
     property color backgroundColor: Theme.desktop
     property var originalGrade: ({})
     property var changedLook: ({})
+
+    function viewVerb(action,args) { return loaded && viewport.item ? viewport.item.viewVerb(action,args) : Tr.t("El Orbe no está disponible") }
 
     function loadNative() {
         if (!nativeAvailable) return
@@ -65,7 +68,7 @@ Item {
         }
         var cold=["#40bfe5","#71aeee","#41c9b8","#83bfd6","#9da8ef","#58c8e9","#78b9e7","#73bbc5"]
         var vivid=["#00b5e8","#e0a500","#00c58f","#9bd225","#b68be8","#f07764","#6499ee","#86c5c0"], i=0
-        if (!wanted("grade")) return
+        if (!wanted("grade") || nativeController.settings.fieldSource === "neural") return
         for (var key in originalGrade) {
             var value=originalGrade[key]
             if (Demo.orbGradeI===1) value=key==="accentWarm" ? "#71c5ef" : key==="accentCool" ? "#42cfcf" : cold[(i++)%cold.length]
@@ -82,9 +85,9 @@ Item {
         active: lv.nativeAvailable && lv.visible
     }
     Text {
-        visible:lv.loaded && lv.nativeController && !lv.nativeController.loaded
+        visible:lv.loaded && lv.nativeController && lv.nativeController.settings.fieldSource !== "neural" && !lv.nativeController.loaded
         anchors.horizontalCenter:parent.horizontalCenter; anchors.bottom:parent.bottom; anchors.bottomMargin:110
-        text:lv.nativeController && lv.nativeController.error ? "Orbe sin lectura del observador" : "Orbe sin señales TFOG recibidas"
+        text:lv.nativeController && lv.nativeController.error ? Tr.t("Orbe sin lectura del observador") : Tr.t("Orbe sin señales TFOG recibidas")
         color:Theme.t3; font.family:Theme.font; font.pixelSize:12
     }
     Binding { target: viewport.item; property: "navigationEnabled"; value: lv.navigationEnabled; when: lv.loaded }

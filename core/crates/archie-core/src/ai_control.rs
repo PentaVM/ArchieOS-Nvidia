@@ -12,9 +12,16 @@ use archie_workstation::{
     harness::{load_harnesses, HarnessKind},
     harness_runtime::{load_program, run_harness},
 };
-use std::{path::Path, sync::Arc, time::Duration};
+use std::{
+    path::Path,
+    sync::Arc,
+    time::{Duration, Instant},
+};
 use tokio::sync::watch;
 use tracing::warn;
+
+mod metrics;
+use metrics::record_inference_metrics;
 
 /// Only this module can construct an AI peer, from a live kernel-authenticated
 /// socket before it is split. Serialized requests cannot mint one.
@@ -231,12 +238,25 @@ impl Runtime {
         };
         let outcome = tokio::time::timeout(deadline, async {
             match request {
-                ControlRequest::AiInfer { request } => service
-                    .execute(&request, Some(cancel))
-                    .await
-                    .map(|outcome| ControlResponse::AiResult {
+                ControlRequest::AiInfer { request } => {
+                    let started = Instant::now();
+                    let result = service.execute(&request, Some(cancel)).await;
+                    record_inference_metrics(
+                        &self.metrics,
+                        result.as_ref().ok().map(|outcome| {
+                            (outcome.receipt.model_id.as_str(), outcome.receipt.status)
+                        }),
+                        result
+                            .as_ref()
+                            .ok()
+                            .and_then(|outcome| outcome.receipt.usage.output_tokens),
+                        Some(started.elapsed()),
+                        archie_types::Timestamp::now().as_millis(),
+                    );
+                    result.map(|outcome| ControlResponse::AiResult {
                         outcome: Box::new(outcome),
-                    }),
+                    })
+                }
                 ControlRequest::AiRecall {
                     binding,
                     receipt_id,

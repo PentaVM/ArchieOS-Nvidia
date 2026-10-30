@@ -29,7 +29,8 @@ class ShellRuntime final : public QObject {
     Q_PROPERTY(QString localModelNote READ localModelNote NOTIFY localModelsChanged)
     Q_PROPERTY(bool localModelBusy READ localModelBusy NOTIFY localModelsChanged)
 public:
-    explicit ShellRuntime(QString program, QString lanFile, QString workspacesRoot, QObject *parent = nullptr);
+    explicit ShellRuntime(QString program, QString lanFile, QString workspacesRoot,
+                          quint16 projectionPort = 7666, QObject *parent = nullptr);
     ~ShellRuntime() override;
     bool running() const;
     QString error() const { return m_error; }

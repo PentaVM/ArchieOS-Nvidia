@@ -1,0 +1,28 @@
+Detected locale "C" with character encoding "ANSI_X3.4-1968", which is not UTF-8.
+Qt depends on a UTF-8 locale, and has switched to "C.UTF-8" instead.
+If this causes problems, reconfigure your locale. See the locale(1) manual
+for more information.
+qrc:/qt/qml/Archie/Observatory/qml/Main.qml:423:17: QML View3D: Cannot resolve view position without a camera assigned!
+Unexpected condition met: "QSGRendererInterface::isApiRhiBased(rif->graphicsApi())" in file /usr/src/debug/qt6-quick3d/qtquick3d/src/quick3d/qquick3dviewport.cpp, line 561
+The Qt Quick scene is using a rendering method that is not based on QRhi and a 3D graphics API. Qt Quick 3D is not functional in such an environment. The View3D item is not going to display anything.
+Unexpected condition met: "QSGRendererInterface::isApiRhiBased(rif->graphicsApi())" in file /usr/src/debug/qt6-quick3d/qtquick3d/src/quick3d/qquick3dviewport.cpp, line 561
+The Qt Quick scene is using a rendering method that is not based on QRhi and a 3D graphics API. Qt Quick 3D is not functional in such an environment. The View3D item is not going to display anything.
+Unexpected condition met: "QSGRendererInterface::isApiRhiBased(rif->graphicsApi())" in file /usr/src/debug/qt6-quick3d/qtquick3d/src/quick3d/qquick3dviewport.cpp, line 561
+The Qt Quick scene is using a rendering method that is not based on QRhi and a 3D graphics API. Qt Quick 3D is not functional in such an environment. The View3D item is not going to display anything.
+archie-display ui-walk: step 0 {"wait":3000}
+archie-display ui-walk: step 1 {"state":"planet"}
+archie-display ui-walk: step 2 {"drag":[368.17525,174.86851],"settle":20}
+archie-display ui-walk: step 3 {"settle":20,"wheel":10}
+archie-display ui-walk: step 4 {"settle":20,"wheel":10}
+archie-display ui-walk: step 5 {"settle":20,"wheel":10}
+archie-display ui-walk: step 6 {"settle":20,"wheel":10}
+archie-display ui-walk: step 7 {"settle":20,"wheel":10}
+archie-display ui-walk: step 8 {"settle":45000,"wheel":10}
+Unexpected condition met: "QSGRendererInterface::isApiRhiBased(rif->graphicsApi())" in file /usr/src/debug/qt6-quick3d/qtquick3d/src/quick3d/qquick3dviewport.cpp, line 561
+The Qt Quick scene is using a rendering method that is not based on QRhi and a 3D graphics API. Qt Quick 3D is not functional in such an environment. The View3D item is not going to display anything.
+archie-display ui-walk: step 9 {"state":"street-loaded"}
+archie-display ui-walk: step 10 {"drag":[-200,30],"settle":12000}
+Unexpected condition met: "QSGRendererInterface::isApiRhiBased(rif->graphicsApi())" in file /usr/src/debug/qt6-quick3d/qtquick3d/src/quick3d/qquick3dviewport.cpp, line 561
+The Qt Quick scene is using a rendering method that is not based on QRhi and a 3D graphics API. Qt Quick 3D is not functional in such an environment. The View3D item is not going to display anything.
+archie-display ui-walk: step 11 {"state":"panned-street-loaded"}
+archie-display ui-walk: 0 clicks, 0 without effect; report /tmp/archie-world-earth-offscreen/report.jsonl

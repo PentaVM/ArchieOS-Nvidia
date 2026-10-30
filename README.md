@@ -1,13 +1,171 @@
-# ArchieOS NVIDIA Edition
+<div align="center">
 
-ArchieOS is a personal AI that lives in an operating system. You talk to Archie; it
-answers out loud, sees through a camera, opens and uses applications, and shows what it
-is doing as a living graph of the machine. Identity, memory, policy and authority live in
-ArchieOS; language and vision models are replaceable resources it calls.
+**English** · [Español](README.es.md) · [Português](README.pt-BR.md) · [Français](README.fr.md) · [中文](README.zh-CN.md)
 
-One rule holds everywhere: **models propose, Cerebra decides, Policy authorises, the
-Stage executes.** A model never touches the machine directly. Every action is a sealed,
-leased Stage command that the policy can refuse, and every result comes back as a receipt.
+<br>
+
+<img src="docs/readme/boot.gif" width="760" alt="The ArchieOS start-up animation: the Archie mark draws itself and lights up">
+
+<br>
+<br>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="display/shell/brand/archieos-logo-dark.png">
+  <img src="display/shell/brand/archieos-logo-light.png" width="360" alt="ArchieOS">
+</picture>
+
+### A personal AI that lives inside the operating system — and asks before it touches anything.
+
+[![License: Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-20d79d?style=flat-square)](LICENSE)
+![Rust](https://img.shields.io/badge/core-Rust-45e3f5?style=flat-square)
+![C++ · Qt 6](https://img.shields.io/badge/display-C%2B%2B%20%C2%B7%20Qt%206-9a75ff?style=flat-square)
+![NVIDIA Nemotron](https://img.shields.io/badge/NVIDIA-Nemotron-76b900?style=flat-square)
+![Nebius Token Factory](https://img.shields.io/badge/Nebius-Token%20Factory-ffca70?style=flat-square)
+
+</div>
+
+---
+
+## What is ArchieOS?
+
+ArchieOS is an operating system with an assistant, **Archie**, built in. You speak to it in
+your own words, in English or Spanish. It answers out loud, opens your applications and uses
+them the way a person would: it moves its own pointer, clicks, types and draws.
+
+What makes it different is **who is in charge**. The AI model never touches your computer
+directly. It can only *suggest* an action. The operating system decides whether that action is
+allowed, lets it happen once, checks it again at the last moment, and keeps a receipt. The
+moment you move your mouse, you are back in control.
+
+<div align="center">
+<img src="docs/readme/voice.svg" width="900" alt="You say: Archie, draw the Mona Lisa. Nemotron proposes draw_picture. Policy allows it. Archie draws in Photopea.">
+</div>
+
+## See it
+
+**"Archie, draw the Mona Lisa."** Archie opens Photopea in the browser, picks up the brush and
+draws the painting line by line with its own pointer — sepia first, then red chalk, the way
+Leonardo worked — and says what it is doing as it goes.
+
+<div align="center">
+<img src="docs/readme/mona-lisa-timelapse.gif" width="760" alt="Time-lapse: Archie draws the Mona Lisa in Photopea, stroke by stroke">
+</div>
+
+**The desktop.** One window for everything: the orb that shows what the machine is doing, the
+dock (Vault, Forge, Sentry, World, Stage, Settings) and whatever Archie opens on top. It follows
+your light or dark theme.
+
+<div align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/readme/desktop-dark.jpg">
+  <img src="docs/readme/desktop-light.jpg" width="760" alt="The ArchieOS desktop: the orb, the top bar and the dock">
+</picture>
+</div>
+
+**World.** The Earth lit by the real sun, under the real night sky, with a quiet search bar
+(a place or "lat, lon"), layers, a ruler and Archie's console.
+
+<div align="center">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/readme/world-dark.jpg">
+  <img src="docs/readme/world-light.jpg" width="760" alt="World: the globe, lit by the sun, with the constellations behind it">
+</picture>
+</div>
+
+## How it keeps you in control
+
+<div align="center">
+<img src="docs/readme/authority.svg" width="900" alt="The model proposes, Cerebra decides, Policy grants a one-operation lease, the Stage checks it again and acts, and a receipt comes back.">
+</div>
+
+1. **The model proposes.** Nemotron (on Nebius) or a local model turns what you said into one
+   suggested action, such as `draw_picture("Mona Lisa")` or `open_app("Sentry")`.
+2. **Cerebra decides.** ArchieOS's own reasoning layer checks the request makes sense — or asks
+   you a question first.
+3. **Policy authorises.** A plain text file (`apps.toml`) lists which applications Archie may
+   open and what it may do in each. Allowed actions get a sealed lease that is good for one
+   operation; everything else is refused.
+4. **The Stage acts.** The Stage is the window system Archie works in. It checks the lease and
+   the target window once more, then does exactly that one thing, and returns a receipt.
+5. **You win, always.** Touch the mouse or keyboard and the screen says **HUMAN CONTROL**;
+   Archie stops and waits. After a few quiet seconds it may continue.
+
+## What you can do today
+
+| | |
+| --- | --- |
+| 🎙️ **Talk** | Speech in, speech out, on your machine. NVIDIA Nemotron 3.5 streaming speech recognition, Nemotron on Nebius for the answer, and a local voice (Piper on CPU, Magpie on GPU). Archie replies in the language you used. |
+| 🖱️ **Act** | Open apps, click, type, scroll, drag and draw — always through the Stage and its policy. Archie finds buttons through accessibility first and only looks at the screen when it has to. |
+| 🎨 **Draw** | "Draw the Mona Lisa" (and other pictures it knows) in Photopea, at a human pace you can follow on video. |
+| 🌍 **Explore** | World: the globe, real sunlight, real stars, places by name or coordinates. |
+| 🛡️ **Watch** | Sentry: what is on your network and what is talking to whom. |
+| 👁️ **See** | IRIS, Archie's eyes: tell it what to look for, it returns where it is. Faces are always blacked out — it never identifies people. |
+| 🎬 **Edit video** | Timelines of clips, titles, music and fades rendered by MLT (Kdenlive's engine), without a window. |
+| 🧩 **Connect** | Archie's tools for coding agents over MCP. |
+
+## Try it
+
+ArchieOS runs as a Linux system: on a PC, in a virtual machine, or under **WSL2 on Windows**.
+
+**On Windows (WSL2).** Build the image and install it:
+
+```bash
+sudo ./scripts/wsl/build-rootfs.sh ./dist
+```
+
+```powershell
+wsl --install --from-file .\dist\ArchieOS.wsl
+```
+
+Then follow [first run](docs/FIRST-RUN.md). The [WSL build guide](docs/WSL-BUILD.md) and the
+[security boundary](docs/SECURITY-BOUNDARY.md) explain what the image contains and what it keeps
+apart.
+
+**The Mona Lisa demo.** Inside ArchieOS (or any Linux with the pieces built), one command opens
+the desktop, the browser and Archie listening in English and Spanish:
+
+```bash
+display/session/nebius-demo.sh
+```
+
+What to build first, the options and a suggested script are in
+[`docs/DEMO-NEBIUS.md`](docs/DEMO-NEBIUS.md).
+
+<details>
+<summary><b>Build from source</b></summary>
+
+<br>
+
+The control plane is Rust (1.88+); the desktop and the Stage are C++ with Qt 6.
+
+```bash
+# Archie's voice, hands and tools
+cd core
+cargo build --release -p archie-voice --features speech
+cargo test --workspace --locked
+
+# The Stage (Wayland compositor) and the desktop
+cmake -S display/stage  -B build/stage   -G Ninja && cmake --build build/stage
+cmake -S display/native -B build/display -G Ninja && cmake --build build/display
+```
+
+`--features speech` needs NeMo-Speech.cpp (`NEMO_SPEECH_PREFIX`) and PulseAudio;
+`scripts/models/install-nemotron-speech.sh` fetches the pinned recognition model, and
+`scripts/models/install-piper-runtime.sh` / `install-piper-voices.sh` the local voices.
+
+Talk to Archie with the Stage, using a Nebius Token Factory key:
+
+```bash
+NEBIUS_TOKEN_FACTORY_KEY=... display/stage/run-archie.sh public
+```
+
+The answering model is replaceable: NVIDIA NIM, Nebius Token Factory or any local
+OpenAI-compatible server. Keys are read at request time and never written to the repository or
+the image. `scripts/check.sh` runs the checks worth running before a push.
+
+</details>
+
+## Under the hood
 
 ```text
  microphone ─► Nemotron 3.5 ASR ─► floor ─► Nemotron (Nebius) ─► voice (Piper / Magpie)
@@ -16,151 +174,63 @@ leased Stage command that the policy can refuse, and every result comes back as 
                                                ▼
                                  Cerebra ─► Policy ─► Stage ─► applications
                                                │
-                         TFOG signals ─► archie-displayd ─► Observatory (World · Forge · Orb)
+                         TFOG signals ─► archie-displayd ─► desktop (Orb · Forge · World)
 ```
 
-This repository is the NVIDIA / Nebius competition edition: Rust for the control plane,
-C++ for the native and visual subsystems. The optional Piper process bridge uses Python;
-the speech floor, policies and orchestration remain in Rust.
-
-## What works today
-
-**Talking to Archie**
-- `archie-voice converse`: speech to speech on the machine. Nemotron 3.5 streaming ASR
-  (Spanish and 39 other language-locales) through NVIDIA NeMo-Speech.cpp, a floor that
-  decides whether Archie was addressed ("Archie", or anything while it is listening),
-  Nemotron on Nebius for the answer, and a voice: Piper on a CPU, Magpie with a GPU.
-  Answers are spoken in short sentences, in the language the person used. Piper can use
-  separate local Spanish and English models and selects between them sentence by
-  sentence; install the Python runtime and the checksum-verified models with
-  `scripts/models/install-piper-runtime.sh` and `scripts/models/install-piper-voices.sh`. The pack
-  uses the US-English `john` and Mexican-Spanish `ald` voices from Piper, with their
-  source and dataset terms recorded beside the models. They are open voices with a
-  similar broad profile, not Baymax recordings or a clone of his actor.
-- `archie-voice live`: the same conversation reached from a browser page (microphone,
-  speaker and camera over a loopback WebSocket), with **IRIS as Archie's eyes**. Archie is
-  told only what IRIS reads, how old it is, and what was there before and left. It can
-  look closer at an object, find out what it is with a vision model on Nebius (Kimi K3,
-  then MiniCPM-V 4.5, on the conversation's own key) and read about it, keep that until
-  asked, and it never identifies people: faces are blacked out of every crop.
-  A gentle voice style is applied after synthesis. Tested end to end, speech to speech.
-- `display/stage/run-archie.sh`: one command for the stage and the voice together.
-
-**Acting on the machine**
-- **Archie Stage** (`display/stage`): a Wayland compositor where Archie works. Commands are
-  HMAC-sealed and leased; the policy (`core/crates/archie-stage/policy/apps.toml`) names
-  which applications may be launched and what may be done in each. Clicks, typing, keys,
-  held keys (released automatically after 5 s or when the operator takes over),
-  scrolling, drags and strokes; the person's mouse always wins.
-- **Hands** (`archie-voice`, `archie-sight`): Nemotron proposes a tool call; it is checked
-  strictly and carried out through the Stage gate, grounded by what applications declare
-  over accessibility first, a local reflex model second, and a vision model last.
-- **Video editing** (`archie-cut`, `archie-mcp-server --video-media`): timelines of clips,
-  titles, music and fades rendered by MLT (Kdenlive's engine), without a window.
-- **IDE agents** (`archie-mcp-server`): Archie's tools over MCP.
-
-**Seeing**
-- **IRIS** (trained in [`PentaVM/archie-iris`](https://github.com/PentaVM/archie-iris)):
-  open-vocabulary detection. An image and phrases in; boxes, points and a score out, plus
-  an identity embedding per detection. Beta 1.1 (754 M parameters, V-JEPA 2.1 + SigLIP2 +
-  sparse MoE) runs at 159–217 ms per image on an RTX 3090. Beta 2 (512 px, 32 experts,
-  GUI, sport and text data) is training.
-- `archie-iris-bridge`: turns an IRIS proposal into a Stage request that Cerebra and the
-  policy still have to admit.
-
-**Showing what happens: the Observatory** (`display/native`, Qt Quick 3D)
-- **World**: the Earth, lit by the real sun, with real observations.
-- **Forge**: the machine's applications as a desktop — Archie's own, everything installed,
-  and the well-known tools that are missing.
-- **Orb**: the live TFOG graph of the system (processes, services, devices, modules,
-  models). What the system is using lights up — a Stage action, Cortex's focus, the voice
-  — and the camera moves when something happens. See
-  [`docs/TFOG-ORB-RENDERING.md`](docs/TFOG-ORB-RENDERING.md).
-
-**Underneath**
-- Rust authority, policy, scheduler, model router, memory and PostgreSQL/TimescaleDB state;
-  Cerebra (clarification, bounded analytical synthesis); the Vault; Cortex and Sentry in
-  C++; OSM building ingestion; ArchISO and WSL2 packaging.
-- Model access is provider-neutral: NVIDIA NIM, Nebius Token Factory, or a local
-  OpenAI-compatible server. Credentials are read from the environment at request time
-  and never written to the repository or the image.
-
-## Run it
-
-Build the Rust workspace (Rust 1.88+):
-
-```bash
-cd core
-cargo build --release -p archie-voice --features speech   # converse
-cargo build --release -p archie-voice --features live     # live, with the browser page
-cargo test --workspace --locked
-```
-
-`speech` and `live` need NeMo-Speech.cpp installed (`NEMO_SPEECH_PREFIX`) and PulseAudio;
-`scripts/models/install-nemotron-speech.sh` fetches the pinned ASR model.
-
-Talk to Archie, with the Stage:
-
-```bash
-NEBIUS_TOKEN_FACTORY_KEY=... display/stage/run-archie.sh public
-```
-
-The live session with eyes (IRIS served by `archie-iris` on the GPU host):
-
-```bash
-archie-voice live --grade public --asr-model <nemotron-3.5-asr.gguf> \
-  --voice-engine magpie --tts-model <magpie.gguf> --codec-model <nanocodec.gguf> \
-  --tts-tokenizer <dir> --iris http://127.0.0.1:8765
-```
-
-The page listens on loopback (`--port`, default 8770); reach it through an SSH tunnel.
-`ARCHIE_LIVE_VLM` (another vision model list) and `TAVILY_API_KEY` (web reading) are optional.
-
-The Observatory (Qt 6.6+ with Quick 3D) and its data daemon:
-
-```bash
-cmake -S display/native -B build/display -G Ninja && cmake --build build/display
-core/target/release/archie-displayd &
-build/display/archie-display --scene orb      # or world, forge
-```
-
-`scripts/check.sh` runs the checks worth running before a push. The native libraries have
-their own tests (`-DARCHIE_VISUAL_BUILD_TESTS=ON`, `-DARCHIE_CORTEX_BUILD_TESTS=ON`,
-`-DSENTRY_BUILD_TESTS=ON`).
-
-## ArchieOS Workstation for WSL2
-
-An Arch Linux WSL2 distribution with systemd, a non-root `archie` session, a sealed Vault,
-local Nemotron ASR, provider adapters and FreeCAD. Build with
-`sudo ./scripts/wsl/build-rootfs.sh ./dist` and install with
-`wsl --install --from-file .\dist\ArchieOS.wsl`. See [WSL build](docs/WSL-BUILD.md),
-[first run](docs/FIRST-RUN.md) and [security boundary](docs/SECURITY-BOUNDARY.md).
+- **Rust** for authority, policy, the scheduler, the model router, memory and state
+  (PostgreSQL/TimescaleDB), Cerebra and the Vault.
+- **C++ / Qt Quick 3D** for the desktop, the Orb, World, Cortex, Sentry and the Stage.
+- Identity, memory, policy and authority live in ArchieOS; language and vision models are
+  replaceable resources it calls.
 
 ## Status
 
-- **Working and tested:** speech to speech (converse and live), the Stage and its policy,
-  hands through accessibility and vision, video rendering, the Observatory's three
-  scenes, IRIS Beta 1.1 detection behind the live session, the control plane and packaging.
-- **In progress:** IRIS Beta 2 training; Cortex driving the Observatory's view by command;
-  IRIS proposing actions beyond clicks.
-- **IRIS without Python:** `archie-iris-serve` (`core/crates/archie-iris-runtime`) runs
-  Beta 2.1 from the release file and matches the Python IRIS on CPU (see
-  [`docs/IRIS-RUNTIME.md`](docs/IRIS-RUNTIME.md)). Its CUDA build is untested, and skill
-  adapters and REM recording are still served only by the Python `iris_serve`.
-- **Not yet:** opening applications from Forge in the ArchISO image, where the
-  Observatory has no desktop and opening goes through the Stage; CI (GitHub Actions is
-  paused for billing — checks run locally).
+This is an alpha, built for the NVIDIA × Nebius hackathon. Honestly:
 
-See [ARCHITECTURE.md](ARCHITECTURE.md), [HACKATHON.md](HACKATHON.md),
-[`docs/STAGE.md`](docs/STAGE.md), [`docs/SPEECH-NEMOTRON.md`](docs/SPEECH-NEMOTRON.md) and
-[`docs/IRIS.md`](docs/IRIS.md).
+- **Works and tested:** speech to speech in English and Spanish, the Stage and its policy,
+  opening and using apps by voice, the Mona Lisa drawing, World, the desktop in light and dark,
+  IRIS detection, video rendering, the WSL2 image.
+- **In progress:** IRIS Beta 2 training; Cortex steering the desktop's view by command; IRIS
+  proposing actions beyond clicks; the CUDA build of the Python-free IRIS runtime.
+- **Known limits:** the drawing runs at a person's pace (minutes, not seconds); in the ArchISO
+  image, apps open through the Stage rather than from Forge; CI runs locally while GitHub
+  Actions is paused.
+
+## Read more
+
+[Architecture](ARCHITECTURE.md) · [Archie](ARCHIE.md) · [Hackathon provenance](HACKATHON.md) ·
+[Stage](docs/STAGE.md) · [Speech](docs/SPEECH-NEMOTRON.md) · [IRIS](docs/IRIS.md) ·
+[IRIS runtime](docs/IRIS-RUNTIME.md) · [Security](docs/SECURITY.md) ·
+[World](docs/WORLD-EXPLORATION.md) · [Orb rendering](docs/TFOG-ORB-RENDERING.md)
+
+## Credits
+
+- **PentaVM** — architecture, the Rust and C++ implementation, the control plane, IRIS, the voice
+  stack and the native desktop.
+- **Xavi** ([`ByXavi270`](https://github.com/ByXavi270) / XaviCottier) — the design: the
+  desktop, the neural sphere, the logo and its start-up animation.
+- **Santiago Rearte** (Sheriff) — the Nebius Token Factory and Nemotron integration, and testing
+  on his own WSL.
+- Built on NVIDIA Nemotron, NeMo and NIM, Nebius Token Factory, Piper, MLT, Qt and Wayland.
 
 ## License
 
-Apache License 2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE). The Apache licence
-rather than MIT for the patent grant: this repository contains device control, physical
-actuation and inference-routing work.
+Apache License 2.0 — see [LICENSE](LICENSE) and [NOTICE](NOTICE). Apache rather than MIT for its
+patent grant: this repository contains device control, physical actuation and inference-routing
+work. Data providers keep their own terms; `providers/` records the attribution each one
+requires, and ArchieOS refuses to show data whose attribution is missing.
 
-Upstream data providers keep their own terms. `providers/` records the attribution each
-one requires, and the registry refuses to display records from a provider whose
-attribution is missing.
+<div align="center">
+
+<br>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="display/shell/brand/archieos-icon-256.png">
+  <img src="display/shell/brand/archieos-icon-light-256.png" width="56" alt="">
+</picture>
+
+**Made with love ♥**
+
+*by PentaVM, Xavi and Sheriff*
+
+</div>
