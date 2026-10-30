@@ -80,6 +80,17 @@ rm -f "$rootfs/etc/resolv.conf" "$rootfs/boot"/vmlinuz-* "$rootfs/boot"/initramf
 cp -a "$repo_root/distro/wsl-operator/rootfs/." "$rootfs/"
 chmod 0755 "$rootfs"/usr/bin/archie-{setup,session,operate,talk,video,design,local}
 chmod 0755 "$rootfs/usr/lib/archie/init-pacman-keyring"
+# The ArchieOS mark, transparent: the distro's own icon in Windows (Start, Terminal), and the
+# icon WSLg's taskbar and title bars give the desktop's and the stage's windows (by app id).
+brand=$repo_root/display/shell/brand
+install -Dm644 "$brand/archieos.ico" "$rootfs/usr/lib/wsl/archieos.ico"
+install -Dm644 "$brand/archieos-app-512.png" "$rootfs/usr/share/icons/hicolor/512x512/apps/archieos.png"
+install -Dm644 "$brand/archieos-icon-256.png" "$rootfs/usr/share/icons/hicolor/256x256/apps/archieos.png"
+install -Dm644 "$repo_root/distro/display/org.archieos.Stage.desktop" \
+  "$rootfs/usr/share/applications/org.archieos.Stage.desktop"
+# archie-offline is the menu's way into the desktop; this entry only names its window.
+sed 's/^NoDisplay=false$/NoDisplay=true/' "$repo_root/distro/display/archie-display.desktop" \
+  > "$rootfs/usr/share/applications/archie-display.desktop"
 
 install -m 0755 "$stage" "$rootfs/usr/bin/archie-stage"
 # archie-bridges and archie-mcp-server serve the video bridge: timelines rendered by MLT

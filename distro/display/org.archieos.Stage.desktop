@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=ArchieOS
+Comment=Archie's stage: the desktop and the apps Archie works in, behind its gate
+Exec=archie-stage
+Icon=archieos
+Categories=System;
+StartupWMClass=org.archieos.Stage
+# Started by Archie's own launchers, never from a menu; it is here so the session's window
+# list and taskbar show the stage's window with ArchieOS's mark.
+NoDisplay=true

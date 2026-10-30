@@ -16,8 +16,9 @@
 #   ASR_MODEL     Nemotron 3.5 ASR GGUF            default: the one `nemo-speech pull` cached
 #   PIPER, PIPER_PYTHON, PIPER_MODEL, PIPER_MODEL_EN   Piper adapter/runtime and voices
 #                 see scripts/models/install-piper-voices.sh
-#   HOST_WAYLAND  session the stage opens in       default: $WAYLAND_DISPLAY
-#                 (WSLg: /mnt/wslg/runtime-dir/wayland-0)
+#   HOST_WAYLAND  session the stage opens in       default: $WAYLAND_DISPLAY, WSLg's,
+#                 else the X display ($DISPLAY), else a virtual screen (Xvfb)
+#   VIRTUAL_SCREEN  that virtual screen's size        default: 1920x1080x24
 #   SCREEN        which screen the stage takes     default: the last one
 #   RUN_DIR       key, sockets, logs               default: /tmp/archie-run
 #   LISTEN_LANGUAGE  what the recogniser listens for: es-US, en-US or auto  default: es-US
@@ -85,11 +86,53 @@ PIPER_VOICES=${PIPER_VOICES:-$REPO/models-cache/piper}
 default_voice() { if [ -f "$PIPER_VOICES/$1.onnx" ]; then echo "$PIPER_VOICES/$1.onnx"; else echo "$PIPER_VOICES/$2.onnx"; fi; }
 PIPER_MODEL=${PIPER_MODEL:-$(default_voice es_MX-claude-high es_MX-ald-medium)}
 PIPER_MODEL_EN=${PIPER_MODEL_EN:-$(default_voice en_US-kristin-medium en_US-john-medium)}
-HOST_WAYLAND=${HOST_WAYLAND:-${WAYLAND_DISPLAY:-}}
 RUN_DIR=${RUN_DIR:-/tmp/archie-run}
 SOCKET_NAME=archie-stage
+# Whatever this script starts besides the voice ends with it.
+PIDS=
+trap 'kill $PIDS 2>/dev/null || true' EXIT
+trap 'exit 130' INT
+trap 'exit 143' TERM
 
-[ -n "$HOST_WAYLAND" ] || { echo "run-archie: set HOST_WAYLAND to the Wayland session to open the stage in" >&2; exit 1; }
+# Where the stage's own window opens: the person's Wayland session, else their X display,
+# else a virtual screen. The stage's clients get a runtime directory of their own, so a
+# session named relative to the person's (wayland-0, as every desktop sets it) is made
+# absolute first; under WSL with systemd that directory may lack WSLg's socket, which is
+# looked for where WSLg keeps it.
+HOST_WAYLAND=${HOST_WAYLAND:-${WAYLAND_DISPLAY:-}}
+case "$HOST_WAYLAND" in
+    ""|/*) ;;
+    *) HOST_WAYLAND=${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/$HOST_WAYLAND ;;
+esac
+if [ -n "$HOST_WAYLAND" ] && [ ! -S "$HOST_WAYLAND" ]; then
+    if [ -S /mnt/wslg/runtime-dir/wayland-0 ]; then
+        HOST_WAYLAND=/mnt/wslg/runtime-dir/wayland-0
+    else
+        echo "run-archie: no Wayland session at $HOST_WAYLAND" >&2
+        HOST_WAYLAND=
+    fi
+fi
+[ -z "$HOST_WAYLAND" ] && [ -z "${DISPLAY:-}" ] && [ -S /mnt/wslg/runtime-dir/wayland-0 ] \
+    && HOST_WAYLAND=/mnt/wslg/runtime-dir/wayland-0
+if [ -n "$HOST_WAYLAND" ]; then
+    HOST_PLATFORM=wayland
+elif [ -n "${DISPLAY:-}" ]; then
+    HOST_PLATFORM=xcb
+elif command -v Xvfb >/dev/null; then
+    # No screen at all (ssh, a server, CI): a virtual one, which ffmpeg -f x11grab records.
+    n=90
+    while [ -e "/tmp/.X11-unix/X$n" ] || [ -e "/tmp/.X$n-lock" ]; do n=$((n + 1)); done
+    Xvfb ":$n" -screen 0 "${VIRTUAL_SCREEN:-1920x1080x24}" -nolisten tcp >/dev/null 2>&1 &
+    PIDS="$PIDS $!"
+    for _ in $(seq 50); do [ -S "/tmp/.X11-unix/X$n" ] && break; sleep 0.1; done
+    [ -S "/tmp/.X11-unix/X$n" ] || { echo "run-archie: Xvfb did not start" >&2; exit 1; }
+    export DISPLAY=":$n"
+    HOST_PLATFORM=xcb
+    echo "run-archie: no screen here; the stage is on a virtual one, DISPLAY=$DISPLAY"
+else
+    echo "run-archie: no screen to open the stage on: set HOST_WAYLAND or DISPLAY, or install Xvfb" >&2
+    exit 1
+fi
 
 # The stage gets its own runtime directory, and PulseAudio finds its server through that
 # variable: name the person's sound server before it changes, or the voice goes deaf.
@@ -124,9 +167,15 @@ chmod 700 "$RUN_DIR" "$RUN_DIR/xdg"
 rm -f "$RUN_DIR/control.sock" "$RUN_DIR/xdg/$SOCKET_NAME"
 [ -f "$RUN_DIR/key" ] || "$STAGE_CLI" keygen "$RUN_DIR/key" >/dev/null
 
-if [ -x /usr/lib/at-spi-bus-launcher ]; then
-    /usr/lib/at-spi-bus-launcher --launch-immediately >/dev/null 2>&1 &
-fi
+# Each distribution keeps the accessibility bus's launcher somewhere else.
+for launcher in /usr/lib/at-spi-bus-launcher /usr/libexec/at-spi-bus-launcher \
+    /usr/lib/at-spi2-core/at-spi-bus-launcher /usr/libexec/at-spi2-core/at-spi-bus-launcher; do
+    if [ -x "$launcher" ]; then
+        "$launcher" --launch-immediately >/dev/null 2>&1 &
+        PIDS="$PIDS $!"
+        break
+    fi
+done
 
 # What Archie says on its own while it works is shown under the stage as it is said.
 NARRATION=$RUN_DIR/narration.json
@@ -138,16 +187,27 @@ set -- --socket-name "$SOCKET_NAME" --control "$RUN_DIR/control.sock" --key-file
 [ -n "${STROKE_SPEED:-}" ] && set -- "$@" --stroke-speed "$STROKE_SPEED"
 # shellcheck disable=SC2086 # STAGE_ARGS is a list of flags on purpose.
 [ -n "${STAGE_ARGS:-}" ] && set -- "$@" $STAGE_ARGS
-XDG_RUNTIME_DIR="$RUN_DIR/xdg" WAYLAND_DISPLAY="$HOST_WAYLAND" QT_QPA_PLATFORM=wayland \
-    "$STAGE" "$@" > "$RUN_DIR/stage.log" 2>&1 &
+if [ "$HOST_PLATFORM" = wayland ]; then
+    XDG_RUNTIME_DIR="$RUN_DIR/xdg" WAYLAND_DISPLAY="$HOST_WAYLAND" QT_QPA_PLATFORM=wayland \
+        "$STAGE" "$@" > "$RUN_DIR/stage.log" 2>&1 &
+else
+    XDG_RUNTIME_DIR="$RUN_DIR/xdg" QT_QPA_PLATFORM=xcb \
+        "$STAGE" "$@" > "$RUN_DIR/stage.log" 2>&1 &
+fi
 STAGE_PID=$!
-trap 'kill "$STAGE_PID" 2>/dev/null || true' EXIT INT TERM
+PIDS="$PIDS $STAGE_PID"
 
-for _ in 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20; do
+# A first start with software rendering can take a while; a stage that dies stops the wait.
+for _ in $(seq 120); do
     [ -S "$RUN_DIR/control.sock" ] && [ -S "$RUN_DIR/xdg/$SOCKET_NAME" ] && break
+    kill -0 "$STAGE_PID" 2>/dev/null || break
     sleep 0.5
 done
-[ -S "$RUN_DIR/xdg/$SOCKET_NAME" ] || { echo "run-archie: the stage did not start; see $RUN_DIR/stage.log" >&2; exit 1; }
+[ -S "$RUN_DIR/control.sock" ] && [ -S "$RUN_DIR/xdg/$SOCKET_NAME" ] || {
+    echo "run-archie: the stage did not start; see $RUN_DIR/stage.log" >&2
+    tail -n 5 "$RUN_DIR/stage.log" >&2
+    exit 1
+}
 
 # ArchieOS's shell as the stage's desktop: Orb, Vault, Forge, Sentry and World in one
 # screen, with what Archie opens framed over it. Qt Quick 3D draws with Mesa's software GL:
@@ -186,8 +246,7 @@ if [ "${DESKTOP:-0}" = 1 ]; then
             LIBGL_ALWAYS_SOFTWARE=1 QT_LINUX_ACCESSIBILITY_ALWAYS_ON=1 ARCHIE_STAGE_DESKTOP=1 \
             "$ARCHIE_DISPLAY" --shell "$@" > "$RUN_DIR/shell.log" 2>&1 &
     fi
-    SHELL_PID=$!
-    trap 'kill "$SHELL_PID" "$STAGE_PID" 2>/dev/null || true' EXIT INT TERM
+    PIDS="$PIDS $!"
 fi
 
 if [ "${STAGE_ONLY:-0}" = 1 ]; then

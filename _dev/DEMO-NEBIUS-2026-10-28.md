@@ -64,3 +64,43 @@ dentro del escritorio, rendimiento en RTX 3070/WSLg.
   este contenedor (ruta 192.0.2.2) y pasa en CI. ctest nativo 18/20: `cpu_shader_contracts`
   (previo, `Exploration.js` fuera de los recursos del test) y `world_texture_contracts` (sin
   RHI en el ensayo); CI no corre el ctest nativo.
+
+## El lanzador en todos lados, y el icono (30 oct)
+
+Fallos encontrados probando `display/session/nebius-demo.sh` fuera del ensayo de siempre:
+
+- **Escritorio Wayland normal (GNOME, KDE, Sway): el Stage no abría.** `WAYLAND_DISPLAY=wayland-0`
+  es relativo al `XDG_RUNTIME_DIR` de la persona, y `run-archie.sh` le cambia ese directorio al
+  Stage ("Could not load the Qt platform plugin wayland"). Solo funcionaba en WSLg porque el
+  lanzador pasaba la ruta absoluta. Ahora se hace absoluta antes.
+- **Escritorio X11 o sin pantalla: rechazado** ("set HOST_WAYLAND"). Ahora el Stage abre como
+  ventana X11 (`xcb`), y sin pantalla en un Xvfb propio (`DISPLAY=:90…`, grabable con x11grab).
+- **WSL con systemd:** `/run/user/UID` no tiene el socket de WSLg; se busca en `/mnt/wslg`.
+- **Firefox:** fuera del PATH o como `firefox-esr` el lanzador fallaba; el snap de Ubuntu no
+  puede ver el Stage (sandbox). Ahora busca uno que sirva, salta el snap y lo dice. El app id
+  sale del `RemotingName` de la build (el ESR de Mozilla en tarball también es `firefox-esr`;
+  con el app id equivocado, "Photopea's window never came up").
+- **Firefox < 121 bajo X11** abría en la pantalla del host y no en el Stage: `draw.rs` ahora
+  le pone `MOZ_ENABLE_WAYLAND`/`GDK_BACKEND` como ya hacía `hands.rs`.
+- `at-spi-bus-launcher` se buscaba solo en `/usr/lib` (Arch); Debian/Ubuntu/Fedora usan `/usr/libexec`.
+- El Stage tenía 10 s para arrancar; con render por software tarda ~15 s. Ahora 60 s, y si muere
+  se dice al momento con las últimas líneas de su log. Ctrl+C cierra todo lo que se abrió.
+- **Binario viejo sin aviso:** la captura del dueño mostraba la barra anterior a #54 (círculo con
+  "A" + "Archie"). Si el binario es más viejo que el checkout y CMake lo hizo de este checkout,
+  el lanzador lo recompila (`NO_REBUILD=1` lo evita); si no, lo avisa.
+
+Icono: `archieos-app-512.png` (icono de ventana del shell y del Stage) y `archieos.ico` tenían
+fondo negro (10,10,10); ahora son transparentes (el trazo menta opaco, el brillo translúcido).
+La imagen WSL pone el `.ico` como icono de la distro (`[shortcut] icon=`), instala los iconos
+hicolor y entradas de escritorio para los app id `archie-display` y `org.archieos.Stage`
+(ocultas del menú), y `archie-offline.desktop` declara `StartupWMClass=archie-display`. El
+lanzador instala lo mismo en `~/.local/share` para quien corre desde un checkout.
+
+Probado en este contenedor (Ubuntu 24.04, Xvfb, Mesa por software), con Ctrl+C real y sin
+procesos sobrantes en cada caso: Stage + escritorio sobre un Wayland anfitrión con
+`WAYLAND_DISPLAY` relativo; sobre X11; sin pantalla; WSLg simulado (socket en
+`/mnt/wslg/runtime-dir`, con y sin `XDG_RUNTIME_DIR`). Ensayo completo sin pantalla: la Mona Lisa
+en Photopea, 463 líneas, narrada. Detección de Firefox con un wrapper de snap y un `firefox-esr`
+envoltorio. Recompilación automática: la primera vez recompiló shell y Stage, la segunda no.
+No probado aquí: WSLg real (si su barra de tareas toma el icono de entradas `NoDisplay`), GNOME
+o KDE reales, Firefox snap real, Firefox < 121.
